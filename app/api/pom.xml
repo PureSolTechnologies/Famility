@@ -4,21 +4,23 @@
 
 	<parent>
 		<groupId>com.puresoltechnologies.lifeassist</groupId>
-		<artifactId>lifeassist-parent</artifactId>
+		<artifactId>app</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>app</artifactId>
+	<artifactId>app.api</artifactId>
 	<name>LifeAssistant: ${project.artifactId}</name>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
-	<modules>
-		<module>installer</module>
-		<module>api</module>
-		<module>impl</module>
-		<module>ui</module>
-		<module>pkg</module>
-		<module>test</module>
-	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>com.puresoltechnologies.commons</groupId>
+			<artifactId>types</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>
