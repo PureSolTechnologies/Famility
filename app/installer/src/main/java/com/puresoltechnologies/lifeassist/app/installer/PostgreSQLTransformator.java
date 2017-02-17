@@ -10,7 +10,7 @@ import com.puresoltechnologies.genesis.transformation.jdbc.JDBCTransformationSte
 import com.puresoltechnologies.genesis.transformation.postgresql.PostgreSQLTransformationSequence;
 import com.puresoltechnologies.genesis.transformation.spi.ComponentTransformator;
 import com.puresoltechnologies.genesis.transformation.spi.TransformationSequence;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordState;
+import com.puresoltechnologies.passwordstore.domain.PasswordState;
 import com.puresoltechnologies.versioning.Version;
 
 public class PostgreSQLTransformator implements ComponentTransformator {
@@ -60,7 +60,7 @@ public class PostgreSQLTransformator implements ComponentTransformator {
 		"CREATE INDEX " //
 			+ PASSWORD_TABLE_NAME + "_state_idx"//
 			+ " ON " + PASSWORD_TABLE_NAME //
-			+ " (state) ASYNC",
+			+ " (state)",
 		"Creating index on state."));
 
 	sequence.appendTransformation(new AddUserStep(sequence, new EmailAddress("user@puresol-technologies.com"),

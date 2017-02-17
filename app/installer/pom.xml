@@ -30,6 +30,10 @@
 			<artifactId>transformation.postgresql</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.puresoltechnologies.passwordstore</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<scope>compile</scope>

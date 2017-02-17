@@ -18,6 +18,10 @@
 			<artifactId>app.api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.puresoltechnologies.passwordstore</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-core</artifactId>
 		</dependency>

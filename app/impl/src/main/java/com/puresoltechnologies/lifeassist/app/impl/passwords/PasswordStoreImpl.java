@@ -17,15 +17,20 @@ import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.commons.types.Password;
 import com.puresoltechnologies.lifeassist.app.api.events.Event;
 import com.puresoltechnologies.lifeassist.app.api.events.EventLogger;
-import com.puresoltechnologies.lifeassist.app.api.passwords.PasswordStore;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordActivationException;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordChangeException;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordCreationException;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordData;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordEncryptionException;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordResetException;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordState;
 import com.puresoltechnologies.lifeassist.app.impl.events.EventLoggerImpl;
+import com.puresoltechnologies.passwordstore.api.PasswordStore;
+import com.puresoltechnologies.passwordstore.core.PasswordEncrypter;
+import com.puresoltechnologies.passwordstore.core.PasswordEncrypterImpl;
+import com.puresoltechnologies.passwordstore.core.PasswordStrengthCalculator;
+import com.puresoltechnologies.passwordstore.core.SecurityKeyGenerator;
+import com.puresoltechnologies.passwordstore.core.SecurityKeyGeneratorImpl;
+import com.puresoltechnologies.passwordstore.domain.PasswordActivationException;
+import com.puresoltechnologies.passwordstore.domain.PasswordChangeException;
+import com.puresoltechnologies.passwordstore.domain.PasswordCreationException;
+import com.puresoltechnologies.passwordstore.domain.PasswordData;
+import com.puresoltechnologies.passwordstore.domain.PasswordEncryptionException;
+import com.puresoltechnologies.passwordstore.domain.PasswordResetException;
+import com.puresoltechnologies.passwordstore.domain.PasswordState;
 
 /**
  * This is the central implementation of the {@link PasswordStore}.

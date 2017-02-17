@@ -14,9 +14,9 @@ import com.puresoltechnologies.genesis.commons.TransformationException;
 import com.puresoltechnologies.genesis.commons.TransformationMetadata;
 import com.puresoltechnologies.genesis.transformation.postgresql.PostgreSQLTransformationSequence;
 import com.puresoltechnologies.genesis.transformation.spi.TransformationStep;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordData;
-import com.puresoltechnologies.lifeassist.app.api.passwords.domain.PasswordState;
-import com.puresoltechnologies.lifeassist.app.impl.passwords.encrypt.Encrypter1;
+import com.puresoltechnologies.passwordstore.core.encrypter.Encrypter1;
+import com.puresoltechnologies.passwordstore.domain.PasswordData;
+import com.puresoltechnologies.passwordstore.domain.PasswordState;
 
 public class AddUserStep implements TransformationStep {
     private static final Logger logger = LoggerFactory.getLogger(AddUserStep.class);
