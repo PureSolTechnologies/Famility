@@ -1,10 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-import LoginController from './controllers/LoginController';
 import PureSolTechnologies from './components/PureSolTechnologies';
-
-import { ToolsIcon } from 'react-octicons'
 
 export default function Menu() {
     return (
@@ -15,19 +12,13 @@ export default function Menu() {
                 aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <Link className="navbar-brand" to="/">LifeAssistant</Link>
+            <Link className="navbar-brand" to="/">LifeAssistant Administration</Link>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
-                    <li className="nav-item"><Link className="nav-link" to="/home">Dashboard</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/plugins">Plugins</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/admin/people">
-                        <ToolsIcon></ToolsIcon>
-                    </Link>
-                    </li>
-                    <li claasName="nav-item">{LoginController.isLoggedIn() ? 'Logout' : 'Login'}</li>
+                    <li className="nav-item"><Link className="nav-link" to="/admin/people">People</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/admin/system">System</Link></li>
                 </ul>
             </div>
         </nav>
-
     );
 }
