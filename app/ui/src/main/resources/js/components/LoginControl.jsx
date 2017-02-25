@@ -7,6 +7,8 @@ import store from '../flux/Store';
 
 export default class LoginControl extends React.Component {
 
+    unsubscribeStore = null;
+    
     constructor( props ) {
         super( props );
         this.state = {
@@ -15,9 +17,13 @@ export default class LoginControl extends React.Component {
     }
 
     componentDidMount() {
-        store.subscribe(() => this.update() );
+        this.unsubscribeStore = store.subscribe(() => this.update() );
     }
 
+    componentWillUnmount() {
+        this.unsubscribeStore();
+    }
+    
     update() {
         const loginState = store.getState().login;
         if ( this.state.login != loginState ) {
@@ -32,7 +38,7 @@ export default class LoginControl extends React.Component {
     render() {
         if ( this.state.login ) {
             return (
-                <span onClick={this.logout}><SignOutIcon /></span>
+                <span onClick={this.logout}>Hi, {this.state.login}!<SignOutIcon /></span>
             );
         } else {
             return (
