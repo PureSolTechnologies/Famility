@@ -1,31 +1,20 @@
 import React from 'react';
-
 import { browserHistory } from 'react-router';
 
-var loggedIn = false;
+import store from '../flux/Store';
+import { login, logout } from '../flux/LoginActions';
 
-export default class LoginController extends React.Component {
+export default class LoginPage extends React.Component {
 
-    static isLoggedIn() {
-        return loggedIn;
-    }
-    
-    static requireAuth( nextState, replaceState ) {
-        if ( !loggedIn ) {
-            const redirect = escape(nextState.location.pathname);
-            replaceState( `/login/${encodeURIComponent(redirect)}` );
-        }
-    }
+    constructor( props ) {
+        super( props );
 
-    constructor(props) {
-        super(props);
-        
         // This binding is necessary to make `this` work in the callback
-        this.login = this.login.bind(this);
+        this.login = this.login.bind( this );
     }
-    
+
     login() {
-        loggedIn = true;
+        store.dispatch( login( 'user' ) );
         const destination = this.props.params.redirect ? this.props.params.redirect : "";
         browserHistory.replace( destination );
     }

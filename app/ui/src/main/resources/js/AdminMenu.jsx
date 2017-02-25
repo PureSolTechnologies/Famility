@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import LoginControl from './components/LoginControl';
 import PureSolTechnologies from './components/PureSolTechnologies';
 
 export default function Menu() {
@@ -18,6 +19,9 @@ export default function Menu() {
                     <li className="nav-item"><Link className="nav-link" to="/admin/people">People</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/admin/system">System</Link></li>
                 </ul>
+                <div className="form-inline my-2 my-lg-0">
+                    <LoginControl />
+                </div>
             </div>
         </nav>
     );

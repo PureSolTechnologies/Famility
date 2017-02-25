@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { ToolsIcon } from 'react-octicons';
 
-import LoginController from './controllers/LoginController';
+import LoginControl from './components/LoginControl';
 import PureSolTechnologies from './components/PureSolTechnologies';
 
-import { ToolsIcon } from 'react-octicons'
+import LoginPage from './pages/LoginPage';
 
 export default function Menu() {
     return (
@@ -24,8 +25,10 @@ export default function Menu() {
                         <ToolsIcon></ToolsIcon>
                     </Link>
                     </li>
-                    <li claasName="nav-item">{LoginController.isLoggedIn() ? 'Logout' : 'Login'}</li>
                 </ul>
+                <div className="form-inline my-2 my-lg-0">
+                    <LoginControl />
+                </div>
             </div>
         </nav>
 
