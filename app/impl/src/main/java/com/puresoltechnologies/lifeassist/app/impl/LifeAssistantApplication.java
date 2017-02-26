@@ -1,12 +1,8 @@
 package com.puresoltechnologies.lifeassist.app.impl;
 
-import java.util.EnumSet;
-
-import javax.servlet.DispatcherType;
-
-import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.URLResource;
 
+import com.puresoltechnologies.lifeassist.app.impl.filters.CORSFilter;
 import com.puresoltechnologies.lifeassist.app.impl.rest.LoginServiceResource;
 import com.puresoltechnologies.lifeassist.app.impl.rest.RestServiceResource;
 
@@ -26,11 +22,10 @@ public class LifeAssistantApplication extends Application<LifeAssistantRestServi
     public void run(LifeAssistantRestServiceConfiguration configuration, Environment environment) throws Exception {
 	environment.jersey().setUrlPattern("/rest");
 	// environment.jersey().register(UserInterfaceResource.class);
+	environment.jersey().register(new CORSFilter());
 	environment.jersey().register(RestServiceResource.class);
 	environment.jersey().register(LoginServiceResource.class);
 
-	environment.servlets().addFilter("Cross-Origin-Filter", new CrossOriginFilter())
-		.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 	environment.servlets().setBaseResource(
 		URLResource.newResource(LifeAssistantApplication.class.getResource("/LifeAssistantUI")));
     }
