@@ -15,6 +15,7 @@
 		<dropwizard.version>1.0.6</dropwizard.version>
 		<genesis.version>0.5.0-SNAPSHOT</genesis.version>
 		<passwordstore.version>0.1.0-SNAPSHOT</passwordstore.version>
+		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
 	</properties>
 
 	<groupId>com.puresoltechnologies.lifeassist</groupId>
@@ -403,6 +404,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.genesis</groupId>
+				<artifactId>commons.postgresql</artifactId>
+				<version>${genesis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.genesis</groupId>
 				<artifactId>controller</artifactId>
 				<version>${genesis.version}</version>
 			</dependency>
@@ -410,6 +416,7 @@
 				<groupId>com.puresoltechnologies.genesis</groupId>
 				<artifactId>tracker.postgresql</artifactId>
 				<version>${genesis.version}</version>
+				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.genesis</groupId>
@@ -423,6 +430,11 @@
 			</dependency>
 			<!-- 3rd party non-testing -->
 			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>io.dropwizard</groupId>
 				<artifactId>dropwizard-assets</artifactId>
 				<version>${dropwizard.version}</version>
@@ -431,6 +443,11 @@
 				<groupId>io.dropwizard</groupId>
 				<artifactId>dropwizard-core</artifactId>
 				<version>${dropwizard.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-pool2</artifactId>
+				<version>2.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -572,7 +589,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.2</version>
 				<executions>
 					<execution>
 						<id>genesis</id>

@@ -1,11 +1,16 @@
 package com.puresoltechnologies.lifeassist.app.installer;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.genesis.commons.ProvidedVersionRange;
 import com.puresoltechnologies.genesis.commons.SequenceMetadata;
+import com.puresoltechnologies.genesis.commons.postgresql.PostgreSQLUtils;
 import com.puresoltechnologies.genesis.transformation.jdbc.JDBCTransformationStep;
 import com.puresoltechnologies.genesis.transformation.postgresql.PostgreSQLTransformationSequence;
 import com.puresoltechnologies.genesis.transformation.spi.ComponentTransformator;
@@ -13,13 +18,13 @@ import com.puresoltechnologies.genesis.transformation.spi.TransformationSequence
 import com.puresoltechnologies.passwordstore.domain.PasswordState;
 import com.puresoltechnologies.versioning.Version;
 
-public class PostgreSQLTransformator implements ComponentTransformator {
+public class PasswordStoreTransformator implements ComponentTransformator {
 
     static final String PASSWORD_TABLE_NAME = "passwords";
 
     @Override
     public String getComponentName() {
-	return "Life Assistant Database";
+	return "Password Store Transformator";
     }
 
     @Override
@@ -29,7 +34,7 @@ public class PostgreSQLTransformator implements ComponentTransformator {
 
     @Override
     public boolean isHostBased() {
-	return true;
+	return false;
     }
 
     @Override
@@ -80,9 +85,15 @@ public class PostgreSQLTransformator implements ComponentTransformator {
     }
 
     @Override
-    public void dropAll() {
-	// TODO Auto-generated method stub
-
+    public void dropAll(Properties configuration) {
+	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
+	    try (Statement statement = connection.createStatement()) {
+		statement.execute("DROP TABLE " + PASSWORD_TABLE_NAME);
+	    }
+	    connection.commit();
+	} catch (NumberFormatException | SQLException e) {
+	    throw new RuntimeException("Could not drop all changes for '" + getComponentName() + "'.", e);
+	}
     }
 
 }

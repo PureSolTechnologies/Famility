@@ -1,1 +1,2 @@
-com.puresoltechnologies.lifeassist.app.installer.PostgreSQLTransformator
+com.puresoltechnologies.lifeassist.app.installer.PasswordStoreTransformator
+com.puresoltechnologies.lifeassist.app.installer.EventLoggerTransformator

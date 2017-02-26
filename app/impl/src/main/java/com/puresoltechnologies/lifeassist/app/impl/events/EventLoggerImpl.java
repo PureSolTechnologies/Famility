@@ -8,7 +8,9 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +30,9 @@ public class EventLoggerImpl implements EventLogger {
 
     private static Logger logger = LoggerFactory.getLogger(EventLoggerImpl.class);
 
-    public static final String EVENTS_TABLE_NAME = "system_monitor.events";
-    private static final String LOG_EVENT_STATEMENT = "UPSERT INTO " + EVENTS_TABLE_NAME
-	    + " (time, component, event_id, server, type, severity, message, user, user_id, client, exception_message, exception_stacktrace)"
+    public static final String EVENTS_TABLE_NAME = "eventlog";
+    private static final String LOG_EVENT_STATEMENT = "INSERT INTO " + EVENTS_TABLE_NAME
+	    + " (time, component, event_id, server, type, severity, message, user_name, user_id, client, exception_message, exception_stacktrace)"
 	    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final String server;
@@ -94,7 +96,8 @@ public class EventLoggerImpl implements EventLogger {
 	    }
 	    if (!connection.isClosed()) {
 		String email = event.getUserEmail() != null ? event.getUserEmail().getAddress() : null;
-		preparedLogEventStatement.setTime(1, new Time(event.getTime().getTime()));
+		LocalDateTime timestamp = LocalDateTime.ofInstant(event.getTime(), ZoneId.systemDefault());
+		preparedLogEventStatement.setTimestamp(1, Timestamp.valueOf(timestamp));
 		preparedLogEventStatement.setString(2, event.getComponent());
 		preparedLogEventStatement.setLong(3, event.getEventId());
 		preparedLogEventStatement.setString(4, server);

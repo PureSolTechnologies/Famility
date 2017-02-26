@@ -42,7 +42,7 @@ public class PasswordStoreImpl implements PasswordStore {
 
     private Logger logger = LoggerFactory.getLogger(PasswordStoreImpl.class);
 
-    public static final String PASSWORD_TABLE_NAME = "password_store.passwords";
+    public static final String PASSWORD_TABLE_NAME = "passwords";
 
     public static final String CREATE_ACCOUNT_STATEMENT = "UPSERT INTO " + PASSWORD_TABLE_NAME
 	    + " (created, last_modified, email, password, state, activation_key)" + " VALUES (?, ?, ?, ?, '"

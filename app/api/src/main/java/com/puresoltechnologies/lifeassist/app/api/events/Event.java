@@ -1,7 +1,7 @@
 package com.puresoltechnologies.lifeassist.app.api.events;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import com.puresoltechnologies.commons.types.EmailAddress;
 
@@ -14,7 +14,7 @@ public class Event implements Serializable {
 
     private static final long serialVersionUID = -6339319545732998237L;
 
-    private final Date time;
+    private final Instant time;
     private final String component;
     private final long eventId;
     private final EventType type;
@@ -27,10 +27,10 @@ public class Event implements Serializable {
     private Throwable throwable;
 
     public Event(String component, long eventId, EventType type, EventSeverity severity, String message) {
-	this(new Date(), component, eventId, type, severity, message);
+	this(Instant.now(), component, eventId, type, severity, message);
     }
 
-    public Event(Date time, String component, long eventId, EventType type, EventSeverity severity, String message) {
+    public Event(Instant time, String component, long eventId, EventType type, EventSeverity severity, String message) {
 	super();
 	this.time = time;
 	this.component = component;
@@ -40,7 +40,7 @@ public class Event implements Serializable {
 	this.message = message;
     }
 
-    public Date getTime() {
+    public Instant getTime() {
 	return time;
     }
 
