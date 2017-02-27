@@ -10,6 +10,6 @@
 
 	<artifactId>common.plugins</artifactId>
 	<name>LifeAssistant: ${project.artifactId}</name>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 </project>

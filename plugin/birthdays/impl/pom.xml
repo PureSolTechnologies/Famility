@@ -12,4 +12,11 @@
 	<name>LifeAssistant: ${project.artifactId}</name>
 	<packaging>jar</packaging>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.puresoltechnologies.lifeassist</groupId>
+			<artifactId>common.plugins</artifactId>
+		</dependency>
+	</dependencies>
+
 </project>

@@ -55,7 +55,7 @@ export default class LoginPage extends React.Component {
                     <label htmlFor="password">Password</label>
                     <input type="password" className="form-control" id="email" placeholder="Enter password" value={this.state.password} onChange={this.handlePasswordChange} />
                 </div>
-                <button onClick={this.login}>Login...</button>
+                <button className="btn btn-primary" onClick={this.login}>Login...</button>
             </div>
         </div>;
     }

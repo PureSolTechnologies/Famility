@@ -4,6 +4,7 @@ import org.eclipse.jetty.util.resource.URLResource;
 
 import com.puresoltechnologies.lifeassist.app.impl.filters.CORSFilter;
 import com.puresoltechnologies.lifeassist.app.impl.rest.LoginServiceResource;
+import com.puresoltechnologies.lifeassist.app.impl.rest.PluginServiceResource;
 import com.puresoltechnologies.lifeassist.app.impl.rest.RestServiceResource;
 
 import io.dropwizard.Application;
@@ -25,6 +26,7 @@ public class LifeAssistantApplication extends Application<LifeAssistantRestServi
 	environment.jersey().register(new CORSFilter());
 	environment.jersey().register(RestServiceResource.class);
 	environment.jersey().register(LoginServiceResource.class);
+	environment.jersey().register(PluginServiceResource.class);
 
 	environment.servlets().setBaseResource(
 		URLResource.newResource(LifeAssistantApplication.class.getResource("/LifeAssistantUI")));

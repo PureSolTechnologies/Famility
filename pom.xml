@@ -396,6 +396,26 @@
 				<artifactId>app.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>common.plugins</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>plugin.appointments.impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>plugin.birthdays.impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>plugin.tasks.impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<!-- PureSol Technologies dependencies -->
 			<dependency>
 				<groupId>com.puresoltechnologies.commons</groupId>
@@ -645,6 +665,7 @@
 		<module>app</module>
 		<module>plugin</module>
 		<module>website</module>
+		<module>test</module>
 	</modules>
 
 </project>

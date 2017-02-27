@@ -18,6 +18,10 @@
 			<artifactId>app.api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.puresoltechnologies.lifeassist</groupId>
+			<artifactId>common.plugins</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.puresoltechnologies.genesis</groupId>
 			<artifactId>commons.postgresql</artifactId>
 		</dependency>

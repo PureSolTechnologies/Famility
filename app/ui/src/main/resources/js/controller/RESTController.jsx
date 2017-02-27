@@ -1,9 +1,11 @@
-class RESTController {
+import React from 'react';
+
+class RESTController extends React.Component {
 
     baseURL = 'http://localhost:8080/rest';
 
-    constructor() {
-
+    constructor(props) {
+        super(props);
     }
 
     createRequest(type, path, headers, successCallback, errorCallback) {
