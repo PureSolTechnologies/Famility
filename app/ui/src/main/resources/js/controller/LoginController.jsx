@@ -11,7 +11,7 @@ export default class LoginController extends React.Component {
     }
 
     static login( email, password, successfulCallback, errorCallback ) {
-        restController.put( '/login/authenticate',
+        restController.PUT( '/login/authenticate',
             {
                 email: email,
                 password: password

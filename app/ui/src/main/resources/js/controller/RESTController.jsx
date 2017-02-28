@@ -1,6 +1,6 @@
 import React from 'react';
 
-class RESTController extends React.Component {
+export class RESTController extends React.Component {
 
     baseURL = 'http://localhost:8080/rest';
 
@@ -17,27 +17,35 @@ class RESTController extends React.Component {
                 request.setRequestHeader( key, headers[key] );
             }
         }
-        request.addEventListener( 'load', successCallback );
-        request.addEventListener( 'error', errorCallback );        
+        request.addEventListener( 'load', 
+            function( event ) { 
+                successCallback( event.target ); 
+            }
+        );
+        request.addEventListener( 'error', 
+            function( event ) { 
+                errorCallback( event.target );
+            }
+        );
         return request;
     }
 
-    get( path, headers, successCallback, errorCallback ) {
+    GET( path, headers, successCallback, errorCallback ) {
         var request = this.createRequest('GET', path, headers, successCallback, errorCallback);
         request.send();
     }
 
-    put( path, headers, entity, successCallback, errorCallback ) {
+    PUT( path, headers, entity, successCallback, errorCallback ) {
         var request = this.createRequest('PUT', path, headers, successCallback, errorCallback);
         request.send(entity);
     }
 
-    post( path, headers, entity, successCallback, errorCallback ) {
+    POST( path, headers, entity, successCallback, errorCallback ) {
         var request = this.createRequest('POST', path, headers, successCallback, errorCallback);
         request.send(entity);
     }
 
-    delete( path, headers, successCallback, errorCallback ) {
+    DELETE( path, headers, successCallback, errorCallback ) {
         var request = this.createRequest('DELETE', path, headers, successCallback, errorCallback);
         request.send();
     }
