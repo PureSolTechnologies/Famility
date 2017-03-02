@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { ToolsIcon } from 'react-octicons';
+import { SettingsIcon, CalendarIcon, HomeIcon, PlugIcon } from 'react-octicons';
 
 import LoginControl from './components/LoginControl';
 import PureSolTechnologies from './components/PureSolTechnologies';
@@ -19,11 +19,17 @@ export default function Menu() {
             <Link className="navbar-brand" to="/">LifeAssistant</Link>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
-                    <li className="nav-item"><Link className="nav-link" to="/home">Dashboard</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/plugins">Plugins</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/admin/people">
-                        <ToolsIcon></ToolsIcon>
-                    </Link>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/home"><HomeIcon /> Dashboard</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/calendar"><CalendarIcon /> Calendar</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/plugins"><PlugIcon /> Plugins</Link>
+                    </li>
+                    <li className="nav-item">
+                         <Link className="nav-link" to="/admin/people"><SettingsIcon /> Settings</Link>
                     </li>
                 </ul>
                 <div className="form-inline my-2 my-lg-0">

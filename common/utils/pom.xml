@@ -4,19 +4,19 @@
 
 	<parent>
 		<groupId>com.puresoltechnologies.lifeassist</groupId>
-		<artifactId>lifeassist-parent</artifactId>
+		<artifactId>common</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>common</artifactId>
+	<artifactId>common.utils</artifactId>
 	<name>LifeAssistant: ${project.artifactId}</name>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
-	<modules>
-		<module>utils</module>
-		<module>db</module>
-		<module>installer</module>
-		<module>plugins</module>
-	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>

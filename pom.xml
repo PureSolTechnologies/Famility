@@ -16,6 +16,7 @@
 		<genesis.version>0.5.0-SNAPSHOT</genesis.version>
 		<passwordstore.version>0.1.0-SNAPSHOT</passwordstore.version>
 		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
+		<jackson.version>2.7.8</jackson.version>
 	</properties>
 
 	<groupId>com.puresoltechnologies.lifeassist</groupId>
@@ -403,6 +404,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>common.utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
 				<artifactId>plugin.appointments.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -463,6 +469,16 @@
 				<groupId>io.dropwizard</groupId>
 				<artifactId>dropwizard-core</artifactId>
 				<version>${dropwizard.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>

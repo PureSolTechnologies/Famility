@@ -1,4 +1,4 @@
-package com.puresoltechnologies.lifeassist.app.imp.db;
+package com.puresoltechnologies.lifeassist.app.impl.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

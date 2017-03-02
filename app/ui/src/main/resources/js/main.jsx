@@ -9,6 +9,7 @@ import AdminLayout from './AdminLayout';
 
 import LoginController from './controller/LoginController';
 
+import Calendar from './pages/Calendar';
 import Copyright from './pages/Copyright';
 import LoginPage from './pages/LoginPage';
 import MainDashboard from './pages/MainDashboard';
@@ -22,6 +23,7 @@ ReactDOM.render(
             <Redirect from="/" to="/home" />
             <Route path="/" component={Layout}>
                 <Route path="home" component={MainDashboard} />
+                <Route path="calendar(/:view)" component={Calendar} />
                 <Route path="plugins" component={Plugins} />
                 <Route path="copyright" component={Copyright} />
                 <Route path="login(/:redirect)" component={LoginPage} />
