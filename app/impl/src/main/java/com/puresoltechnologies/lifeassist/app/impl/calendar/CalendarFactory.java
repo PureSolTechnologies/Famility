@@ -15,14 +15,15 @@ public class CalendarFactory {
     public static CalendarYear createYear(int year) {
 	Map<Integer, CalendarMonth> calendarMonths = new HashMap<>();
 	for (Month month : Month.values()) {
+	    int monthValue = month.getValue();
 	    Map<Integer, CalendarDay> calendarDays = new HashMap<>();
-	    LocalDate localDate = IsoChronology.INSTANCE.date(year, month.getValue(), 1);
+	    LocalDate localDate = IsoChronology.INSTANCE.date(year, monthValue, 1);
 	    for (int i = 1; i <= localDate.lengthOfMonth(); ++i) {
-		CalendarDay calendarDay = new CalendarDay(year, month.getValue(), i);
+		CalendarDay calendarDay = new CalendarDay(year, monthValue, i);
 		calendarDays.put(i, calendarDay);
 	    }
-	    CalendarMonth calendarMonth = new CalendarMonth(year, month.getValue(), calendarDays);
-	    calendarMonths.put(month.getValue(), calendarMonth);
+	    CalendarMonth calendarMonth = new CalendarMonth(year, monthValue, calendarDays);
+	    calendarMonths.put(monthValue, calendarMonth);
 	}
 	CalendarYear calendarYear = new CalendarYear(year, calendarMonths);
 	return calendarYear;

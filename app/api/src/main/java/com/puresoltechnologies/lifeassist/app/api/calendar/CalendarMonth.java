@@ -1,7 +1,9 @@
 package com.puresoltechnologies.lifeassist.app.api.calendar;
 
 import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.time.temporal.IsoFields;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -15,6 +17,7 @@ public class CalendarMonth {
     private final Map<Integer, CalendarDay> days;
     private final YearMonth yearMonth;
     private final int quarterOfYear;
+    private final String name;
 
     @JsonCreator
     public CalendarMonth(//
@@ -27,6 +30,7 @@ public class CalendarMonth {
 	this.days = days;
 	yearMonth = YearMonth.of(year, month);
 	quarterOfYear = yearMonth.get(IsoFields.QUARTER_OF_YEAR);
+	name = yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault());
     }
 
     public int getYear() {
@@ -48,6 +52,10 @@ public class CalendarMonth {
     @JsonIgnore
     public YearMonth getYearMonth() {
 	return yearMonth;
+    }
+
+    public String getName() {
+	return name;
     }
 
     @Override

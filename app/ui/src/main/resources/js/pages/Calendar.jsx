@@ -6,7 +6,7 @@ export default function Calendar() {
     return (
         <div className="row">
             <div className="col-md-12">
-                <CalendarComponent />
+                <CalendarComponent year="2016"/>
             </div>
         </div >
     );

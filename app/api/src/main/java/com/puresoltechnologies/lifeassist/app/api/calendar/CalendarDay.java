@@ -29,7 +29,12 @@ public class CalendarDay {
 	this.dayOfMonth = dayOfMonth;
 	localDate = LocalDate.of(year, month, dayOfMonth);
 	this.dayOfWeek = localDate.getDayOfWeek().getValue();
-	this.weekOfYear = localDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+	int woy = localDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+	if ((month == 1) && (woy > 50)) {
+	    this.weekOfYear = 0;
+	} else {
+	    this.weekOfYear = woy;
+	}
 	this.quarterOfYear = localDate.get(IsoFields.QUARTER_OF_YEAR);
     }
 
