@@ -9,6 +9,10 @@ import WeekView from './calendar/WeekView';
 import MonthView from './calendar/MonthView';
 import YearView from './calendar/YearView';
 
+import YearSelector from './calendar/YearSelector';
+import MonthSelector from './calendar/MonthSelector';
+import DaySelector from './calendar/DaySelector';
+
 import CalendarController from '../controller/CalendarController';
 
 export default class CalendarComponent extends React.Component {
@@ -55,6 +59,8 @@ export default class CalendarComponent extends React.Component {
         }
         return <div>
             <h1><ArrowLeftIcon onClick={this.previousYear} />{this.state.year}<ArrowRightIcon onClick={this.nextYear} /></h1>
+            <p><YearSelector /> <MonthSelector /><DaySelector /></p>
+            <p><DaySelector />.<MonthSelector />.<YearSelector /> </p>
             <TabComponent>
                 <Tab heading="Year"><YearView calendar={this.state.calendar} /></Tab>
                 <Tab heading="Month"><MonthView calendar={this.state.calendar} /></Tab>
