@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
+import store from '../flux/Store';
+
 import Tab from './Tab';
 import TabComponent from './TabComponent';
 
@@ -17,55 +19,47 @@ import CalendarController from '../controller/CalendarController';
 
 export default class CalendarComponent extends React.Component {
 
-    static propTypes = {
-        year: React.PropTypes.string.isRequired
-    };
-
     constructor( props ) {
         super( props );
-        this.state = { year: props.year, calendar: null };
-        this.previousYear = this.previousYear.bind( this );
-        this.nextYear = this.nextYear.bind( this );
+        this.state = { calendar: store.getState().calendar, calendarData: null };
     }
 
     componentDidMount() {
-        this.readCalendar( this.state.year );
+        this.readCalendar( this.state.calendar.year );
+        this.unsubscribeStore = store.subscribe(() => this.update() );
+    }
+
+    componentWillUnmount() {
+        this.unsubscribeStore();
+    }
+
+    update() {
+        const yearState = store.getState().calendar.year;
+        this.readCalendar( yearState );
     }
 
     readCalendar( year ) {
         var component = this;
         CalendarController.getYear( year,
             function( response ) {
-                component.setState( { year: year, calendar: JSON.parse( response.response ) });
+                component.setState( { calendarData: JSON.parse( response.response ) });
             },
             function( response ) {
             }
         );
     }
 
-    previousYear() {
-        var newYear = parseInt( this.state.year ) - 1;
-        this.readCalendar( newYear );
-    }
-
-    nextYear() {
-        var newYear = parseInt( this.state.year ) + 1;
-        this.readCalendar( newYear );
-    }
-
     render() {
-        if ( !this.state.calendar ) {
+        if ( !this.state.calendarData ) {
             return <div></div>;
         }
         return <div>
-            <h1><ArrowLeftIcon onClick={this.previousYear} />{this.state.year}<ArrowRightIcon onClick={this.nextYear} /></h1>
-            <p><YearSelector /> <MonthSelector /><DaySelector /></p>
-            <p><DaySelector />.<MonthSelector />.<YearSelector /> </p>
+            <h1><YearSelector />-<MonthSelector />-<DaySelector /></h1>
             <TabComponent>
-                <Tab heading="Year"><YearView calendar={this.state.calendar} /></Tab>
-                <Tab heading="Month"><MonthView calendar={this.state.calendar} /></Tab>
-                <Tab heading="Week"><WeekView calendar={this.state.calendar} /></Tab>
-                <Tab heading="Day"><DayView calendar={this.state.calendar} /></Tab>
+                <Tab heading="Year"><YearView calendar={this.state.calendarData} /></Tab>
+                <Tab heading="Month"><MonthView calendar={this.state.calendarData} month={this.state.calendar.month} /></Tab>
+                <Tab heading="Week"><WeekView calendar={this.state.calendarData} month={this.state.calendar.month} day={this.state.calendar.day} /></Tab>
+                <Tab heading="Day"><DayView calendar={this.state.calendarData} month={this.state.calendar.month} day={this.state.calendar.day} /></Tab>
             </TabComponent>
         </div>;
     }

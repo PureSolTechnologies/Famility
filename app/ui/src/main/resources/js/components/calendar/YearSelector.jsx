@@ -6,6 +6,8 @@ import store from '../../flux/Store';
 
 export default class YearSelector extends React.Component {
 
+    unsubscribeStore = null;
+
     constructor( props ) {
         super( props );
         this.state = {

@@ -45,6 +45,7 @@ export default class YearView extends React.Component {
             }
         }
         return <div>
+            <h1>{this.state.calendar.year}</h1>
             {rows}
         </div>;
     }

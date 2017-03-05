@@ -6,35 +6,27 @@ import SingleMonth from './SingleMonth';
 export default class MonthView extends React.Component {
 
     static propTypes = {
-        calendar: React.PropTypes.string.isRequired
+        calendar: React.PropTypes.string.isRequired,
+        month: React.PropTypes.string.isRequired
     };
 
     constructor( props ) {
         super( props );
-        this.state = { month: 1, calendar: props.calendar };
-        this.previousYear = this.previousYear.bind( this );
-        this.nextYear = this.nextYear.bind( this );
+        this.state = { month: props.month, calendar: props.calendar };
     }
 
     componentWillReceiveProps( nextProps ) {
-        if ( this.props.calendar != nextProps.calendar ) {
+        if ( this.state.calendar != nextProps.calendar ) {
             this.setState( { calendar: nextProps.calendar });
         }
-    }
-
-    previousYear() {
-        var newMonth = this.state.month - 1;
-        this.setState( { month: newMonth });
-    }
-
-    nextYear() {
-        var newMonth = this.state.month + 1;
-        this.setState( { month: newMonth });
+        if ( this.state.month != nextProps.month ) {
+            this.setState( { month: nextProps.month });
+        }
     }
 
     render() {
         return <div>
-            <h1><ArrowLeftIcon onClick={this.previousYear} />{this.state.calendar.months[this.state.month].name}<ArrowRightIcon onClick={this.nextYear} /> {this.state.calendar.year}</h1>
+            <h1>{this.state.calendar.months[this.state.month].name} {this.state.calendar.year}</h1>
             <SingleMonth month={this.state.calendar.months[this.state.month].name} data={this.state.calendar.months[this.state.month]} />
         </div>;
     }
