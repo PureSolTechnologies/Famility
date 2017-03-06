@@ -41,8 +41,8 @@ export default class CalendarComponent extends React.Component {
     readCalendar( year ) {
         var component = this;
         CalendarController.getYear( year,
-            function( response ) {
-                component.setState( { calendarData: JSON.parse( response.response ) });
+            function( calendar ) {
+                component.setState( { calendarData: calendar });
             },
             function( response ) {
             }
@@ -54,7 +54,7 @@ export default class CalendarComponent extends React.Component {
             return <div></div>;
         }
         return <div>
-            <h1><YearSelector />-<MonthSelector />-<DaySelector /></h1>
+            <h1><DaySelector />.&nbsp;<MonthSelector />.&nbsp;<YearSelector /></h1>
             <TabComponent>
                 <Tab heading="Year"><YearView calendar={this.state.calendarData} /></Tab>
                 <Tab heading="Month"><MonthView calendar={this.state.calendarData} month={this.state.calendar.month} /></Tab>

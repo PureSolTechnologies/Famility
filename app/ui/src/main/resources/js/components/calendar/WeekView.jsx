@@ -8,40 +8,34 @@ export default class WeekView extends React.Component {
         day: React.PropTypes.string.isRequired
     };
 
-    week = 0;
-    monday = 0;
-    sunday = 0;
-    
     constructor( props ) {
         super( props );
         this.state = { month: props.month, day: props.day, calendar: props.calendar };
-        this.setWeek();
     }
 
     componentWillReceiveProps( nextProps ) {
         if ( this.state.calendar != nextProps.calendar ) {
-            this.setWeek();
             this.setState( { calendar: nextProps.calendar });
         }
         if ( this.state.month != nextProps.month ) {
-            this.setWeek();
             this.setState( { month: nextProps.month });
         }
         if ( this.state.day != nextProps.day ) {
-            this.setWeek();
             this.setState( { day: nextProps.day });
         }
     }
 
-    setWeek() {
-        var day = this.state.calendar.months[this.state.month].days[this.state.day];
-        this.week = day.weekOfYear;
-        var dayOfWeek = day.dayOfWeek;
-        var startDay = day - (dayOfWeek -  1);
-        var endDay = day + (7 - dayOfWeek);
+    getDate( week, day ) {
+        var weekObject = this.state.calendar.weeks[week];
+        if ( !weekObject[day] ) {
+            return '';
+        }
+        return weekObject[day].dayOfMonth + '.' + weekObject[day].month + '.' + weekObject[day].year;
     }
-    
+
     render() {
+        var day = this.state.calendar.months[this.state.month].days[this.state.day];
+        var week = day.weekOfYear;
         var rows = [];
         for ( var i = 0; i <= 23; i++ ) {
             rows.push(
@@ -58,9 +52,19 @@ export default class WeekView extends React.Component {
             );
         }
         return <div>
-            <h1>Week {this.week} {this.state.calendar.year}</h1>
+            <h1>Week {week} {this.state.calendar.year}</h1>
             <table className="table table-hover">
                 <thead className="thead-inverse">
+                    <tr>
+                        <th></th>
+                        <th>{this.getDate( week, 1 )}</th>
+                        <th>{this.getDate( week, 2 )}</th>
+                        <th>{this.getDate( week, 3 )}</th>
+                        <th>{this.getDate( week, 4 )}</th>
+                        <th>{this.getDate( week, 5 )}</th>
+                        <th>{this.getDate( week, 6 )}</th>
+                        <th>{this.getDate( week, 7 )}</th>
+                    </tr>
                     <tr>
                         <th>Time</th>
                         <th>Monday</th>
