@@ -24,7 +24,7 @@ public class PasswordStoreTransformator implements ComponentTransformator {
 
     @Override
     public String getComponentName() {
-	return "Password Store Transformator";
+	return "Password Store";
     }
 
     @Override
@@ -88,7 +88,7 @@ public class PasswordStoreTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP TABLE " + PASSWORD_TABLE_NAME);
+		statement.execute("DROP TABLE IF EXISTS " + PASSWORD_TABLE_NAME);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

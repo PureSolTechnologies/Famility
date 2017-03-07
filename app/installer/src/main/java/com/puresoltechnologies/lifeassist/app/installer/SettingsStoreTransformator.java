@@ -16,18 +16,21 @@ import com.puresoltechnologies.genesis.transformation.spi.ComponentTransformator
 import com.puresoltechnologies.genesis.transformation.spi.TransformationSequence;
 import com.puresoltechnologies.versioning.Version;
 
-public class EventLoggerTransformator implements ComponentTransformator {
+public class SettingsStoreTransformator implements ComponentTransformator {
 
-    private static final String EVENT_LOG_TABLE = "eventlog";
+    private static final String SYSTEM_SETTINGS_TABLE = "system_settings";
+    private static final String USER_SETTINGS_TABLE = "user_settings";
 
     @Override
     public String getComponentName() {
-	return "Event Logger";
+	return "Settings Store";
     }
 
     @Override
     public Set<String> getDependencies() {
-	return new HashSet<>();
+	HashSet<String> dependencies = new HashSet<>();
+	dependencies.add("Users");
+	return dependencies;
     }
 
     @Override
@@ -49,23 +52,23 @@ public class EventLoggerTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + EVENT_LOG_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + SYSTEM_SETTINGS_TABLE //
 			+ " (" //
-			+ "server varchar not null, " //
-			+ "time timestamp not null, " //
-			+ "severity varchar not null, "//
-			+ "type varchar not null, " //
-			+ "component varchar not null, " //
-			+ "event_id bigint not null, " //
-			+ "message varchar not null, "//
-			+ "user_name varchar, " //
-			+ "user_id bigint," //
-			+ "client varchar, " //
-			+ "exception_message varchar, " //
-			+ "exception_stacktrace varchar, "//
-			+ "CONSTRAINT " + EVENT_LOG_TABLE
-			+ "_PK PRIMARY KEY (server, time, severity, type, component, event_id, message))",
-		"Create events table."));
+			+ "parameter varchar not null, " //
+			+ "CONSTRAINT " + SYSTEM_SETTINGS_TABLE + "_PK PRIMARY KEY (parameter))",
+		"Create system settings table."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE IF NOT EXISTS " + USER_SETTINGS_TABLE //
+			+ " (" //
+			+ "user_id bigint not null, " //
+			+ "parameter varchar not null, " //
+			+ "CONSTRAINT " + USER_SETTINGS_TABLE + "_PK PRIMARY KEY (user_id, parameter), "//
+			+ "CONSTRAINT " + USER_SETTINGS_TABLE
+			+ "_users_PK FOREIGN KEY (user_id) REFERENCES users (id), "//
+			+ "CONSTRAINT " + USER_SETTINGS_TABLE + "_" + SYSTEM_SETTINGS_TABLE
+			+ "_PK FOREIGN KEY (parameter) REFERENCES " + SYSTEM_SETTINGS_TABLE + " (parameter) "//
+			+ ")",
+		"Create user settings table."));
 	return sequence;
     }
 
@@ -73,7 +76,8 @@ public class EventLoggerTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP TABLE IF EXISTS " + EVENT_LOG_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + SYSTEM_SETTINGS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + USER_SETTINGS_TABLE);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {
