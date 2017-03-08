@@ -57,6 +57,13 @@ public class CalendarTransformator implements ComponentTransformator {
 		"CREATE TABLE IF NOT EXISTS " + APPOINTMENT_SERIES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
+			+ "subject varchar(250) not null, " //
+			+ "description varchar, " //
+			+ "turnus varchar(8), "//
+			+ "start_date date, "//
+			+ "from_time time with time zone, "//
+			+ "to_time time with time zone, "//
+			+ "reminder interval, " //
 			+ "CONSTRAINT " + APPOINTMENT_SERIES_TABLE + "_PK PRIMARY KEY (id))",
 		"Create events table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
@@ -64,6 +71,12 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "appointment_series_id bigint, " //
+			+ "subject varchar(250) not null, " //
+			+ "description varchar, " //
+			+ "date date, "//
+			+ "from_time time with time zone, "//
+			+ "to_time time with time zone, "//
+			+ "reminder interval, " //
 			+ "CONSTRAINT " + APPOINTMENTS_TABLE + "_PK PRIMARY KEY (id), "//
 			+ "CONSTRAINT " + APPOINTMENTS_TABLE + "_" + APPOINTMENT_SERIES_TABLE
 			+ "_FK FOREIGN KEY (appointment_series_id) REFERENCES appointment_series (id)" //
@@ -114,10 +127,12 @@ public class CalendarTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
+		statement.execute("DROP INDEX IF EXISTS " + APPOINTMENTS_TABLE + "_user_id_idx");
+		statement.execute("DROP INDEX IF EXISTS " + APPOINTMENT_SERIES_PARTICIPANTS_TABLE + "_user_id_idx");
+		statement.execute("DROP TABLE IF EXISTS " + APPOINTMENT_SERIES_PARTICIPANTS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + APPOINTMENT_PARTICIPANTS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + APPOINTMENTS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + APPOINTMENT_SERIES_TABLE);
-		statement.execute("DROP INDEX IF EXISTS " + APPOINTMENT_SERIES_PARTICIPANTS_TABLE + "_user_id_idx");
-		statement.execute("DROP INDEX IF EXISTS " + APPOINTMENTS_TABLE + "_user_id_idx");
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

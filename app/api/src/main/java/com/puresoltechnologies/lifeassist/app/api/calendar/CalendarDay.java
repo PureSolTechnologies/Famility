@@ -2,13 +2,26 @@ package com.puresoltechnologies.lifeassist.app.api.calendar;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAccessor;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CalendarDay {
+
+    public static CalendarDay of(LocalDate localDate) {
+	return new CalendarDay(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
+    }
+
+    public static CalendarDay of(TemporalAccessor date) {
+	int year = date.get(ChronoField.YEAR);
+	int month = date.get(ChronoField.MONTH_OF_YEAR);
+	int day = date.get(ChronoField.DAY_OF_MONTH);
+	return new CalendarDay(year, month, day);
+    }
 
     private final LocalDate localDate;
     private final int year;

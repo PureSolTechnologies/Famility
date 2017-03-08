@@ -41,7 +41,7 @@ public class AddUserStep implements TransformationStep {
 
     @Override
     public void transform() throws TransformationException {
-	logger.info("Add first administrator account.");
+	logger.info("Add new account for '" + user + "'.");
 	try {
 	    Connection connection = sequence.getConnection();
 	    try (PreparedStatement statement = connection

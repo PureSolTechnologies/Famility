@@ -1,5 +1,10 @@
 package com.puresoltechnologies.lifeassist.app.impl.rest;
 
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,6 +22,18 @@ public class CalendarServiceResource {
     @Produces(MediaType.APPLICATION_JSON)
     public CalendarYear getCalendarYear(@PathParam("year") int year) {
 	return CalendarFactory.createYear(year);
+    }
+
+    @GET
+    @Path("/timezones")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<String> getTimezones() {
+	List<String> timezones = new ArrayList<>();
+	for (String zoneId : ZoneId.getAvailableZoneIds()) {
+	    timezones.add(zoneId);
+	}
+	Collections.sort(timezones);
+	return timezones;
     }
 
 }
