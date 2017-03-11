@@ -9,6 +9,7 @@ import AdminLayout from './AdminLayout';
 
 import LoginController from './controller/LoginController';
 
+import AddUser from './pages/AddUser';
 import Calendar from './pages/Calendar';
 import Copyright from './pages/Copyright';
 import LoginPage from './pages/LoginPage';
@@ -28,9 +29,10 @@ ReactDOM.render(
                 <Route path="copyright" component={Copyright} />
                 <Route path="login(/:redirect)" component={LoginPage} />
             </Route>
-            <Route path="/admin" component={AdminLayout}>
-                <Route path="people" component={PeopleAdministrator} onEnter={LoginController.requireAuth} />
-                <Route path="system" component={SystemAdministrator} onEnter={LoginController.requireAuth} />
+            <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth}>
+                <Route path="people" component={PeopleAdministrator} />
+                <Route path="people/add" component={AddUser} />
+                <Route path="system" component={SystemAdministrator} />
             </Route>
         </Router>
     </Provider>,

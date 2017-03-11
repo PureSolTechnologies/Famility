@@ -37,12 +37,12 @@ export class RESTController extends React.Component {
 
     PUT( path, headers, entity, successCallback, errorCallback ) {
         var request = this.createRequest('PUT', path, headers, successCallback, errorCallback);
-        request.send(entity);
+        request.send(JSON.stringify(entity));
     }
 
     POST( path, headers, entity, successCallback, errorCallback ) {
         var request = this.createRequest('POST', path, headers, successCallback, errorCallback);
-        request.send(entity);
+        request.send(JSON.stringify(entity));
     }
 
     DELETE( path, headers, successCallback, errorCallback ) {

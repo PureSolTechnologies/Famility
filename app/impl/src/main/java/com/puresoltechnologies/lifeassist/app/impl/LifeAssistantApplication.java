@@ -9,9 +9,12 @@ import com.puresoltechnologies.lifeassist.app.impl.rest.CalendarServiceResource;
 import com.puresoltechnologies.lifeassist.app.impl.rest.LoginServiceResource;
 import com.puresoltechnologies.lifeassist.app.impl.rest.PeopleServiceResource;
 import com.puresoltechnologies.lifeassist.app.impl.rest.PluginServiceResource;
+import com.puresoltechnologies.lifeassist.app.impl.rest.SettingsServiceResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -23,24 +26,27 @@ public class LifeAssistantApplication extends Application<LifeAssistantRestServi
     }
 
     @Override
-    public void run(LifeAssistantRestServiceConfiguration configuration, Environment environment) throws Exception {
-	environment.jersey().setUrlPattern("/rest");
-	// environment.jersey().register(UserInterfaceResource.class);
-	environment.jersey().register(new CORSFilter());
-	environment.jersey().register(new IllegalEmailAddressExceptionMapper());
-	environment.jersey().register(new SQLExceptionMapper());
-	environment.jersey().register(LoginServiceResource.class);
-	environment.jersey().register(PluginServiceResource.class);
-	environment.jersey().register(CalendarServiceResource.class);
-	environment.jersey().register(PeopleServiceResource.class);
-
-	environment.servlets().setBaseResource(
-		URLResource.newResource(LifeAssistantApplication.class.getResource("/LifeAssistantUI")));
+    public void initialize(Bootstrap<LifeAssistantRestServiceConfiguration> bootstrap) {
+	bootstrap.addBundle(new AssetsBundle("/LifeAssistantUI", "/", "/index.html"));
     }
 
     @Override
-    public void initialize(Bootstrap<LifeAssistantRestServiceConfiguration> bootstrap) {
-	bootstrap.addBundle(new AssetsBundle("/LifeAssistantUI", "/", "/index.html"));
+    public void run(LifeAssistantRestServiceConfiguration configuration, Environment environment) throws Exception {
+	JerseyEnvironment jersey = environment.jersey();
+	jersey.setUrlPattern("/rest");
+	// environment.jersey().register(UserInterfaceResource.class);
+	jersey.register(new CORSFilter());
+	jersey.register(new IllegalEmailAddressExceptionMapper());
+	jersey.register(new SQLExceptionMapper());
+	jersey.register(LoginServiceResource.class);
+	jersey.register(PluginServiceResource.class);
+	jersey.register(CalendarServiceResource.class);
+	jersey.register(PeopleServiceResource.class);
+	jersey.register(SettingsServiceResource.class);
+
+	ServletEnvironment servlets = environment.servlets();
+	servlets.setBaseResource(
+		URLResource.newResource(LifeAssistantApplication.class.getResource("/LifeAssistantUI")));
     }
 
     public static void main(String[] args) throws Exception {

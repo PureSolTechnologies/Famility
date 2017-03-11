@@ -97,7 +97,9 @@ public class PooledConnection implements Connection {
      */
     @Override
     public void close() throws SQLException {
-	connection.close();
+	// to be sure to not commit partial changes in next usage, we roll-back
+	connection.rollback();
+	// instead of close, we return the connection
 	pool.returnObject(connection);
     }
 

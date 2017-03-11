@@ -23,6 +23,10 @@ public class CalendarDay {
 	return new CalendarDay(year, month, day);
     }
 
+    public static LocalDate toLocalDate(CalendarDay calendarDay) {
+	return LocalDate.of(calendarDay.getYear(), calendarDay.getMonth(), calendarDay.getDayOfMonth());
+    }
+
     private final LocalDate localDate;
     private final int year;
     private final int month;

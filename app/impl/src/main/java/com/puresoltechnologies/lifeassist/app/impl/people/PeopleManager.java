@@ -1,6 +1,8 @@
 package com.puresoltechnologies.lifeassist.app.impl.people;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,9 +15,6 @@ import com.puresoltechnologies.lifeassist.app.api.people.Person;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 
 public class PeopleManager {
-
-    public PeopleManager() {
-    }
 
     public List<Person> getPeople() throws SQLException {
 	List<Person> people = new ArrayList<>();
@@ -32,7 +31,18 @@ public class PeopleManager {
 	return people;
     }
 
-    public List<Person> addPerson(Person person) {
+    public void addPerson(Person person) throws SQLException {
+	try (Connection connection = DatabaseConnector.getConnection();
+		PreparedStatement statement = connection.prepareStatement(
+			"INSERT INTO users (id, name, birthday) VALUES (nextval('user_id_seq'), ?, ?)")) {
+	    statement.setString(1, person.getName());
+	    statement.setDate(2, Date.valueOf(CalendarDay.toLocalDate(person.getBirthday())));
+	    statement.execute();
+	    connection.commit();
+	}
+    }
+
+    public Person getPerson(String name) {
 	// TODO Auto-generated method stub
 	return null;
     }
