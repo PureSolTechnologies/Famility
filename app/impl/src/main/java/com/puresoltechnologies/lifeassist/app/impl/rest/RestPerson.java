@@ -5,14 +5,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RestPerson {
 
+    private final long id;
     private final String name;
     private final String birthday;
 
     @JsonCreator
-    public RestPerson(@JsonProperty("name") String name, @JsonProperty("birthday") String birthday) {
+    public RestPerson(@JsonProperty("id") long id, @JsonProperty("name") String name,
+	    @JsonProperty("birthday") String birthday) {
 	super();
+	this.id = id;
 	this.name = name;
 	this.birthday = birthday;
+    }
+
+    public long getId() {
+	return id;
     }
 
     public String getName() {
@@ -27,8 +34,7 @@ public class RestPerson {
     public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + ((birthday == null) ? 0 : birthday.hashCode());
-	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	result = prime * result + (int) (id ^ (id >>> 32));
 	return result;
     }
 
@@ -41,15 +47,7 @@ public class RestPerson {
 	if (getClass() != obj.getClass())
 	    return false;
 	RestPerson other = (RestPerson) obj;
-	if (birthday == null) {
-	    if (other.birthday != null)
-		return false;
-	} else if (!birthday.equals(other.birthday))
-	    return false;
-	if (name == null) {
-	    if (other.name != null)
-		return false;
-	} else if (!name.equals(other.name))
+	if (id != other.id)
 	    return false;
 	return true;
     }

@@ -6,6 +6,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -32,7 +33,7 @@ public class PeopleServiceResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public void addPerson(RestPerson person) throws SQLException {
 	TemporalAccessor date = DateTimeFormatter.ISO_LOCAL_DATE.parse(person.getBirthday());
-	peopleManager.addPerson(new Person(person.getName(), CalendarDay.of(date)));
+	peopleManager.addPerson(new Person(-1, person.getName(), CalendarDay.of(date)));
     }
 
     @GET
@@ -40,6 +41,19 @@ public class PeopleServiceResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Person getPerson(@PathParam("name") String name) throws SQLException {
 	return peopleManager.getPerson(name);
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public void deletePerson(@PathParam("id") String id) throws SQLException {
+	peopleManager.deletePerson(Long.parseLong(id));
+    }
+
+    @GET
+    @Path("/birthdays")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Person> getBirthdays() throws SQLException {
+	return peopleManager.getBirthdays();
     }
 
 }

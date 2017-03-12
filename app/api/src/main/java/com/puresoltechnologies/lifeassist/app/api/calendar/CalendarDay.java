@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CalendarDay {
+public class CalendarDay implements Comparable<CalendarDay> {
 
     public static CalendarDay of(LocalDate localDate) {
 	return new CalendarDay(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
@@ -110,6 +110,29 @@ public class CalendarDay {
 	if (year != other.year)
 	    return false;
 	return true;
+    }
+
+    @Override
+    public int compareTo(CalendarDay o) {
+	if (this.year < o.year) {
+	    return -1;
+	}
+	if (this.year > o.year) {
+	    return 1;
+	}
+	if (this.month < o.month) {
+	    return -1;
+	}
+	if (this.month > o.month) {
+	    return 1;
+	}
+	if (this.dayOfMonth < o.dayOfMonth) {
+	    return -1;
+	}
+	if (this.dayOfMonth > o.dayOfMonth) {
+	    return 1;
+	}
+	return 0;
     }
 
     @Override

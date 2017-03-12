@@ -13,7 +13,7 @@ public class PersonTest {
 
     @Test
     public void testSerialization() throws IOException {
-	Person person = new Person("Rick-Rainer Ludwig", new CalendarDay(1978, 5, 16));
+	Person person = new Person(42, "Rick-Rainer Ludwig", new CalendarDay(1978, 5, 16));
 	String serialized = JsonSerializer.toString(person);
 	System.out.println(serialized);
 	Person deserialized = JsonSerializer.fromString(serialized, Person.class);

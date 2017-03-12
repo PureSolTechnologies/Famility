@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { SettingsIcon, TrashcanIcon } from 'react-octicons';
 
 import PeopleController from '../controller/PeopleController';
 
@@ -8,6 +9,7 @@ export default class PeopleAdministrator extends React.Component {
     constructor( props ) {
         super( props );
         this.state = { people: [] };
+        this.deleteUser = this.deleteUser.bind( this );
     }
 
     componentDidMount() {
@@ -20,15 +22,23 @@ export default class PeopleAdministrator extends React.Component {
         );
     }
 
+    deleteUser( user ) {
+        var component = this;
+        PeopleController.deleteUser( user.id,
+            function( response ) { component.componentDidMount(); },
+            function( response ) { }
+        );
+    }
     render() {
         var rows = [];
         var people = this.state.people;
         for ( var i = 0; i < people.length; i++ ) {
-            var user = people[i];
+            const user = people[i];
             rows.push(
-                <tr>
+                <tr key={user.id}>
                     <td>{user.name}</td>
-                    <td>{JSON.stringify( user.birthday )}</td>
+                    <td>{user.birthday.year + "-" + user.birthday.month + "-" + user.birthday.dayOfMonth}</td>
+                    <td><button className="btn btn-secondary"><SettingsIcon />&nbsp;Edit...</button>&nbsp;<button className="btn btn-secondary" onClick={() => this.deleteUser( user )} ><TrashcanIcon />&nbsp;Delete</button></td>
                 </tr>
             );
         }
@@ -38,10 +48,11 @@ export default class PeopleAdministrator extends React.Component {
                     <h1>People Administrator</h1>
                     <Link className="btn btn-primary" to="/admin/people/add" role="button">Add User...</Link>
                     <table className="table table-hover">
-                        <thead className="thead-inverse">
+                        <thead className="thead-default">
                             <tr>
                                 <th>Name</th>
                                 <th>Birthday</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

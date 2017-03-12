@@ -12,7 +12,7 @@ public class RestPersonTest {
 
     @Test
     public void testSerialization() throws IOException {
-	RestPerson person = new RestPerson("Rick-Rainer Ludwig", "1978-05-16");
+	RestPerson person = new RestPerson(42, "Rick-Rainer Ludwig", "1978-05-16");
 	String serialized = JsonSerializer.toString(person);
 	System.out.println(serialized);
 	RestPerson deserialized = JsonSerializer.fromString(serialized, RestPerson.class);

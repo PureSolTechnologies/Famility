@@ -10,6 +10,7 @@ export default class AddUser extends React.Component {
         this.handleNameChange = this.handleNameChange.bind( this );
         this.handleBirthdayChange = this.handleBirthdayChange.bind( this );
         this.addUser = this.addUser.bind( this );
+        this.cancel = this.cancel.bind( this );
     }
 
     handleNameChange( event ) {
@@ -25,7 +26,14 @@ export default class AddUser extends React.Component {
     }
 
     addUser() {
-        PeopleController.addUser( this.state.userName, this.state.birthday );
+        var component = this;
+        PeopleController.addUser( this.state.userName, this.state.birthday,
+            function( response ) { component.props.router.push( '/admin/people' ); },
+            function( response ) { }
+        );
+    }
+
+    cancel() {
         this.props.router.push( '/admin/people' );
     }
 
@@ -43,7 +51,8 @@ export default class AddUser extends React.Component {
                             <label htmlFor="Birthday">Birthday</label>
                             <input type="date" className="form-control" id="Birthday" placeholder="Enter birthday" value={this.state.birthday} onChange={this.handleBirthdayChange} />
                         </div>
-                        <button type="button" className="btn btn-primary" onClick={this.addUser}>Create...</button>
+                        <button type="button" className="btn btn-primary" onClick={this.addUser}>Create</button>
+                        <button type="button" className="btn btn-secondary" onClick={this.cancel}>Cancel</button>
                     </form>
                 </div>
             </div >

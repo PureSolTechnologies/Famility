@@ -2,6 +2,12 @@ import restController from './RESTController';
 
 export default class CalendarController {
 
+    static namesOfMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    static getNameOfMonth( month ) {
+        return CalendarController.namesOfMonths[month - 1];
+    }
+
     static getYear( year, successfulCallback, errorCallback ) {
         restController.GET( '/calendar/year/' + year,
             null,
@@ -14,7 +20,7 @@ export default class CalendarController {
                         for ( var day in monthObject.days ) {
                             if ( monthObject.days.hasOwnProperty( day ) ) {
                                 var dayObject = monthObject.days[day];
-                                if (!calendar.weeks[dayObject.weekOfYear]) {
+                                if ( !calendar.weeks[dayObject.weekOfYear] ) {
                                     calendar.weeks[dayObject.weekOfYear] = {};
                                 }
                                 calendar.weeks[dayObject.weekOfYear][dayObject.dayOfWeek] = dayObject;

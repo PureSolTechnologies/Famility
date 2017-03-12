@@ -11,14 +11,21 @@ import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
  */
 public class Person {
 
+    private final long id;
     private final String name;
     private final CalendarDay birthday;
 
     @JsonCreator
-    public Person(@JsonProperty("name") String name, @JsonProperty("birthday") CalendarDay birthday) {
+    public Person(@JsonProperty("id") long id, @JsonProperty("name") String name,
+	    @JsonProperty("birthday") CalendarDay birthday) {
 	super();
+	this.id = id;
 	this.name = name;
 	this.birthday = birthday;
+    }
+
+    public long getId() {
+	return id;
     }
 
     public String getName() {
@@ -33,8 +40,7 @@ public class Person {
     public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + ((birthday == null) ? 0 : birthday.hashCode());
-	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	result = prime * result + (int) (id ^ (id >>> 32));
 	return result;
     }
 
@@ -47,15 +53,7 @@ public class Person {
 	if (getClass() != obj.getClass())
 	    return false;
 	Person other = (Person) obj;
-	if (birthday == null) {
-	    if (other.birthday != null)
-		return false;
-	} else if (!birthday.equals(other.birthday))
-	    return false;
-	if (name == null) {
-	    if (other.name != null)
-		return false;
-	} else if (!name.equals(other.name))
+	if (id != other.id)
 	    return false;
 	return true;
     }
