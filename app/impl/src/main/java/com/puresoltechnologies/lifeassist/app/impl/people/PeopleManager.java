@@ -9,10 +9,10 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
+import com.puresoltechnologies.lifeassist.app.api.people.Birthday;
 import com.puresoltechnologies.lifeassist.app.api.people.Person;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 
@@ -59,36 +59,11 @@ public class PeopleManager {
 	}
     }
 
-    public List<Person> getBirthdays() throws SQLException {
+    public List<Birthday> getBirthdays() throws SQLException {
 	List<Person> people = getPeople();
-	LocalDate today = LocalDate.now();
-	Collections.sort(people, new Comparator<Person>() {
-
-	    private boolean isThisYear(CalendarDay day) {
-		if (day.getMonth() < today.getMonthValue()) {
-		    return false;
-		}
-		if ((day.getMonth() == today.getDayOfMonth()) && (day.getDayOfMonth() < today.getDayOfMonth())) {
-		    return false;
-		}
-		return true;
-	    }
-
-	    @Override
-	    public int compare(Person o1, Person o2) {
-		CalendarDay birthday1 = nextAnniversery(today, o1.getBirthday());
-		CalendarDay birthday2 = nextAnniversery(today, o2.getBirthday());
-		return birthday1.compareTo(birthday2);
-	    }
-
-	    private CalendarDay nextAnniversery(LocalDate today, CalendarDay day) {
-		if (isThisYear(day)) {
-		    return new CalendarDay(today.getYear(), day.getMonth(), day.getDayOfMonth());
-		} else {
-		    return new CalendarDay(today.getYear() + 1, day.getMonth(), day.getDayOfMonth());
-		}
-	    }
-	});
-	return people;
+	List<Birthday> birthdays = new ArrayList<>();
+	people.forEach(person -> birthdays.add(Birthday.of(person)));
+	Collections.sort(birthdays);
+	return birthdays;
     }
 }

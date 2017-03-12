@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
+import com.puresoltechnologies.lifeassist.app.api.people.Birthday;
 import com.puresoltechnologies.lifeassist.app.api.people.Person;
 import com.puresoltechnologies.lifeassist.app.impl.people.PeopleManager;
 
@@ -52,7 +53,7 @@ public class PeopleServiceResource {
     @GET
     @Path("/birthdays")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Person> getBirthdays() throws SQLException {
+    public List<Birthday> getBirthdays() throws SQLException {
 	return peopleManager.getBirthdays();
     }
 

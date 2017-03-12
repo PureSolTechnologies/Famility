@@ -1,10 +1,11 @@
 import React from 'react';
 
+import LocalWeather from '../components/LocalWeather';
 import PeopleController from '../controller/PeopleController';
 import CalendarController from '../controller/CalendarController';
 
 export default class MainDashboard extends React.Component {
-
+    1
 
     constructor( props ) {
         super( props );
@@ -28,29 +29,26 @@ export default class MainDashboard extends React.Component {
             const birthday = birthdays[i];
             birthdayRows.push(
                 <tr key={birthday.id}>
-                    <td>{CalendarController.getNameOfMonth(birthday.birthday.month)}&nbsp;{birthday.birthday.dayOfMonth}</td>
+                    <td>{CalendarController.getNameOfMonth( birthday.nextAnniversary.month )} &nbsp;{birthday.nextAnniversary.dayOfMonth} &nbsp;{birthday.nextAnniversary.year}</td>
                     <td>{birthday.name}</td>
-                    <td>t.b.d.</td>
+                    <td>{birthday.nextAge}</td>
                 </tr>
             );
         }
         return (
             <div className="row">
-                <div className="col-md-12">
-                    <h1>Main Dashboard</h1>
-                </div>
                 <div className="col-md-6">
                     <div className="card">
-                        <h4 className="card-header">Weather</h4>
-                        <div className="card-block">
-                            <p className="card-text">Simple weather forecast. </p>
+                        <h3 className="card-header">Weather</h3>
+                        <div className="card-block" style={{padding: "0pt"}}>
+                            <LocalWeather />
                         </div>
                     </div>
                 </div>
                 <div className="col-md-6">
                     <div className="card">
-                        <h4 className="card-header">Today's and next Birthdays</h4>
-                        <div className="card-block">
+                        <h3 className="card-header">Today's and next Birthdays</h3>
+                        <div className="card-block" style={{padding: "0pt"}}>
                             <table className="table table-hover">
                                 <thead className="thead-default">
                                     <tr>
@@ -68,7 +66,7 @@ export default class MainDashboard extends React.Component {
                 </div>
                 <div className="col-md-6">
                     <div className="card">
-                        <h4 className="card-header">Today's appointments</h4>
+                        <h3 className="card-header">Today's appointments</h3>
                         <div className="card-block">
                             <p className="card-text">...</p>
                         </div>
@@ -76,7 +74,7 @@ export default class MainDashboard extends React.Component {
                 </div>
                 <div className="col-md-6">
                     <div className="card">
-                        <h4 className="card-header">To be done today.</h4>
+                        <h3 className="card-header">To be done today.</h3>
                         <div className="card-block">
                             <p className="card-text">...</p>
                         </div>
