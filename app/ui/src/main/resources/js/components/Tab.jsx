@@ -3,7 +3,8 @@ import React from 'react';
 export default class Tab extends React.Component {
 
     static propTypes = {
-        heading: React.PropTypes.string.isRequired
+        heading: React.PropTypes.string.isRequired,
+        name: React.PropTypes.string.isRequired
     };
 
     constructor( props ) {
