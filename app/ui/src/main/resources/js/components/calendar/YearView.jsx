@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 import SingleMonth from './SingleMonth';
 
@@ -29,7 +30,7 @@ export default class YearView extends React.Component {
                     columns.push( <div className="col-md-4" key={monthInQuartal}>
                         <div className="card">
                             <div className="card-header" style={{ margin: "0pt", padding: "5pt" }}>
-                                <h3>{this.state.calendar.months[month].name}</h3>
+                                <h3><Link to={'/calendar/month/' + this.state.calendar.year + '/' + month} >{this.state.calendar.months[month].name}</Link></h3>
                             </div>
                             <div className="card-block" style={{ margin: "0pt", padding: "0pt" }}>
                                 <SingleMonth month={this.state.calendar.months[month].name} data={this.state.calendar.months[month]} />

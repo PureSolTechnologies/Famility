@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 export default class SingleMonth extends React.Component {
 
@@ -23,7 +24,7 @@ export default class SingleMonth extends React.Component {
                     daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                 } else {
                     if ( day ) {
-                        daysRow.push( <td key={daysRow.length}>{dayId}</td> );
+                        daysRow.push( <td key={daysRow.length}><Link to={'/calendar/day/' + this.props.data.year + '/' + this.props.data.month + '/' + dayId}>{dayId}</Link></td> );
                     } else {
                         daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                     }
@@ -33,7 +34,7 @@ export default class SingleMonth extends React.Component {
             }
             weeks.push(
                 <tr key={week}>
-                    <th>{week > 0 ? week : ""}</th>
+                    <th><Link to={'/calendar/week/' + this.props.data.year + '/' + week}>{week > 0 ? week : ""}</Link></th>
                     {daysRow}
                 </tr>
             );

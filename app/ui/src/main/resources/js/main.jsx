@@ -24,7 +24,7 @@ ReactDOM.render(
             <Redirect from="/" to="/home" />
             <Route path="/" component={Layout}>
                 <Route path="home" component={MainDashboard} />
-                <Route path="calendar(/:view)" component={Calendar} />
+                <Route path="calendar(/:view)(/:year)(/:monthOrWeek)(/:day)" component={Calendar} />
                 <Route path="plugins" component={Plugins} />
                 <Route path="copyright" component={Copyright} />
                 <Route path="login(/:redirect)" component={LoginPage} />
