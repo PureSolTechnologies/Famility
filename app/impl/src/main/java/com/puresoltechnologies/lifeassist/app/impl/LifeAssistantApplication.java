@@ -34,7 +34,6 @@ public class LifeAssistantApplication extends Application<LifeAssistantRestServi
     public void run(LifeAssistantRestServiceConfiguration configuration, Environment environment) throws Exception {
 	JerseyEnvironment jersey = environment.jersey();
 	jersey.setUrlPattern("/rest");
-	// environment.jersey().register(UserInterfaceResource.class);
 	jersey.register(new CORSFilter());
 	jersey.register(new IllegalEmailAddressExceptionMapper());
 	jersey.register(new SQLExceptionMapper());

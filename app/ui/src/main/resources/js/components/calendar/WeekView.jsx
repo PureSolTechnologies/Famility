@@ -1,4 +1,11 @@
 import React from 'react';
+import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
+
+import store from '../../flux/Store';
+
+import YearSelector from './YearSelector';
+import MonthSelector from './MonthSelector';
+import DaySelector from './DaySelector';
 
 export default class WeekView extends React.Component {
 
@@ -8,9 +15,21 @@ export default class WeekView extends React.Component {
         day: React.PropTypes.string.isRequired
     };
 
+    unsubscribeStore = null;
+
     constructor( props ) {
         super( props );
         this.state = { month: props.month, day: props.day, calendar: props.calendar };
+        this.previousWeek = this.previousWeek.bind( this );
+        this.nextWeek = this.nextWeek.bind( this );
+    }
+
+    componentDidMount() {
+        this.unsubscribeStore = store.subscribe(() => this.update() );
+    }
+
+    componentWillUnmount() {
+        this.unsubscribeStore();
     }
 
     componentWillReceiveProps( nextProps ) {
@@ -33,6 +52,15 @@ export default class WeekView extends React.Component {
         return weekObject[day].dayOfMonth + '.' + weekObject[day].month + '.' + weekObject[day].year;
     }
 
+    previousWeek() {
+        //store.dispatch( changeYear( this.state.year - 1 ) );
+    }
+
+    nextWeek() {
+        // store.dispatch( changeYear( this.state.year + 1 ) );
+    }
+
+
     render() {
         var day = this.state.calendar.months[this.state.month].days[this.state.day];
         var week = day.weekOfYear;
@@ -52,7 +80,7 @@ export default class WeekView extends React.Component {
             );
         }
         return <div>
-            <h1>Week {week} {this.state.calendar.year}</h1>
+            <h1>Week <ArrowLeftIcon onClick={this.previousWeek} /> {week} <ArrowRightIcon onClick={this.nextWeek} /> <YearSelector /></h1>
             <table className="table table-hover">
                 <thead className="thead-inverse">
                     <tr>

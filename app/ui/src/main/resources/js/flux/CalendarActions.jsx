@@ -5,7 +5,7 @@ export const DAY_CHANGE_ACTION = 'DAY_CHANGE'
 export function changeYear( year ) {
     return {
         type: YEAR_CHANGE_ACTION,
-        year: year
+        year: year,
     };
 }
 
