@@ -8,7 +8,7 @@ export default class CalendarController {
         return CalendarController.namesOfMonths[month - 1];
     }
 
-    static getYear( year, successfulCallback, errorCallback ) {
+    static getCalendar( year, successfulCallback, errorCallback ) {
         restController.GET( '/calendar/year/' + year,
             null,
             function( response ) {

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import store from '../../flux/Store';
-
 import YearSelector from './YearSelector';
 import MonthSelector from './MonthSelector';
 import DaySelector from './DaySelector';
@@ -14,19 +12,9 @@ export default class DayView extends React.Component {
         day: React.PropTypes.string.isRequired
     };
 
-    unsubscribeStore = null;
-
     constructor( props ) {
         super( props );
         this.state = { month: props.month, day: props.day, calendar: props.calendar };
-    }
-
-    componentDidMount() {
-        this.unsubscribeStore = store.subscribe(() => this.update() );
-    }
-
-    componentWillUnmount() {
-        this.unsubscribeStore();
     }
 
     componentWillReceiveProps( nextProps ) {

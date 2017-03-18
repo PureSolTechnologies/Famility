@@ -14,7 +14,11 @@ function loginReducer( state = null, action ) {
     }
 }
 
-function calendarReducer( state = { year: 2017, month: 3, day: 4 }, action ) {
+function calendarReducer( state = null, action ) {
+    if (state == null) {
+        var today = new Date();
+        state = { year: today.getUTCFullYear(), month: today.getMonth() + 1, day: today.getDate() }
+    }
     switch ( action.type ) {
         case YEAR_CHANGE_ACTION:
             state.year = action.year;

@@ -37,7 +37,7 @@ export default class DayCalendar extends React.Component {
 
     readCalendar( year ) {
         var component = this;
-        CalendarController.getYear( year,
+        CalendarController.getCalendar( year,
             function( calendar ) {
                 component.setState( { calendarData: calendar });
             },

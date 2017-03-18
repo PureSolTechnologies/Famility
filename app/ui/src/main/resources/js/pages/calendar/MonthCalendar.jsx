@@ -37,7 +37,7 @@ export default class MonthCalendar extends React.Component {
 
     readCalendar( year ) {
         var component = this;
-        CalendarController.getYear( year,
+        CalendarController.getCalendar( year,
             function( calendar ) {
                 component.setState( { calendarData: calendar });
             },
@@ -51,7 +51,7 @@ export default class MonthCalendar extends React.Component {
             return <div></div>;
         }
 
-        return <div>                    
+        return <div>
             <MonthView calendar={this.state.calendarData} month={this.state.calendar.month} />
         </div >;
     }

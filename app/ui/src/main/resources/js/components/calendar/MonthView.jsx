@@ -2,7 +2,6 @@ import React from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import SingleMonth from './SingleMonth';
-import store from '../../flux/Store';
 
 import MonthSelector from './MonthSelector';
 import YearSelector from './YearSelector';
@@ -14,19 +13,9 @@ export default class MonthView extends React.Component {
         month: React.PropTypes.string.isRequired
     };
 
-    unsubscribeStore = null;
-
     constructor( props ) {
         super( props );
         this.state = { month: props.month, calendar: props.calendar };
-    }
-
-    componentDidMount() {
-        this.unsubscribeStore = store.subscribe(() => this.update() );
-    }
-
-    componentWillUnmount() {
-        this.unsubscribeStore();
     }
 
     componentWillReceiveProps( nextProps ) {

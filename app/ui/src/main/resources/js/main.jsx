@@ -22,6 +22,27 @@ import PeopleAdministrator from './pages/PeopleAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
 
+function getCurrentYear() {
+    var calendar = store.getState().calendar;
+    return "/calendar/year/" + calendar.year;
+}
+
+
+function getCurrentMonth() {
+    var calendar = store.getState().calendar;
+    return "/calendar/month/" + calendar.year + "/" + calendar.month;
+}
+
+function getCurrentWeek() {
+    var calendar = store.getState().calendar;
+    return "/calendar/week/" + calendar.year + "/" + calendar.year;
+}
+
+function getCurrentDay() {
+    var calendar = store.getState().calendar;
+    return "/calendar/day/" + calendar.year + "/" + calendar.month + "/" + calendar.day;
+}
+
 ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
@@ -33,10 +54,14 @@ ReactDOM.render(
                 <Route path="login(/:redirect)" component={LoginPage} />
                 <Redirect from="/calendar" to="/calendar/year" />
                 <Route path="/calendar" component={CalendarLayout}>
-                    <Route path="year(/:year)" component={YearCalendar} />
-                    <Route path="month(/:year)(/:month)" component={MonthCalendar} />
-                    <Route path="week(/:year)(/:week)" component={WeekCalendar} />
-                    <Route path="day(/:year)(/:month)(/:day)" component={DayCalendar} />
+                    <Redirect from="/calendar/year" to={getCurrentYear()} />
+                    <Redirect from="/calendar/month" to={getCurrentMonth()} />
+                    <Redirect from="/calendar/week" to={getCurrentWeek()} />
+                    <Redirect from="/calendar/day" to={getCurrentDay()} />
+                    <Route path="year/:year" component={YearCalendar} />
+                    <Route path="month/:year/:month" component={MonthCalendar} />
+                    <Route path="week/:year/:week" component={WeekCalendar} />
+                    <Route path="day/:year/:month/:day" component={DayCalendar} />
                 </Route>
             </Route>
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth}>

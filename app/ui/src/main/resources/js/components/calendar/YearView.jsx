@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router';
 
 import SingleMonth from './SingleMonth';
-import store from '../../flux/Store';
 import YearSelector from './YearSelector';
 
 export default class YearView extends React.Component {
@@ -11,19 +10,9 @@ export default class YearView extends React.Component {
         calendar: React.PropTypes.string.isRequired
     };
 
-    unsubscribeStore = null;
-
     constructor( props ) {
         super( props );
         this.state = { calendar: props.calendar };
-    }
-
-    componentDidMount() {
-        this.unsubscribeStore = store.subscribe(() => this.update() );
-    }
-
-    componentWillUnmount() {
-        this.unsubscribeStore();
     }
 
     componentWillReceiveProps( nextProps ) {
