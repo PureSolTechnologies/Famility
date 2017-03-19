@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import store from '../../flux/Store';
+import { changeYear, changeMonth, changeDay } from '../../flux/CalendarActions';
 
 import Tab from '../../components/Tab';
 import TabComponent from '../../components/TabComponent';
@@ -18,7 +19,11 @@ export default class WeekCalendar extends React.Component {
 
     constructor( props ) {
         super( props );
-        this.state = { calendar: store.getState().calendar, calendarData: null };
+        var storedCalendar = store.getState().calendar;
+        if ( storedCalendar !== this.props.params.year ) {
+            store.dispatch( changeYear( this.props.params.year ) );
+        }
+        this.state = { calendar: storedCalendar, calendarData: null };
     }
 
     componentDidMount() {
@@ -39,6 +44,11 @@ export default class WeekCalendar extends React.Component {
         var component = this;
         CalendarController.getCalendar( year,
             function( calendar ) {
+                var week = calendar.weeks[component.props.params.week];
+                if ( week ) {
+                    store.dispatch( changeMonth( week[1].month ) );
+                    store.dispatch( changeDay( week[1].dayOfMonth ) );
+                }
                 component.setState( { calendarData: calendar });
             },
             function( response ) {
@@ -51,7 +61,7 @@ export default class WeekCalendar extends React.Component {
             return <div></div>;
         }
 
-        return <div>         
+        return <div>
             <WeekView calendar={this.state.calendarData} month={this.state.calendar.month} day={this.state.calendar.day} />
         </div >;
     }

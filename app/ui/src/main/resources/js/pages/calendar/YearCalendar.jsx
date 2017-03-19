@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import store from '../../flux/Store';
+import { changeYear } from '../../flux/CalendarActions';
 
 import Tab from '../../components/Tab';
 import TabComponent from '../../components/TabComponent';
@@ -18,7 +19,11 @@ export default class YearCalendar extends React.Component {
 
     constructor( props ) {
         super( props );
-        this.state = { calendar: store.getState().calendar, calendarData: null };
+        var storedCalendar = store.getState().calendar;
+        if (storedCalendar !== this.props.params.year) {
+            store.dispatch( changeYear( this.props.params.year ) );
+        }
+        this.state = { calendar: storedCalendar, calendarData: null };
     }
 
     componentDidMount() {

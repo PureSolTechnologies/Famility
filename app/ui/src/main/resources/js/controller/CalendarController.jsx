@@ -9,6 +9,11 @@ export default class CalendarController {
     }
 
     static getCalendar( year, successfulCallback, errorCallback ) {
+        var calendar = window.sessionStorage.getItem( 'calendarData.' + year );
+        if ( calendar ) {
+            successfulCallback( JSON.parse( calendar ) );
+            return;
+        }
         restController.GET( '/calendar/year/' + year,
             null,
             function( response ) {
@@ -28,6 +33,7 @@ export default class CalendarController {
                         }
                     }
                 }
+                window.sessionStorage.setItem( 'calendarData.' + year, JSON.stringify( calendar ) );
                 successfulCallback( calendar );
             },
             errorCallback
