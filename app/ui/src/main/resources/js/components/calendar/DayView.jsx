@@ -1,4 +1,5 @@
 import React from 'react';
+import { browserHistory } from 'react-router';
 
 import YearSelector from './YearSelector';
 import MonthSelector from './MonthSelector';
@@ -29,11 +30,15 @@ export default class DayView extends React.Component {
         }
     }
 
+    createAppointment() {
+        browserHistory.push( '/dialog/calendar/create-appointment' );
+    }
+
     render() {
         var rows = [];
         for ( var i = 0; i <= 23; i++ ) {
             rows.push(
-                <tr key={i}>
+                <tr key={i} onClick={this.createAppointment}>
                     <th>{i} h</th>
                     <td></td>
                 </tr>

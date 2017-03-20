@@ -7,6 +7,7 @@ import store from './flux/Store';
 import Layout from './Layout';
 import AdminLayout from './AdminLayout';
 import CalendarLayout from './CalendarLayout';
+import DialogLayout from './DialogLayout';
 
 import LoginController from './controller/LoginController';
 
@@ -21,6 +22,7 @@ import MainDashboard from './pages/MainDashboard';
 import PeopleAdministrator from './pages/PeopleAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
+import CreateAppointment from './pages/dialog/calendar/CreateAppointment';
 
 function getCurrentYear() {
     var calendar = store.getState().calendar;
@@ -64,12 +66,15 @@ ReactDOM.render(
                     <Route path="day/:year/:month/:day" component={DayCalendar} />
                 </Route>
             </Route>
-            <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth}>
+            <Route path="/dialog" component={DialogLayout}>
+                <Route path="calendar/create-appointment(/:time)" component={CreateAppointment} />
+            </Route>
+            <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >
                 <Route path="people" component={PeopleAdministrator} />
                 <Route path="people/add" component={AddUser} />
                 <Route path="system" component={SystemAdministrator} />
             </Route>
         </Router>
-    </Provider>,
+    </Provider >,
     document.getElementById( 'app' )
 );
