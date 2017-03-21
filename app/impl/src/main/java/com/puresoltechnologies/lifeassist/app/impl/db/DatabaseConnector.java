@@ -21,7 +21,11 @@ public class DatabaseConnector {
 
     public static Connection getConnection() throws SQLException {
 	try {
-	    return new PooledConnection(pool, pool.borrowObject());
+	    Connection connection = pool.borrowObject();
+	    if (connection == null) {
+		throw new IllegalStateException("Could not get a valid connection from pool.");
+	    }
+	    return new PooledConnection(pool, connection);
 	} catch (Exception e) {
 	    throw new SQLException("Could not get connection.", e);
 	}

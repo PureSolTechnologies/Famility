@@ -1,10 +1,14 @@
 package com.puresoltechnologies.lifeassist.app.impl;
 
+import java.io.File;
+
 import org.eclipse.jetty.util.resource.URLResource;
 
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.puresoltechnologies.lifeassist.app.impl.filters.CORSFilter;
 import com.puresoltechnologies.lifeassist.app.impl.filters.IllegalEmailAddressExceptionMapper;
 import com.puresoltechnologies.lifeassist.app.impl.filters.SQLExceptionMapper;
+import com.puresoltechnologies.lifeassist.app.impl.health.DatabaseHealthCheck;
 import com.puresoltechnologies.lifeassist.app.impl.rest.CalendarServiceResource;
 import com.puresoltechnologies.lifeassist.app.impl.rest.LoginServiceResource;
 import com.puresoltechnologies.lifeassist.app.impl.rest.PeopleServiceResource;
@@ -32,6 +36,9 @@ public class LifeAssistantApplication extends Application<LifeAssistantRestServi
 
     @Override
     public void run(LifeAssistantRestServiceConfiguration configuration, Environment environment) throws Exception {
+	HealthCheckRegistry healthChecks = environment.healthChecks();
+	healthChecks.register("database", new DatabaseHealthCheck());
+
 	JerseyEnvironment jersey = environment.jersey();
 	jersey.setUrlPattern("/rest");
 	jersey.register(new CORSFilter());
@@ -49,6 +56,7 @@ public class LifeAssistantApplication extends Application<LifeAssistantRestServi
     }
 
     public static void main(String[] args) throws Exception {
+	System.out.println(new File(".").getAbsolutePath());
 	new LifeAssistantApplication().run(args);
     }
 

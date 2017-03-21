@@ -46,7 +46,7 @@ export default class PeopleAdministrator extends React.Component {
             <div className="row">
                 <div className="col-md-12">
                     <h1>People Administrator</h1>
-                    <Link className="btn btn-primary" to="/admin/people/add" role="button">Add User...</Link>
+                    <Link className="btn btn-primary" to="/dialog/people/add" role="button">Add User...</Link>
                     <table className="table table-hover">
                         <thead className="thead-default">
                             <tr>

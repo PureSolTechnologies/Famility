@@ -11,7 +11,6 @@ import DialogLayout from './DialogLayout';
 
 import LoginController from './controller/LoginController';
 
-import AddUser from './pages/AddUser';
 import DayCalendar from './pages/calendar/DayCalendar';
 import WeekCalendar from './pages/calendar/WeekCalendar';
 import MonthCalendar from './pages/calendar/MonthCalendar';
@@ -22,7 +21,9 @@ import MainDashboard from './pages/MainDashboard';
 import PeopleAdministrator from './pages/PeopleAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
+
 import CreateAppointment from './pages/dialog/calendar/CreateAppointment';
+import AddUser from './pages/dialog/people/AddUser';
 
 function getCurrentYear() {
     var calendar = store.getState().calendar;
@@ -68,10 +69,10 @@ ReactDOM.render(
             </Route>
             <Route path="/dialog" component={DialogLayout}>
                 <Route path="calendar/create-appointment(/:time)" component={CreateAppointment} />
+                <Route path="people/add" component={AddUser} />
             </Route>
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >
                 <Route path="people" component={PeopleAdministrator} />
-                <Route path="people/add" component={AddUser} />
                 <Route path="system" component={SystemAdministrator} />
             </Route>
         </Router>
