@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.rest.config.LifeAssistantConfiguration;
 import com.puresoltechnologies.lifeassist.app.rest.health.DatabaseHealthCheck;
 import com.puresoltechnologies.lifeassist.app.rest.health.filters.CORSFilter;
@@ -39,6 +40,8 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 
     @Override
     public void run(LifeAssistantConfiguration configuration, Environment environment) throws Exception {
+	DatabaseConnector.initialize(configuration.getDatabase());
+
 	HealthCheckRegistry healthChecks = environment.healthChecks();
 	healthChecks.register("database", new DatabaseHealthCheck());
 
@@ -58,9 +61,16 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 		URLResource.newResource(LifeAssistantApplication.class.getResource("/LifeAssistantUI")));
     }
 
+    @Override
+    protected void onFatalError() {
+	logger.error("SEVERE ISSUE OCCURED. APPLICATION IS SHUTTING DOWN.");
+	super.onFatalError();
+    }
+
     public static void main(String[] args) {
 	try {
-	    new LifeAssistantApplication().run(args);
+	    LifeAssistantApplication application = new LifeAssistantApplication();
+	    application.run(args);
 	} catch (Throwable e) {
 	    logger.error("SEVERE ISSUE OCCURED. APPLICATION IS SHUTTING DOWN.", e);
 	    System.exit(1);
