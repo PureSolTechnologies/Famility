@@ -1,4 +1,4 @@
-package com.puresoltechnologies.lifeassist.app.impl.health;
+package com.puresoltechnologies.lifeassist.app.rest.health;
 
 import java.sql.Connection;
 import java.sql.SQLException;

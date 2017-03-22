@@ -1,4 +1,4 @@
-package com.puresoltechnologies.lifeassist.app.impl.filters;
+package com.puresoltechnologies.lifeassist.app.rest.health.filters;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

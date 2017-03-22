@@ -1,0 +1,25 @@
+# Database settings:
+database:
+  host: localhost
+  port: 5432
+  database: lifeassistant
+  user: lifeassistant
+  password: TrustNo1
+  ssl: false
+  pool:
+    minIdle: 5
+    setMaxIdle: 25
+    maxTotal: 100
+    maxWaitMillis: -1
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: DEBUG
+
+  appenders:
+    - type: console
+      threshold: INFO
+      target: stdout
+  

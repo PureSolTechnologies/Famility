@@ -1,4 +1,4 @@
-package com.puresoltechnologies.lifeassist.app.impl.rest;
+package com.puresoltechnologies.lifeassist.app.rest.services;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -6,17 +6,21 @@ import java.sql.SQLException;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
 /**
- * This is the central conntector to the database.
+ * This is the central connector to the database.
  * 
  * @author Rick-Rainer Ludwig
  */
 public class DatabaseConnector {
 
-    private static GenericObjectPool<Connection> pool = new GenericObjectPool<>(new PooledConnectionFactory());
-    static {
-	pool.setMinIdle(5);
-	pool.setMaxIdle(25);
-	pool.setMaxTotal(100);
+    private static GenericObjectPool<Connection> pool = null;
+
+    public static synchronized void initialize(DatabaseConfiguration configuration) {
+	pool = new GenericObjectPool<>(new PooledConnectionFactory(configuration));
+	DatabasePoolConfiguration poolConfiguration = configuration.getPool();
+	pool.setMinIdle(poolConfiguration.getMinIdle());
+	pool.setMaxIdle(poolConfiguration.getSetMaxIdle());
+	pool.setMaxTotal(poolConfiguration.getMaxTotal());
+	pool.setMaxWaitMillis(poolConfiguration.getMaxWaitMillis());
     }
 
     public static Connection getConnection() throws SQLException {

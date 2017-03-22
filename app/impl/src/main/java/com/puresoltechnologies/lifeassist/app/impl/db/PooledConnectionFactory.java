@@ -21,10 +21,18 @@ public class PooledConnectionFactory implements PooledObjectFactory<Connection> 
 
     private static final Logger logger = LoggerFactory.getLogger(PooledConnectionFactory.class);
 
+    private final DatabaseConfiguration configuration;
+
+    public PooledConnectionFactory(DatabaseConfiguration configuration) {
+	super();
+	this.configuration = configuration;
+    }
+
     @Override
     public PooledObject<Connection> makeObject() throws SQLException {
-	Connection connection = PostgreSQLUtils.connect("localhost", 5432, "lifeassistant", "lifeassistant", "TrustNo1",
-		false);
+	Connection connection = PostgreSQLUtils.connect(configuration.getHost(), configuration.getPort(),
+		configuration.getDatabase(), configuration.getUser(), configuration.getPassword(),
+		configuration.isSsl());
 	return new DefaultPooledObject<Connection>(connection);
     }
 
