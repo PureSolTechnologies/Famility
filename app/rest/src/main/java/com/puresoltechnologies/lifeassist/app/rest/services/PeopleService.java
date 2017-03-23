@@ -17,7 +17,7 @@ import com.puresoltechnologies.lifeassist.app.api.people.Person;
 import com.puresoltechnologies.lifeassist.app.impl.people.PeopleManager;
 
 @Path("/people")
-public class PeopleServiceResource {
+public class PeopleService {
 
     private static final PeopleManager peopleManager = new PeopleManager();
 

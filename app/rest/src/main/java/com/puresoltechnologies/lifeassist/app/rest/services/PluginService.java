@@ -11,7 +11,7 @@ import com.puresoltechnologies.lifeassist.app.impl.plugins.PluginLoader;
 import com.puresoltechnologies.lifeassist.common.plugins.PluginDescription;
 
 @Path("/plugins")
-public class PluginServiceResource {
+public class PluginService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

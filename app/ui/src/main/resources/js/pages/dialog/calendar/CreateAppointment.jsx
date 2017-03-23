@@ -22,7 +22,7 @@ export default class CreatAppointment extends React.Component {
                                 Type
                             </button>
                             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <button className="dropdown-item" type="button">Generic</button>
+                                <button className="dropdown-item" type="button">General</button>
                                 <button className="dropdown-item" type="button">Birthday</button>
                                 <button className="dropdown-item" type="button">Anniversary</button>
                                 <button className="dropdown-item" type="button">TODO</button>

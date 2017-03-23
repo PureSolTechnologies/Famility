@@ -11,11 +11,11 @@ import com.puresoltechnologies.lifeassist.app.rest.health.DatabaseHealthCheck;
 import com.puresoltechnologies.lifeassist.app.rest.health.filters.CORSFilter;
 import com.puresoltechnologies.lifeassist.app.rest.health.filters.IllegalEmailAddressExceptionMapper;
 import com.puresoltechnologies.lifeassist.app.rest.health.filters.SQLExceptionMapper;
-import com.puresoltechnologies.lifeassist.app.rest.services.CalendarServiceResource;
-import com.puresoltechnologies.lifeassist.app.rest.services.LoginServiceResource;
-import com.puresoltechnologies.lifeassist.app.rest.services.PeopleServiceResource;
-import com.puresoltechnologies.lifeassist.app.rest.services.PluginServiceResource;
-import com.puresoltechnologies.lifeassist.app.rest.services.SettingsServiceResource;
+import com.puresoltechnologies.lifeassist.app.rest.services.CalendarService;
+import com.puresoltechnologies.lifeassist.app.rest.services.LoginService;
+import com.puresoltechnologies.lifeassist.app.rest.services.PeopleService;
+import com.puresoltechnologies.lifeassist.app.rest.services.PluginService;
+import com.puresoltechnologies.lifeassist.app.rest.services.SettingsService;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -50,11 +50,11 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 	jersey.register(new CORSFilter());
 	jersey.register(new IllegalEmailAddressExceptionMapper());
 	jersey.register(new SQLExceptionMapper());
-	jersey.register(LoginServiceResource.class);
-	jersey.register(PluginServiceResource.class);
-	jersey.register(CalendarServiceResource.class);
-	jersey.register(PeopleServiceResource.class);
-	jersey.register(SettingsServiceResource.class);
+	jersey.register(LoginService.class);
+	jersey.register(PluginService.class);
+	jersey.register(CalendarService.class);
+	jersey.register(PeopleService.class);
+	jersey.register(SettingsService.class);
 
 	ServletEnvironment servlets = environment.servlets();
 	servlets.setBaseResource(

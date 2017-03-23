@@ -66,7 +66,7 @@ public class UsersTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP SEQUENCE user_id_seq");
+		statement.execute("DROP SEQUENCE IF EXISTS user_id_seq");
 		statement.execute("DROP TABLE IF EXISTS " + USERS_TABLE);
 	    }
 	    connection.commit();

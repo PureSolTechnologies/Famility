@@ -57,13 +57,17 @@ public class CalendarTransformator implements ComponentTransformator {
 		"CREATE TABLE IF NOT EXISTS " + APPOINTMENT_SERIES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
-			+ "subject varchar(250) not null, " //
+			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
 			+ "turnus varchar(8), "//
 			+ "start_date date, "//
 			+ "from_time time with time zone, "//
 			+ "to_time time with time zone, "//
 			+ "reminder interval, " //
+			+ "reminder_time_amount integer, " //
+			+ "reminder_time_unit varchar(6), " //
+			+ "period varchar(7), " //
+			+ "skipping int, " //
 			+ "CONSTRAINT " + APPOINTMENT_SERIES_TABLE + "_PK PRIMARY KEY (id))",
 		"Create events table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
@@ -71,12 +75,14 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "appointment_series_id bigint, " //
-			+ "subject varchar(250) not null, " //
+			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
 			+ "date date, "//
 			+ "from_time time with time zone, "//
 			+ "to_time time with time zone, "//
 			+ "reminder interval, " //
+			+ "reminder_time_amount integer, " //
+			+ "reminder_time_unit varchar(6), " //
 			+ "CONSTRAINT " + APPOINTMENTS_TABLE + "_PK PRIMARY KEY (id), "//
 			+ "CONSTRAINT " + APPOINTMENTS_TABLE + "_" + APPOINTMENT_SERIES_TABLE
 			+ "_FK FOREIGN KEY (appointment_series_id) REFERENCES appointment_series (id)" //

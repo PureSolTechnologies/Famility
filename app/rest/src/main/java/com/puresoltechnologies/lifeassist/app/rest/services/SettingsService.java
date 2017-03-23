@@ -12,7 +12,7 @@ import com.puresoltechnologies.lifeassist.app.api.settings.ParameterDescription;
 import com.puresoltechnologies.lifeassist.app.impl.settings.SettingsManager;
 
 @Path("/settings")
-public class SettingsServiceResource {
+public class SettingsService {
 
     private static SettingsManager settingsManager = new SettingsManager();
 

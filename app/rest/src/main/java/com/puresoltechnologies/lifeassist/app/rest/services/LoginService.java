@@ -24,9 +24,9 @@ import com.puresoltechnologies.passwordstore.domain.PasswordCreationException;
 
 @Path("/login")
 @Produces(MediaType.APPLICATION_JSON)
-public class LoginServiceResource {
+public class LoginService {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginServiceResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
 
     @PUT
     @Path("/authenticate")
