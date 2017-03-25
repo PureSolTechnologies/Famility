@@ -68,7 +68,7 @@ ReactDOM.render(
                 </Route>
             </Route>
             <Route path="/dialog" component={DialogLayout}>
-                <Route path="calendar/create-appointment(/:time)" component={CreateAppointment} />
+                <Route path="calendar/create-appointment(/:date)(/:beginTime)(/:endTime)" component={CreateAppointment} />
                 <Route path="people/add" component={AddUser} />
             </Route>
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >
