@@ -4,30 +4,46 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
+import org.yaml.snakeyaml.Yaml;
 
 public class DatabaseConnectorIT {
+
+    private static File configurationFile = new File("src/test/resources/database-configuration.yml");
 
     private static GenericObjectPool<Connection> pool;
 
     @SuppressWarnings("unchecked")
     @BeforeClass
-    public static void initialize()
-	    throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    public static void initialize() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
+	    IllegalAccessException, FileNotFoundException, IOException {
+	Yaml yaml = new Yaml();
+	try (FileReader fileReader = new FileReader(configurationFile)) {
+	    DatabaseConfiguration configuration = yaml.loadAs(fileReader, DatabaseConfiguration.class);
+	    DatabaseConnector.initialize(configuration);
+	}
 	Field poolField = DatabaseConnector.class.getDeclaredField("pool");
 	poolField.setAccessible(true);
 	pool = (GenericObjectPool<Connection>) poolField.get(null);
 
 	assertEquals(0, pool.getNumActive());
 	assertEquals(0, pool.getNumIdle());
+    }
+
+    @AfterClass
+    public static void shutdown() {
+	DatabaseConnector.shutdown();
     }
 
     @Test
@@ -57,4 +73,12 @@ public class DatabaseConnectorIT {
 	assertEquals(2, pool.getNumIdle());
     }
 
+    @Test
+    public void testQueryDSL() throws IOException, SQLException {
+	assertEquals(0, pool.getNumActive());
+	try (CloseableSQLQuery<?> query = DatabaseConnector.getQuery()) {
+	    assertEquals(1, pool.getNumActive());
+	}
+	assertEquals(0, pool.getNumActive());
+    }
 }

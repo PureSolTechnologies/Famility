@@ -1,34 +1,43 @@
 package com.puresoltechnologies.lifeassist.app.test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.JerseyClient;
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.JerseyWebTarget;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.puresoltechnologies.lifeassist.app.rest.LifeAssistantApplication;
 import com.puresoltechnologies.lifeassist.app.rest.config.LifeAssistantConfiguration;
+import com.puresoltechnologies.lifeassist.common.utils.JsonSerializer;
 
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 
 public abstract class AbstractRestTest {
 
+    private static String configurationFile = ResourceHelpers.resourceFilePath("configuration.yml");
+
     /**
      * @see http://www.dropwizard.io/1.0.0/docs/manual/testing.html#integration-testing
      */
     @ClassRule
     public static final DropwizardAppRule<LifeAssistantConfiguration> RULE = new DropwizardAppRule<LifeAssistantConfiguration>(
-	    LifeAssistantApplication.class, ResourceHelpers.resourceFilePath("configuration.yml"));
+	    LifeAssistantApplication.class, configurationFile);
 
-    private static Client restClient = null;
+    private static JerseyClient restClient = null;
 
     private final Class<?> serviceClass;
     private final String basePath;
@@ -42,7 +51,7 @@ public abstract class AbstractRestTest {
 
     @BeforeClass
     public static void initializeRestClient() {
-	restClient = ClientBuilder.newClient(new ClientConfig().register(LoggingFeature.class));
+	restClient = JerseyClientBuilder.createClient().register(LoggingFeature.class);
     }
 
     @AfterClass
@@ -51,9 +60,21 @@ public abstract class AbstractRestTest {
 	restClient = null;
     }
 
-    protected abstract URI getBaseURI();
+    protected URI getBaseURI() throws URISyntaxException {
+	return new URI("http://localhost:8080/rest");
+    }
 
-    public WebTarget getRestClient(String path) {
+    public JerseyWebTarget getRestClient(String path) throws URISyntaxException {
 	return restClient.target(getBaseURI()).path(basePath).path(path);
+    }
+
+    protected <T> T convertEntity(Response response, Class<T> clazz)
+	    throws JsonParseException, JsonMappingException, IOException {
+	return JsonSerializer.fromInputStream(response.readEntity(InputStream.class), clazz);
+    }
+
+    protected <T> MappingIterator<T> convertCollectionEntity(Response response, Class<T> clazz)
+	    throws JsonParseException, JsonMappingException, IOException {
+	return JsonSerializer.fromCollectionInputStream(response.readEntity(InputStream.class), clazz);
     }
 }

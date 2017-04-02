@@ -1,4 +1,4 @@
-package com.puresoltechnologies.lifeassist.app.api.settings;
+package com.puresoltechnologies.lifeassist.common.db;
 
 /**
  * This enum contains the possible types of the parameter.

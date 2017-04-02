@@ -9,14 +9,25 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- Versions -->
 		<slf4j.version>1.7.22</slf4j.version>
 		<commons.version>0.7.0-SNAPSHOT</commons.version>
 		<versioning.version>1.1.0</versioning.version>
 		<dropwizard.version>1.0.6</dropwizard.version>
+		<!-- snakeyaml.version is to be synchronized with Dropwizard! -->
+		<snakeyaml.version>1.15</snakeyaml.version>
 		<genesis.version>0.5.0-SNAPSHOT</genesis.version>
 		<passwordstore.version>0.1.0-SNAPSHOT</passwordstore.version>
 		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
 		<jackson.version>2.7.8</jackson.version>
+		<querydsl.version>4.1.4</querydsl.version>
+
+		<!-- Database properties -->
+		<jdbcDriver>org.postgresql.Driver</jdbcDriver>
+		<jdbcUrl>jdbc:postgresql://localhost:5432/lifeassistant</jdbcUrl>
+		<jdbcUser>lifeassistant</jdbcUser>
+		<jdbcPassword>TrustNo1</jdbcPassword>
 	</properties>
 
 	<groupId>com.puresoltechnologies.lifeassist</groupId>
@@ -399,7 +410,22 @@
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>app.installer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>app.model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
 				<artifactId>app.rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<artifactId>common.db</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -466,9 +492,25 @@
 				<version>${postgresql.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-sql</artifactId>
+				<version>${querydsl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-sql-codegen</artifactId>
+				<version>${querydsl.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
 				<groupId>javax.validation</groupId>
 				<artifactId>validation-api</artifactId>
 				<version>1.1.0.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${snakeyaml.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.dropwizard</groupId>
@@ -581,6 +623,11 @@
 					<configuration>
 						<escapeString>\</escapeString>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.querydsl</groupId>
+					<artifactId>querydsl-maven-plugin</artifactId>
+					<version>${querydsl.version}</version>
 				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->

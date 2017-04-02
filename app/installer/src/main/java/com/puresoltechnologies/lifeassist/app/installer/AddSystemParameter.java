@@ -11,7 +11,7 @@ import com.puresoltechnologies.genesis.commons.TransformationException;
 import com.puresoltechnologies.genesis.commons.TransformationMetadata;
 import com.puresoltechnologies.genesis.transformation.postgresql.PostgreSQLTransformationSequence;
 import com.puresoltechnologies.genesis.transformation.spi.TransformationStep;
-import com.puresoltechnologies.lifeassist.app.api.settings.ParameterType;
+import com.puresoltechnologies.lifeassist.common.db.ParameterType;
 
 public class AddSystemParameter implements TransformationStep {
 

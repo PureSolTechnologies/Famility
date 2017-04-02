@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.tweak.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.querydsl.sql.Configuration;
+import com.querydsl.sql.PostgreSQLTemplates;
+import com.querydsl.sql.SQLTemplates;
 
 /**
  * This is the central connector to the database.
@@ -18,8 +20,10 @@ public class DatabaseConnector {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConnector.class);
 
+    private static final SQLTemplates dialect = new PostgreSQLTemplates();
+    private static final Configuration configuration = new Configuration(dialect);
+
     private static GenericObjectPool<Connection> pool = null;
-    private static DBI dbi = null;
     private static boolean initialized = false;
 
     private static void checkIfInitialized() {
@@ -44,13 +48,6 @@ public class DatabaseConnector {
 	pool.setMaxTotal(poolConfiguration.getMaxTotal());
 	pool.setMaxWaitMillis(poolConfiguration.getMaxWaitMillis());
 
-	ConnectionFactory factory = new ConnectionFactory() {
-	    @Override
-	    public Connection openConnection() throws SQLException {
-		return getConnection();
-	    }
-	};
-	dbi = new DBI(factory);
 	initialized = true;
 	logger.info("DatabaseConnector initialized.");
     }
@@ -59,7 +56,6 @@ public class DatabaseConnector {
 	logger.info("Shutting down DatabaseConnector...");
 	checkIfInitialized();
 	initialized = false;
-	dbi = null;
 	pool.close();
 	pool = null;
 	logger.info("DatabaseConnector shut down.");
@@ -78,9 +74,10 @@ public class DatabaseConnector {
 	}
     }
 
-    public static DBI getDBI() throws SQLException {
+    public static <T> CloseableSQLQuery<T> getQuery() throws SQLException {
 	checkIfInitialized();
-	return dbi;
+	CloseableSQLQuery<T> query = new CloseableSQLQuery<>(getConnection(), configuration);
+	return query;
     }
 
     /**

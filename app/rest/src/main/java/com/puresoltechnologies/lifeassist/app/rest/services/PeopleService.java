@@ -1,5 +1,7 @@
 package com.puresoltechnologies.lifeassist.app.rest.services;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.puresoltechnologies.lifeassist.app.api.people.Birthday;
 import com.puresoltechnologies.lifeassist.app.api.people.Person;
@@ -29,8 +32,9 @@ public class PeopleService {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addPerson(Person person) throws SQLException {
+    public Response addPerson(Person person) throws SQLException, URISyntaxException {
 	peopleManager.addPerson(person);
+	return Response.created(new URI(person.getName())).build();
     }
 
     @GET

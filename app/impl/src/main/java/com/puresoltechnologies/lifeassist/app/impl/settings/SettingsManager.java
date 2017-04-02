@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.puresoltechnologies.lifeassist.app.api.settings.ParameterDescription;
-import com.puresoltechnologies.lifeassist.app.api.settings.ParameterType;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
+import com.puresoltechnologies.lifeassist.common.db.ParameterType;
 
 public class SettingsManager {
 

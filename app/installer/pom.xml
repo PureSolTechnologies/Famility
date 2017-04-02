@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.puresoltechnologies.lifeassist</groupId>
-			<artifactId>app.impl</artifactId>
+			<artifactId>common.db</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.genesis</groupId>

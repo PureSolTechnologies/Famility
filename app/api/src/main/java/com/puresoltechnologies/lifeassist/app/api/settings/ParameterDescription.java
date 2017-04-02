@@ -1,5 +1,7 @@
 package com.puresoltechnologies.lifeassist.app.api.settings;
 
+import com.puresoltechnologies.lifeassist.common.db.ParameterType;
+
 public class ParameterDescription {
 
     private final String name;

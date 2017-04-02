@@ -15,7 +15,7 @@ import com.puresoltechnologies.genesis.transformation.jdbc.JDBCTransformationSte
 import com.puresoltechnologies.genesis.transformation.postgresql.PostgreSQLTransformationSequence;
 import com.puresoltechnologies.genesis.transformation.spi.ComponentTransformator;
 import com.puresoltechnologies.genesis.transformation.spi.TransformationSequence;
-import com.puresoltechnologies.lifeassist.app.api.settings.ParameterType;
+import com.puresoltechnologies.lifeassist.common.db.ParameterType;
 import com.puresoltechnologies.versioning.Version;
 
 public class SettingsStoreTransformator implements ComponentTransformator {
