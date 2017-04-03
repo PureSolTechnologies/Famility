@@ -126,6 +126,12 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ " ON " + APPOINTMENT_PARTICIPANTS_TABLE //
 			+ " (user_id)",
 		"Creating index on user_id."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"CREATE SEQUENCE appointment_series_id_seq INCREMENT BY 1 OWNED BY " + APPOINTMENT_SERIES_TABLE + ".id",
+		"Sequence for appointment serie ids."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"CREATE SEQUENCE appointments_id_seq INCREMENT BY 1 OWNED BY " + APPOINTMENTS_TABLE + ".id",
+		"Sequence for appointment ids."));
 	return sequence;
     }
 
@@ -139,6 +145,8 @@ public class CalendarTransformator implements ComponentTransformator {
 		statement.execute("DROP TABLE IF EXISTS " + APPOINTMENT_PARTICIPANTS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + APPOINTMENTS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + APPOINTMENT_SERIES_TABLE);
+		statement.execute("DROP SEQUENCE IF EXISTS appointments_id_seq");
+		statement.execute("DROP SEQUENCE IF EXISTS appointment_series_id_seq");
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

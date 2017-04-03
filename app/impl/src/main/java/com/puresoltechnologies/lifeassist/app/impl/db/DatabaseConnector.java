@@ -3,6 +3,8 @@ package com.puresoltechnologies.lifeassist.app.impl.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.inject.Provider;
+
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,10 +76,22 @@ public class DatabaseConnector {
 	}
     }
 
-    public static <T> CloseableSQLQuery<T> getQuery() throws SQLException {
+    public static ExtendedSQLQueryFactory createQueryFactory() throws SQLException {
 	checkIfInitialized();
-	CloseableSQLQuery<T> query = new CloseableSQLQuery<>(getConnection(), configuration);
-	return query;
+	return new ExtendedSQLQueryFactory(configuration, new Provider<Connection>() {
+
+	    private final Connection connection = getConnection();
+
+	    @Override
+	    public Connection get() {
+		return connection;
+	    }
+	});
+    }
+
+    public static <T> ExtendedSQLQuery<T> createQuery() throws SQLException {
+	checkIfInitialized();
+	return new ExtendedSQLQuery<>(getConnection(), configuration);
     }
 
     /**

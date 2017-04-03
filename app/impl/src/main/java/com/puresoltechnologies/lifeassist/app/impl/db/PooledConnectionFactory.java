@@ -33,6 +33,7 @@ public class PooledConnectionFactory implements PooledObjectFactory<Connection> 
 	Connection connection = PostgreSQLUtils.connect(configuration.getHost(), configuration.getPort(),
 		configuration.getDatabase(), configuration.getUser(), configuration.getPassword(),
 		configuration.isSsl());
+	connection.setAutoCommit(false);
 	return new DefaultPooledObject<Connection>(connection);
     }
 

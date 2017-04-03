@@ -74,9 +74,18 @@ public class DatabaseConnectorIT {
     }
 
     @Test
-    public void testQueryDSL() throws IOException, SQLException {
+    public void testCreateQuery() throws IOException, SQLException {
 	assertEquals(0, pool.getNumActive());
-	try (CloseableSQLQuery<?> query = DatabaseConnector.getQuery()) {
+	try (ExtendedSQLQuery<?> query = DatabaseConnector.createQuery()) {
+	    assertEquals(1, pool.getNumActive());
+	}
+	assertEquals(0, pool.getNumActive());
+    }
+
+    @Test
+    public void testCreateQueryFactory() throws IOException, SQLException {
+	assertEquals(0, pool.getNumActive());
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    assertEquals(1, pool.getNumActive());
 	}
 	assertEquals(0, pool.getNumActive());

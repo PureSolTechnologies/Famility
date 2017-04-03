@@ -10,11 +10,11 @@ import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
 import com.puresoltechnologies.lifeassist.app.api.people.Person;
 
 /**
- * This class is used to transfer the data for a single appointment.
+ * This class is used to transfer the data for a single appointment serie.
  * 
  * @author Rick-Rainer Ludwig
  */
-public class Appointment {
+public class AppointmentSerie {
 
     private final AppointmentType type;
     private final String title;
@@ -23,16 +23,16 @@ public class Appointment {
     private final boolean reminding;
     private final int timeAmount;
     private final TimeUnit timeUnit;
-    private final CalendarDay date;
+    private final CalendarDay startDate;
     private final CalendarTime fromTime;
     private final CalendarTime toTime;
 
     @JsonCreator
-    public Appointment(//
+    public AppointmentSerie( //
 	    @JsonProperty("type") AppointmentType type, //
 	    @JsonProperty("title") String title, //
 	    @JsonProperty("description") String description, //
-	    @JsonProperty("date") CalendarDay date, //
+	    @JsonProperty("startDate") CalendarDay startDate, //
 	    @JsonProperty("fromTime") CalendarTime fromTime, //
 	    @JsonProperty("toTime") CalendarTime toTime, //
 	    @JsonProperty("participans") Collection<Person> participans, //
@@ -48,7 +48,7 @@ public class Appointment {
 	this.reminding = reminding;
 	this.timeAmount = timeAmount;
 	this.timeUnit = timeUnit;
-	this.date = date;
+	this.startDate = startDate;
 	this.fromTime = fromTime;
 	this.toTime = toTime;
     }
@@ -81,8 +81,8 @@ public class Appointment {
 	return timeUnit;
     }
 
-    public CalendarDay getDate() {
-	return date;
+    public CalendarDay getStartDate() {
+	return startDate;
     }
 
     public CalendarTime getFromTime() {
@@ -97,11 +97,11 @@ public class Appointment {
     public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + ((date == null) ? 0 : date.hashCode());
 	result = prime * result + ((description == null) ? 0 : description.hashCode());
 	result = prime * result + ((fromTime == null) ? 0 : fromTime.hashCode());
 	result = prime * result + ((participans == null) ? 0 : participans.hashCode());
 	result = prime * result + (reminding ? 1231 : 1237);
+	result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 	result = prime * result + timeAmount;
 	result = prime * result + ((timeUnit == null) ? 0 : timeUnit.hashCode());
 	result = prime * result + ((title == null) ? 0 : title.hashCode());
@@ -118,12 +118,7 @@ public class Appointment {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	Appointment other = (Appointment) obj;
-	if (date == null) {
-	    if (other.date != null)
-		return false;
-	} else if (!date.equals(other.date))
-	    return false;
+	AppointmentSerie other = (AppointmentSerie) obj;
 	if (description == null) {
 	    if (other.description != null)
 		return false;
@@ -140,6 +135,11 @@ public class Appointment {
 	} else if (!participans.equals(other.participans))
 	    return false;
 	if (reminding != other.reminding)
+	    return false;
+	if (startDate == null) {
+	    if (other.startDate != null)
+		return false;
+	} else if (!startDate.equals(other.startDate))
 	    return false;
 	if (timeAmount != other.timeAmount)
 	    return false;
