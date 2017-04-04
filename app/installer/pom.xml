@@ -67,7 +67,7 @@
 						<argument>--drop</argument>
 						<argument>--migrate</argument>
 						<argument>--config</argument>
-						<argument>./test.properties</argument>
+						<argument>${basedir}/test.properties</argument>
 					</arguments>
 				</configuration>
 			</plugin>

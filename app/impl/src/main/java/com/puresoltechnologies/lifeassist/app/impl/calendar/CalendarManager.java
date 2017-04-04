@@ -34,6 +34,7 @@ public class CalendarManager {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    queryFactory.insert(QAppointmentSeries.appointmentSeries)//
 		    .set(QAppointmentSeries.appointmentSeries.id, SQLExpressions.nextval("appointment_series_id_seq")) //
+		    .set(QAppointmentSeries.appointmentSeries.type, appointment.getType().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.title, appointment.getTitle()) //
 		    .set(QAppointmentSeries.appointmentSeries.description, appointment.getDescription()) //
 		    .set(QAppointmentSeries.appointmentSeries.startDate,
@@ -44,6 +45,9 @@ public class CalendarManager {
 			    Time.valueOf(CalendarTime.toLocalTime(appointment.getToTime()))) //
 		    .set(QAppointmentSeries.appointmentSeries.reminderTimeAmount, appointment.getTimeAmount()) //
 		    .set(QAppointmentSeries.appointmentSeries.reminderTimeUnit, appointment.getTimeUnit().name()) //
+		    .set(QAppointmentSeries.appointmentSeries.occupancy, appointment.getOccupany().name()) //
+		    .set(QAppointmentSeries.appointmentSeries.turnus, appointment.getTurnus().name()) //
+		    .set(QAppointmentSeries.appointmentSeries.skipping, appointment.getSkipping()) //
 		    .execute();
 	    queryFactory.commit();
 	}
@@ -62,6 +66,7 @@ public class CalendarManager {
 			    Time.valueOf(CalendarTime.toLocalTime(appointment.getToTime()))) //
 		    .set(QAppointments.appointments.reminderTimeAmount, appointment.getTimeAmount()) //
 		    .set(QAppointments.appointments.reminderTimeUnit, appointment.getTimeUnit().name()) //
+		    .set(QAppointments.appointments.occupancy, appointment.getOccupany().name()) //
 		    .execute();
 	    queryFactory.commit();
 	}

@@ -16,6 +16,7 @@ import com.puresoltechnologies.lifeassist.app.api.people.Person;
  */
 public class Appointment {
 
+    private final long id;
     private final AppointmentType type;
     private final String title;
     private final String description;
@@ -26,21 +27,24 @@ public class Appointment {
     private final CalendarDay date;
     private final CalendarTime fromTime;
     private final CalendarTime toTime;
+    private final OccupancyStatus occupany;
 
     @JsonCreator
     public Appointment(//
+	    @JsonProperty("id") long id, //
 	    @JsonProperty("type") AppointmentType type, //
 	    @JsonProperty("title") String title, //
 	    @JsonProperty("description") String description, //
-	    @JsonProperty("date") CalendarDay date, //
-	    @JsonProperty("fromTime") CalendarTime fromTime, //
-	    @JsonProperty("toTime") CalendarTime toTime, //
 	    @JsonProperty("participans") Collection<Person> participans, //
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("timeAmount") int timeAmount, //
-	    @JsonProperty("timeUnit") TimeUnit timeUnit //
-    ) {
+	    @JsonProperty("timeUnit") TimeUnit timeUnit, //
+	    @JsonProperty("date") CalendarDay date, //
+	    @JsonProperty("fromTime") CalendarTime fromTime, //
+	    @JsonProperty("toTime") CalendarTime toTime, //
+	    @JsonProperty("occupany") OccupancyStatus occupany) {
 	super();
+	this.id = id;
 	this.type = type;
 	this.title = title;
 	this.description = description;
@@ -51,6 +55,23 @@ public class Appointment {
 	this.date = date;
 	this.fromTime = fromTime;
 	this.toTime = toTime;
+	this.occupany = occupany;
+    }
+
+    public Appointment(//
+	    AppointmentType type, //
+	    String title, //
+	    String description, //
+	    Collection<Person> participans, //
+	    boolean reminding, //
+	    int timeAmount, //
+	    TimeUnit timeUnit, //
+	    CalendarDay date, //
+	    CalendarTime fromTime, //
+	    CalendarTime toTime, //
+	    OccupancyStatus occupany) {
+	this(-1l, type, title, description, participans, reminding, timeAmount, timeUnit, date, fromTime, toTime,
+		occupany);
     }
 
     public AppointmentType getType() {
@@ -93,6 +114,10 @@ public class Appointment {
 	return toTime;
     }
 
+    public OccupancyStatus getOccupany() {
+	return occupany;
+    }
+
     @Override
     public int hashCode() {
 	final int prime = 31;
@@ -100,6 +125,7 @@ public class Appointment {
 	result = prime * result + ((date == null) ? 0 : date.hashCode());
 	result = prime * result + ((description == null) ? 0 : description.hashCode());
 	result = prime * result + ((fromTime == null) ? 0 : fromTime.hashCode());
+	result = prime * result + ((occupany == null) ? 0 : occupany.hashCode());
 	result = prime * result + ((participans == null) ? 0 : participans.hashCode());
 	result = prime * result + (reminding ? 1231 : 1237);
 	result = prime * result + timeAmount;
@@ -133,6 +159,8 @@ public class Appointment {
 	    if (other.fromTime != null)
 		return false;
 	} else if (!fromTime.equals(other.fromTime))
+	    return false;
+	if (occupany != other.occupany)
 	    return false;
 	if (participans == null) {
 	    if (other.participans != null)

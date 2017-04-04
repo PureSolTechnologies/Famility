@@ -1,6 +1,6 @@
 package com.puresoltechnologies.lifeassist.app.impl.calendar;
 
-public enum RecurringPeriod {
+public enum Turnus {
 
     DAILY, WEEKLY, MONTHLY, YEARLY;
 

@@ -21,8 +21,8 @@ public class AppointmentTest {
 	List<Person> arrayList = new ArrayList<>();
 	arrayList.add(new Person(12345, "name", new CalendarDay(2015, 2, 3)));
 	Appointment appointment = new Appointment(AppointmentType.BIRTHDAY, "Birthday", "description",
-		new CalendarDay(2017, 1, 2), new CalendarTime(12, 30, 0), new CalendarTime(13, 30, 0),
-		new ArrayList<>(), true, 3, TimeUnit.HOURS);
+		new ArrayList<>(), true, 3, TimeUnit.HOURS, new CalendarDay(2017, 1, 2), new CalendarTime(12, 30, 0),
+		new CalendarTime(13, 30, 0), OccupancyStatus.AWAY);
 	String serialized = JsonSerializer.toString(appointment);
 	System.out.println(serialized);
 	Appointment deserialized = JsonSerializer.fromString(serialized, Appointment.class);
