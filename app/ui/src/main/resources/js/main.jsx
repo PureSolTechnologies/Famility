@@ -18,6 +18,7 @@ import YearCalendar from './pages/calendar/YearCalendar';
 import Copyright from './pages/Copyright';
 import LoginPage from './pages/LoginPage';
 import MainDashboard from './pages/MainDashboard';
+import MetricsDashboard from './pages/MetricsDashboard';
 import PeopleAdministrator from './pages/PeopleAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
@@ -74,6 +75,7 @@ ReactDOM.render(
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >
                 <Route path="people" component={PeopleAdministrator} />
                 <Route path="system" component={SystemAdministrator} />
+                <Route path="metrics" component={MetricsDashboard} />
             </Route>
         </Router>
     </Provider >,

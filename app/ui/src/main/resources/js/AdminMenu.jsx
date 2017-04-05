@@ -22,6 +22,7 @@ export default function Menu() {
                     </li>
                     <li className="nav-item"><Link className="nav-link" to="/admin/people"><OrganizationIcon /> People</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/admin/system"><GearIcon /> System</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/admin/metrics"><GearIcon /> Metrics</Link></li>
                 </ul>
                 <div className="form-inline my-2 my-lg-0">
                     <LoginControl />

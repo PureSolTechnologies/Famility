@@ -4,13 +4,18 @@ import org.eclipse.jetty.util.resource.URLResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.JvmAttributeGaugeSet;
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.rest.config.LifeAssistantConfiguration;
 import com.puresoltechnologies.lifeassist.app.rest.health.DatabaseHealthCheck;
 import com.puresoltechnologies.lifeassist.app.rest.health.filters.CORSFilter;
 import com.puresoltechnologies.lifeassist.app.rest.health.filters.IllegalEmailAddressExceptionMapper;
 import com.puresoltechnologies.lifeassist.app.rest.health.filters.SQLExceptionMapper;
+import com.puresoltechnologies.lifeassist.app.rest.metrics.DatabaseConnectionPoolMetricsSet;
 import com.puresoltechnologies.lifeassist.app.rest.services.CalendarService;
 import com.puresoltechnologies.lifeassist.app.rest.services.LoginService;
 import com.puresoltechnologies.lifeassist.app.rest.services.PeopleService;
@@ -44,6 +49,12 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 
 	HealthCheckRegistry healthChecks = environment.healthChecks();
 	healthChecks.register("database", new DatabaseHealthCheck());
+
+	MetricRegistry metrics = environment.metrics();
+	metrics.register("memory_usage", new MemoryUsageGaugeSet());
+	metrics.register("garbage_collector", new GarbageCollectorMetricSet());
+	metrics.register("jvm_attributes", new JvmAttributeGaugeSet());
+	metrics.register("db.pool", new DatabaseConnectionPoolMetricsSet());
 
 	JerseyEnvironment jersey = environment.jersey();
 	jersey.setUrlPattern("/rest");
