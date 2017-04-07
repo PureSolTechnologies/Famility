@@ -27,7 +27,7 @@ public class Appointment {
     private final CalendarDay date;
     private final CalendarTime fromTime;
     private final CalendarTime toTime;
-    private final OccupancyStatus occupany;
+    private final OccupancyStatus occupancy;
 
     @JsonCreator
     public Appointment(//
@@ -42,7 +42,7 @@ public class Appointment {
 	    @JsonProperty("date") CalendarDay date, //
 	    @JsonProperty("fromTime") CalendarTime fromTime, //
 	    @JsonProperty("toTime") CalendarTime toTime, //
-	    @JsonProperty("occupany") OccupancyStatus occupany) {
+	    @JsonProperty("occupancy") OccupancyStatus occupancy) {
 	super();
 	this.id = id;
 	this.type = type;
@@ -55,7 +55,7 @@ public class Appointment {
 	this.date = date;
 	this.fromTime = fromTime;
 	this.toTime = toTime;
-	this.occupany = occupany;
+	this.occupancy = occupancy;
     }
 
     public Appointment(//
@@ -69,9 +69,13 @@ public class Appointment {
 	    CalendarDay date, //
 	    CalendarTime fromTime, //
 	    CalendarTime toTime, //
-	    OccupancyStatus occupany) {
+	    OccupancyStatus occupancy) {
 	this(-1l, type, title, description, participans, reminding, timeAmount, timeUnit, date, fromTime, toTime,
-		occupany);
+		occupancy);
+    }
+
+    public long getId() {
+	return id;
     }
 
     public AppointmentType getType() {
@@ -114,8 +118,8 @@ public class Appointment {
 	return toTime;
     }
 
-    public OccupancyStatus getOccupany() {
-	return occupany;
+    public OccupancyStatus getOccupancy() {
+	return occupancy;
     }
 
     @Override
@@ -125,7 +129,7 @@ public class Appointment {
 	result = prime * result + ((date == null) ? 0 : date.hashCode());
 	result = prime * result + ((description == null) ? 0 : description.hashCode());
 	result = prime * result + ((fromTime == null) ? 0 : fromTime.hashCode());
-	result = prime * result + ((occupany == null) ? 0 : occupany.hashCode());
+	result = prime * result + ((occupancy == null) ? 0 : occupancy.hashCode());
 	result = prime * result + ((participans == null) ? 0 : participans.hashCode());
 	result = prime * result + (reminding ? 1231 : 1237);
 	result = prime * result + timeAmount;
@@ -160,7 +164,7 @@ public class Appointment {
 		return false;
 	} else if (!fromTime.equals(other.fromTime))
 	    return false;
-	if (occupany != other.occupany)
+	if (occupancy != other.occupancy)
 	    return false;
 	if (participans == null) {
 	    if (other.participans != null)

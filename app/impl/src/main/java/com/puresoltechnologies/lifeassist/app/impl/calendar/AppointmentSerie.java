@@ -27,7 +27,7 @@ public class AppointmentSerie {
     private final CalendarDay startDate;
     private final CalendarTime fromTime;
     private final CalendarTime toTime;
-    private final OccupancyStatus occupany;
+    private final OccupancyStatus occupancy;
     private final Turnus turnus;
     private final int skipping;
 
@@ -44,7 +44,7 @@ public class AppointmentSerie {
 	    @JsonProperty("startDate") CalendarDay startDate, //
 	    @JsonProperty("fromTime") CalendarTime fromTime, //
 	    @JsonProperty("toTime") CalendarTime toTime, //
-	    @JsonProperty("occupany") OccupancyStatus occupany, //
+	    @JsonProperty("occupancy") OccupancyStatus occupancy, //
 	    @JsonProperty("turnus") Turnus turnus, //
 	    @JsonProperty("skipping") int skipping //
     ) {
@@ -60,7 +60,7 @@ public class AppointmentSerie {
 	this.startDate = startDate;
 	this.fromTime = fromTime;
 	this.toTime = toTime;
-	this.occupany = occupany;
+	this.occupancy = occupancy;
 	this.turnus = turnus;
 	this.skipping = skipping;
     }
@@ -76,12 +76,12 @@ public class AppointmentSerie {
 	    CalendarDay startDate, //
 	    CalendarTime fromTime, //
 	    CalendarTime toTime, //
-	    OccupancyStatus occupany, //
+	    OccupancyStatus occupancy, //
 	    Turnus turnus, //
 	    int skipping //
     ) {
 	this(-1l, type, title, description, participans, reminding, timeAmount, timeUnit, startDate, fromTime, toTime,
-		occupany, turnus, skipping);
+		occupancy, turnus, skipping);
     }
 
     public long getId() {
@@ -128,8 +128,8 @@ public class AppointmentSerie {
 	return toTime;
     }
 
-    public OccupancyStatus getOccupany() {
-	return occupany;
+    public OccupancyStatus getOccupancy() {
+	return occupancy;
     }
 
     public Turnus getTurnus() {
@@ -146,7 +146,7 @@ public class AppointmentSerie {
 	int result = 1;
 	result = prime * result + ((description == null) ? 0 : description.hashCode());
 	result = prime * result + ((fromTime == null) ? 0 : fromTime.hashCode());
-	result = prime * result + ((occupany == null) ? 0 : occupany.hashCode());
+	result = prime * result + ((occupancy == null) ? 0 : occupancy.hashCode());
 	result = prime * result + ((participans == null) ? 0 : participans.hashCode());
 	result = prime * result + ((turnus == null) ? 0 : turnus.hashCode());
 	result = prime * result + (reminding ? 1231 : 1237);
@@ -179,7 +179,7 @@ public class AppointmentSerie {
 		return false;
 	} else if (!fromTime.equals(other.fromTime))
 	    return false;
-	if (occupany != other.occupany)
+	if (occupancy != other.occupancy)
 	    return false;
 	if (participans == null) {
 	    if (other.participans != null)

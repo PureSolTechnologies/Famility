@@ -75,6 +75,7 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "appointment_series_id bigint, " //
+			+ "type varchar(12) not null, " //
 			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
 			+ "date date, "//

@@ -26,7 +26,7 @@ import com.puresoltechnologies.lifeassist.common.utils.JsonSerializer;
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 
-public abstract class AbstractRestTest {
+public abstract class AbstractRestTest extends AbstractLifeAssistantTest {
 
     private static String configurationFile = ResourceHelpers.resourceFilePath("configuration.yml");
 

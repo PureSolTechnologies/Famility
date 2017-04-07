@@ -1,4 +1,4 @@
-package com.puresoltechnologies.lifeassist.app.test;
+package com.puresoltechnologies.lifeassist.app.test.people;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
