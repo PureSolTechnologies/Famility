@@ -40,6 +40,10 @@ public class DatabaseConnector {
 	}
     }
 
+    public static boolean isInitialized() {
+	return initialized;
+    }
+
     public static synchronized void initialize(DatabaseConfiguration configuration) {
 	logger.info("Initialize DatabaseConnector...");
 	checkIfNotInitialized();

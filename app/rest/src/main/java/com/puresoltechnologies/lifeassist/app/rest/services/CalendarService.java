@@ -1,5 +1,6 @@
 package com.puresoltechnologies.lifeassist.app.rest.services;
 
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,12 +21,26 @@ import javax.ws.rs.core.MediaType;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarYear;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.Appointment;
+import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentSerie;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentType;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarFactory;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
 
 @Path("/calendar")
 public class CalendarService {
+
+    private static final Field appointmentIdField;
+    private static final Field appointmentSerieIdField;
+    static {
+	try {
+	    appointmentIdField = Appointment.class.getDeclaredField("id");
+	    appointmentIdField.setAccessible(true);
+	    appointmentSerieIdField = AppointmentSerie.class.getDeclaredField("id");
+	    appointmentSerieIdField.setAccessible(true);
+	} catch (NoSuchFieldException | SecurityException e) {
+	    throw new RuntimeException(e);
+	}
+    }
 
     private static final CalendarManager calendarManager = new CalendarManager();
 
@@ -63,8 +80,36 @@ public class CalendarService {
     @PUT
     @Path("/appointments")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void createAppointment(Appointment appointment) throws SQLException {
-	calendarManager.createAppointment(appointment);
+    @Produces(MediaType.APPLICATION_JSON)
+    public Appointment createAppointment(Appointment appointment)
+	    throws SQLException, IllegalArgumentException, IllegalAccessException {
+	long id = calendarManager.createAppointment(appointment);
+	appointmentIdField.set(appointment, id);
+	return appointment;
+    }
+
+    @POST
+    @Path("/appointments/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean updateAppointment(@PathParam("id") long id, Appointment appointment) throws SQLException {
+	return calendarManager.updateAppointment(id, appointment);
+    }
+
+    @GET
+    @Path("/appointments/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Appointment getAppointment(@PathParam("id") long id) throws SQLException {
+	return calendarManager.getAppointment(id);
+    }
+
+    @DELETE
+    @Path("/appointments/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean removeAppointment(@PathParam("id") long id) throws SQLException {
+	return calendarManager.removeAppointment(id);
     }
 
     @GET

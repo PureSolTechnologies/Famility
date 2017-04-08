@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.yaml.snakeyaml.Yaml;
 
@@ -15,10 +16,20 @@ import com.puresoltechnologies.lifeassist.app.test.configuration.TestConfigurati
 
 import io.dropwizard.testing.ResourceHelpers;
 
+/**
+ * This is the base class for all LifeAssistant tests. This class ensures an
+ * empty database and constant start conditiions for call test classes (not for
+ * test methods!). So, for {@link BeforeClass} the conditions are prepared, if
+ * it is needed for {@link Before}, it is to be assured by the test class.
+ * 
+ * @author Rick-Rainer Ludwig
+ *
+ */
 public abstract class AbstractLifeAssistantTest {
 
     private static String configurationFile = ResourceHelpers.resourceFilePath("configuration.yml");
     private static TestConfiguration configuration = null;
+    private static boolean handleDatabase = true;
 
     private static void readConfiguration() throws IOException {
 	Yaml yaml = new Yaml();
@@ -27,13 +38,33 @@ public abstract class AbstractLifeAssistantTest {
 	}
     }
 
+    /**
+     * Initializes the databases:
+     * <ol>
+     * <li>The configuration is read</li>
+     * <li>The {@link DatabaseConnector} is initialized.</li>
+     * <li>The database is cleared.</li>
+     * </ol>
+     * 
+     * @throws IOException
+     * @throws SQLException
+     */
     @BeforeClass
     public static void initializeDB() throws IOException, SQLException {
 	readConfiguration();
-	DatabaseConnector.initialize(configuration.getDatabase());
+	if (DatabaseConnector.isInitialized()) {
+	    handleDatabase = false;
+	} else {
+	    DatabaseConnector.initialize(configuration.getDatabase());
+	}
 	cleanupDB();
     }
 
+    /**
+     * Clears the databases.
+     * 
+     * @throws SQLException
+     */
     protected static void cleanupDB() throws SQLException {
 	try (Connection connection = DatabaseConnector.getConnection()) {
 	    connection.prepareStatement("TRUNCATE TABLE appointments CASCADE");
@@ -42,9 +73,14 @@ public abstract class AbstractLifeAssistantTest {
 	}
     }
 
+    /**
+     * Shuts down the database.
+     */
     @AfterClass
     public static void shutdownDB() {
-	DatabaseConnector.shutdown();
+	if (handleDatabase) {
+	    DatabaseConnector.shutdown();
+	}
     }
 
 }
