@@ -12,12 +12,17 @@ import java.util.concurrent.TimeUnit;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarYear;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.Appointment;
@@ -81,11 +86,13 @@ public class CalendarService {
     @Path("/appointments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Appointment createAppointment(Appointment appointment)
+    public Response createAppointment(@Context UriInfo uriInfo, Appointment appointment)
 	    throws SQLException, IllegalArgumentException, IllegalAccessException {
 	long id = calendarManager.createAppointment(appointment);
 	appointmentIdField.set(appointment, id);
-	return appointment;
+	ResponseBuilder created = Response.created(uriInfo.getRequestUri().resolve(String.valueOf(id)));
+	created.entity(appointment);
+	return created.build();
     }
 
     @POST
@@ -93,7 +100,11 @@ public class CalendarService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public boolean updateAppointment(@PathParam("id") long id, Appointment appointment) throws SQLException {
-	return calendarManager.updateAppointment(id, appointment);
+	boolean updated = calendarManager.updateAppointment(id, appointment);
+	if (!updated) {
+	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+	}
+	return updated;
     }
 
     @GET
@@ -101,7 +112,11 @@ public class CalendarService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Appointment getAppointment(@PathParam("id") long id) throws SQLException {
-	return calendarManager.getAppointment(id);
+	Appointment appointment = calendarManager.getAppointment(id);
+	if (appointment == null) {
+	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+	}
+	return appointment;
     }
 
     @DELETE
@@ -109,7 +124,61 @@ public class CalendarService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public boolean removeAppointment(@PathParam("id") long id) throws SQLException {
-	return calendarManager.removeAppointment(id);
+	boolean deleted = calendarManager.removeAppointment(id);
+	if (!deleted) {
+	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+	}
+	return deleted;
+    }
+
+    @PUT
+    @Path("/appointmentSeries")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createAppointmentSeries(@Context UriInfo uriInfo, AppointmentSerie appointmentSerie)
+	    throws SQLException, IllegalArgumentException, IllegalAccessException {
+	long id = calendarManager.createAppointmentSerie(appointmentSerie);
+	appointmentSerieIdField.set(appointmentSerie, id);
+	ResponseBuilder created = Response.created(uriInfo.getRequestUri().resolve(String.valueOf(id)));
+	created.entity(appointmentSerie);
+	return created.build();
+    }
+
+    @POST
+    @Path("/appointmentSeries/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean updateAppointmentSeries(@PathParam("id") long id, AppointmentSerie appointmentSerie)
+	    throws SQLException {
+	boolean updated = calendarManager.updateAppointmentSerie(id, appointmentSerie);
+	if (!updated) {
+	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+	}
+	return updated;
+    }
+
+    @GET
+    @Path("/appointmentSeries/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public AppointmentSerie getAppointmentSeries(@PathParam("id") long id) throws SQLException {
+	AppointmentSerie appointmentSerie = calendarManager.getAppointmentSerie(id);
+	if (appointmentSerie == null) {
+	    throw new NotFoundException("AppointmentSerie id '" + id + "' was not found.");
+	}
+	return appointmentSerie;
+    }
+
+    @DELETE
+    @Path("/appointmentSeries/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean removeAppointmentSeries(@PathParam("id") long id) throws SQLException {
+	boolean deleted = calendarManager.removeAppointmentSerie(id);
+	if (!deleted) {
+	    throw new NotFoundException("AppointmentSerie id '" + id + "' was not found.");
+	}
+	return deleted;
     }
 
     @GET
