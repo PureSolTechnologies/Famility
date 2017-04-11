@@ -40,4 +40,33 @@ export default class CalendarController {
         );
     }
 
+    static getTimezones( successfulCallback, errorCallback ) {
+        restController.GET( '/calendar/timezones',
+            null,
+            function( response ) {
+                var timezones = JSON.parse( response.response );
+                successfulCallback( timezones );
+            },
+            errorCallback
+        );
+    }
+
+    static createAppointment( appointment, successfulCallback, errorCallback ) {
+        restController.PUT( '/calendar/appointments',
+            { "Content-Type": "application/json; charset=utf-8" },
+            appointment,
+            successfulCallback,
+            errorCallback
+        );
+    }
+
+    static createAppointmentSerie( appointmentSerie, successfulCallback, errorCallback ) {
+        restController.PUT( '/calendar/appointmentSeries',
+            { "Content-Type": "application/json; charset=utf-8" },
+            appointmentSerie,
+            successfulCallback,
+            errorCallback
+        );
+    }
+
 }

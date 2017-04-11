@@ -20,7 +20,7 @@ public class AppointmentSerie {
     private final AppointmentType type;
     private final String title;
     private final String description;
-    private final Collection<Person> participans;
+    private final Collection<Person> participants;
     private final boolean reminding;
     private final int timeAmount;
     private final TimeUnit timeUnit;
@@ -37,7 +37,7 @@ public class AppointmentSerie {
 	    @JsonProperty("type") AppointmentType type, //
 	    @JsonProperty("title") String title, //
 	    @JsonProperty("description") String description, //
-	    @JsonProperty("participans") Collection<Person> participans, //
+	    @JsonProperty("participants") Collection<Person> participants, //
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("timeAmount") int timeAmount, //
 	    @JsonProperty("timeUnit") TimeUnit timeUnit, //
@@ -53,7 +53,7 @@ public class AppointmentSerie {
 	this.type = type;
 	this.title = title;
 	this.description = description;
-	this.participans = participans;
+	this.participants = participants;
 	this.reminding = reminding;
 	this.timeAmount = timeAmount;
 	this.timeUnit = timeUnit;
@@ -69,7 +69,7 @@ public class AppointmentSerie {
 	    AppointmentType type, //
 	    String title, //
 	    String description, //
-	    Collection<Person> participans, //
+	    Collection<Person> participants, //
 	    boolean reminding, //
 	    int timeAmount, //
 	    TimeUnit timeUnit, //
@@ -80,7 +80,7 @@ public class AppointmentSerie {
 	    Turnus turnus, //
 	    int skipping //
     ) {
-	this(-1l, type, title, description, participans, reminding, timeAmount, timeUnit, startDate, fromTime, toTime,
+	this(-1l, type, title, description, participants, reminding, timeAmount, timeUnit, startDate, fromTime, toTime,
 		occupancy, turnus, skipping);
     }
 
@@ -100,8 +100,8 @@ public class AppointmentSerie {
 	return description;
     }
 
-    public Collection<Person> getParticipans() {
-	return participans;
+    public Collection<Person> getParticipants() {
+	return participants;
     }
 
     public boolean isReminding() {
@@ -147,7 +147,7 @@ public class AppointmentSerie {
 	result = prime * result + ((description == null) ? 0 : description.hashCode());
 	result = prime * result + ((fromTime == null) ? 0 : fromTime.hashCode());
 	result = prime * result + ((occupancy == null) ? 0 : occupancy.hashCode());
-	result = prime * result + ((participans == null) ? 0 : participans.hashCode());
+	result = prime * result + ((participants == null) ? 0 : participants.hashCode());
 	result = prime * result + ((turnus == null) ? 0 : turnus.hashCode());
 	result = prime * result + (reminding ? 1231 : 1237);
 	result = prime * result + skipping;
@@ -181,10 +181,10 @@ public class AppointmentSerie {
 	    return false;
 	if (occupancy != other.occupancy)
 	    return false;
-	if (participans == null) {
-	    if (other.participans != null)
+	if (participants == null) {
+	    if (other.participants != null)
 		return false;
-	} else if (!participans.equals(other.participans))
+	} else if (!participants.equals(other.participants))
 	    return false;
 	if (turnus != other.turnus)
 	    return false;

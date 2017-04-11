@@ -4,13 +4,19 @@ import java.lang.reflect.Field;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
+import com.puresoltechnologies.lifeassist.app.api.calendar.TimeZoneInformation;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
 import com.puresoltechnologies.lifeassist.app.model.QAppointmentSeries;
@@ -44,6 +50,18 @@ public class CalendarManager {
 
     public AppointmentType[] getAppointmentTypes() {
 	return AppointmentType.values();
+    }
+
+    public List<TimeZoneInformation> getTimezones(Instant instant, Locale locale) {
+	List<TimeZoneInformation> timezones = new ArrayList<>();
+	for (String zoneId : ZoneId.getAvailableZoneIds()) {
+	    ZoneId zoneInfo = ZoneId.of(zoneId);
+	    String displayName = zoneInfo.getDisplayName(TextStyle.FULL, locale);
+	    timezones.add(new TimeZoneInformation(zoneId, displayName,
+		    zoneInfo.getRules().getOffset(instant).getTotalSeconds() / 3600));
+	}
+	Collections.sort(timezones);
+	return timezones;
     }
 
     public long createAppointment(Appointment appointment) throws SQLException {

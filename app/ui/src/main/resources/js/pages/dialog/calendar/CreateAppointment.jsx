@@ -3,9 +3,12 @@ import { browserHistory } from 'react-router';
 
 import CalendarController from '../../../controller/CalendarController';
 import Dialog from '../../../components/dialog/Dialog';
+import Appointment from '../../../models/calendar/Appointment';
+import CalendarDay from '../../../models/calendar/CalendarDay';
+import CalendarTime from '../../../models/calendar/CalendarTime';
+import TimeZoneSelector from '../../../components/calendar/TimeZoneSelector';
 
 export default class CreateAppointment extends React.Component {
-
 
     constructor( props ) {
         super( props );
@@ -13,13 +16,14 @@ export default class CreateAppointment extends React.Component {
             date: '',
             beginTime: '',
             endTime: '',
-            appointmentType: 'General',
+            appointmentType: 'GENERAL',
             title: '',
             description: '',
             participans: [],
             reminding: false,
             timeAmount: 0,
-            timeUnit: 'Hour'
+            timeUnit: 'HOURS',
+            occupancy: 'OCCUPIED'
         };
         if ( this.props.params.date ) {
             this.state.date = this.props.params.date;
@@ -39,6 +43,7 @@ export default class CreateAppointment extends React.Component {
         this.changeReminding = this.changeReminding.bind( this );
         this.changeTimeAmount = this.changeTimeAmount.bind( this );
         this.changeTimeUnit = this.changeTimeUnit.bind( this );
+        this.create = this.create.bind( this );
     }
 
     changeDate( event ) {
@@ -104,12 +109,35 @@ export default class CreateAppointment extends React.Component {
         });
     }
 
+    create() {
+        var appointment = new Appointment;
+        appointment.id = -1;
+        appointment.type = this.state.appointmentType;
+        appointment.title = this.state.title;
+        appointment.description = this.state.description;
+        appointment.participants = [];
+        appointment.reminding = this.state.reminding;
+        appointment.timeAmount = this.state.timeAmount;
+        appointment.timeUnit = this.state.timeUnit;
+        appointment.date = CalendarDay.fromString( this.state.date );
+        appointment.fromTime = CalendarTime.fromString( this.state.beginTime );
+        appointment.toTime = CalendarTime.fromString( this.state.endTime );
+        appointment.occupancy = this.state.occupancy;
+
+        CalendarController.createAppointment( appointment,
+            function( response ) { },
+            function( response ) { });
+    }
+
     render() {
         return <Dialog title="Create Appointment">
             <form className="border-0">
                 <h3>Time</h3>
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
+                        <TimeZoneSelector />
+                    </div>
+                    <div className="col-md-6">
                         <label htmlFor="date">Date</label>
                         <input type="date" className="form-control" id="date" value={this.state.date} onChange={this.changeDate}></input>
                     </div>
@@ -164,7 +192,7 @@ export default class CreateAppointment extends React.Component {
                                 <input type="number" className="form-control" id="period" placeholder="" disabled={!this.state.reminding} value={this.state.timeAmount} onChange={this.changeTimeAmount} />
                                 <select className="form-control" disabled={!this.state.reminding} value={this.state.timeUnit} onChange={this.changeTimeUnit}>
                                     <option value="MINUTES">Minutes</option>
-                                    <option value="HUORS">Hours</option>
+                                    <option value="HOURS">Hours</option>
                                     <option value="DAYS">Days</option>
                                 </select>
                             </div>
@@ -174,7 +202,7 @@ export default class CreateAppointment extends React.Component {
                 <hr />
                 <h3>Recurrence</h3>
                 <hr />
-                <button type="button" className="btn btn-primary">Create</button>
+                <button type="button" className="btn btn-primary" onClick={this.create}>Create</button>
                 <button type="button" className="btn btn-secondary" onClick={browserHistory.goBack}>Cancel</button>
             </form>
         </Dialog>;
