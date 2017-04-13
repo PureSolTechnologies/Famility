@@ -61,8 +61,9 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
 			+ "start_date date, "//
-			+ "from_time time with time zone, "//
-			+ "to_time time with time zone, "//
+			+ "timezone varchar, "//
+			+ "from_time time, "//
+			+ "to_time time, "//
 			+ "reminder_time_amount integer, " //
 			+ "reminder_time_unit varchar(6), " //
 			+ "occupancy varchar(9), " //
@@ -79,8 +80,9 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
 			+ "date date, "//
-			+ "from_time time with time zone, "//
-			+ "to_time time with time zone, "//
+			+ "timezone varchar, "//
+			+ "from_time time, "//
+			+ "to_time time, "//
 			+ "reminder_time_amount integer, " //
 			+ "reminder_time_unit varchar(6), " //
 			+ "occupancy varchar(9), " //

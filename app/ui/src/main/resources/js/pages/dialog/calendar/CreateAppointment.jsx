@@ -14,6 +14,7 @@ export default class CreateAppointment extends React.Component {
         super( props );
         this.state = {
             date: '',
+            timezone: 'Europe/Berlin',
             beginTime: '',
             endTime: '',
             appointmentType: 'GENERAL',
@@ -35,6 +36,7 @@ export default class CreateAppointment extends React.Component {
             this.state.endTime = this.props.params.endTime;
         }
         this.changeDate = this.changeDate.bind( this );
+        this.changeTimezone = this.changeTimezone.bind( this );
         this.changeBeginTime = this.changeBeginTime.bind( this );
         this.changeEndTime = this.changeEndTime.bind( this );
         this.changeType = this.changeType.bind( this );
@@ -51,6 +53,10 @@ export default class CreateAppointment extends React.Component {
         this.setState( {
             date: date
         });
+    }
+
+    changeTimezone( timezone ) {
+        this.setState( { timezone: timezone });
     }
 
     changeBeginTime( event ) {
@@ -110,6 +116,7 @@ export default class CreateAppointment extends React.Component {
     }
 
     create() {
+        var component = this;
         var appointment = new Appointment;
         appointment.id = -1;
         appointment.type = this.state.appointmentType;
@@ -120,12 +127,15 @@ export default class CreateAppointment extends React.Component {
         appointment.timeAmount = this.state.timeAmount;
         appointment.timeUnit = this.state.timeUnit;
         appointment.date = CalendarDay.fromString( this.state.date );
+        appointment.timezone = this.state.timezone;
         appointment.fromTime = CalendarTime.fromString( this.state.beginTime );
         appointment.toTime = CalendarTime.fromString( this.state.endTime );
         appointment.occupancy = this.state.occupancy;
 
         CalendarController.createAppointment( appointment,
-            function( response ) { },
+            function( response ) {
+                component.props.router.push( '/calendar/day/' + appointment.date.year + '/' + appointment.date.month + '/' + appointment.date.dayOfMonth );
+            },
             function( response ) { });
     }
 
@@ -135,11 +145,11 @@ export default class CreateAppointment extends React.Component {
                 <h3>Time</h3>
                 <div className="row">
                     <div className="col-md-6">
-                        <TimeZoneSelector />
-                    </div>
-                    <div className="col-md-6">
                         <label htmlFor="date">Date</label>
                         <input type="date" className="form-control" id="date" value={this.state.date} onChange={this.changeDate}></input>
+                    </div>
+                    <div className="col-md-6">
+                        <TimeZoneSelector onChange={this.changeTimezone} value={this.state.timezone} />
                     </div>
                 </div>
                 <div className="row">

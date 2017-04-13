@@ -1,9 +1,11 @@
 package com.puresoltechnologies.lifeassist.app.impl.calendar;
 
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
@@ -25,11 +27,13 @@ public class AppointmentSerie {
     private final int timeAmount;
     private final TimeUnit timeUnit;
     private final CalendarDay startDate;
+    private final String timezone;
     private final CalendarTime fromTime;
     private final CalendarTime toTime;
     private final OccupancyStatus occupancy;
     private final Turnus turnus;
     private final int skipping;
+    private final ZoneId zoneId;
 
     @JsonCreator
     public AppointmentSerie( //
@@ -42,6 +46,7 @@ public class AppointmentSerie {
 	    @JsonProperty("timeAmount") int timeAmount, //
 	    @JsonProperty("timeUnit") TimeUnit timeUnit, //
 	    @JsonProperty("startDate") CalendarDay startDate, //
+	    @JsonProperty("timezone") String timezone, //
 	    @JsonProperty("fromTime") CalendarTime fromTime, //
 	    @JsonProperty("toTime") CalendarTime toTime, //
 	    @JsonProperty("occupancy") OccupancyStatus occupancy, //
@@ -58,11 +63,13 @@ public class AppointmentSerie {
 	this.timeAmount = timeAmount;
 	this.timeUnit = timeUnit;
 	this.startDate = startDate;
+	this.timezone = timezone;
 	this.fromTime = fromTime;
 	this.toTime = toTime;
 	this.occupancy = occupancy;
 	this.turnus = turnus;
 	this.skipping = skipping;
+	zoneId = ZoneId.of(timezone);
     }
 
     public AppointmentSerie( //
@@ -74,14 +81,15 @@ public class AppointmentSerie {
 	    int timeAmount, //
 	    TimeUnit timeUnit, //
 	    CalendarDay startDate, //
+	    String timezone, //
 	    CalendarTime fromTime, //
 	    CalendarTime toTime, //
 	    OccupancyStatus occupancy, //
 	    Turnus turnus, //
 	    int skipping //
     ) {
-	this(-1l, type, title, description, participants, reminding, timeAmount, timeUnit, startDate, fromTime, toTime,
-		occupancy, turnus, skipping);
+	this(-1l, type, title, description, participants, reminding, timeAmount, timeUnit, startDate, timezone,
+		fromTime, toTime, occupancy, turnus, skipping);
     }
 
     public long getId() {
@@ -120,6 +128,10 @@ public class AppointmentSerie {
 	return startDate;
     }
 
+    public String getTimezone() {
+	return timezone;
+    }
+
     public CalendarTime getFromTime() {
 	return fromTime;
     }
@@ -138,6 +150,11 @@ public class AppointmentSerie {
 
     public int getSkipping() {
 	return skipping;
+    }
+
+    @JsonIgnore
+    public ZoneId getZoneId() {
+	return zoneId;
     }
 
     @Override

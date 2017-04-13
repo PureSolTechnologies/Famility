@@ -55,10 +55,18 @@ public class CalendarManager {
     public List<TimeZoneInformation> getTimezones(Instant instant, Locale locale) {
 	List<TimeZoneInformation> timezones = new ArrayList<>();
 	for (String zoneId : ZoneId.getAvailableZoneIds()) {
-	    ZoneId zoneInfo = ZoneId.of(zoneId);
-	    String displayName = zoneInfo.getDisplayName(TextStyle.FULL, locale);
-	    timezones.add(new TimeZoneInformation(zoneId, displayName,
-		    zoneInfo.getRules().getOffset(instant).getTotalSeconds() / 3600));
+	    // if (zoneId.startsWith("Africa") || zoneId.startsWith("America")
+	    // || zoneId.startsWith("Antarctica")
+	    // || zoneId.startsWith("Arctic") || zoneId.startsWith("Asia") ||
+	    // zoneId.startsWith("Atlantic")
+	    // || zoneId.startsWith("Australia") || zoneId.startsWith("Europe")
+	    // || zoneId.startsWith("Pacific")) {
+	    if (zoneId.contains("/")) {
+		ZoneId zoneInfo = ZoneId.of(zoneId);
+		String displayName = zoneInfo.getDisplayName(TextStyle.FULL, locale);
+		timezones.add(new TimeZoneInformation(zoneId, displayName,
+			zoneInfo.getRules().getOffset(instant).getTotalSeconds() / 3600));
+	    }
 	}
 	Collections.sort(timezones);
 	return timezones;
@@ -75,6 +83,7 @@ public class CalendarManager {
 		    .set(QAppointments.appointments.title, appointment.getTitle()) //
 		    .set(QAppointments.appointments.description, appointment.getDescription()) //
 		    .set(QAppointments.appointments.date, Date.valueOf(CalendarDay.toLocalDate(appointment.getDate()))) //
+		    .set(QAppointments.appointments.timezone, appointment.getTimezone()) //
 		    .set(QAppointments.appointments.fromTime,
 			    Time.valueOf(CalendarTime.toLocalTime(appointment.getFromTime()))) //
 		    .set(QAppointments.appointments.toTime,
@@ -133,11 +142,12 @@ public class CalendarManager {
 	    Integer timeAmount = appointment.get(QAppointments.appointments.reminderTimeAmount);
 	    TimeUnit timeUnit = TimeUnit.valueOf(appointment.get(QAppointments.appointments.reminderTimeUnit));
 	    CalendarDay date = CalendarDay.of(appointment.get(QAppointments.appointments.date).toLocalDate());
+	    String timezone = appointment.get(QAppointments.appointments.timezone);
 	    CalendarTime fromTime = CalendarTime.of(appointment.get(QAppointments.appointments.fromTime).toLocalTime());
 	    CalendarTime toTime = CalendarTime.of(appointment.get(QAppointments.appointments.toTime).toLocalTime());
 	    OccupancyStatus occupancy = OccupancyStatus.valueOf(appointment.get(QAppointments.appointments.occupancy));
 	    return new Appointment(type, title, description, new ArrayList<>(), timeAmount != null, timeAmount,
-		    timeUnit, date, fromTime, toTime, occupancy);
+		    timeUnit, date, timezone, fromTime, toTime, occupancy);
 	}
     }
 
@@ -164,6 +174,7 @@ public class CalendarManager {
 		    .set(QAppointmentSeries.appointmentSeries.description, appointmentSerie.getDescription()) //
 		    .set(QAppointmentSeries.appointmentSeries.startDate,
 			    Date.valueOf(CalendarDay.toLocalDate(appointmentSerie.getStartDate()))) //
+		    .set(QAppointmentSeries.appointmentSeries.timezone, appointmentSerie.getTimezone()) //
 		    .set(QAppointmentSeries.appointmentSeries.fromTime,
 			    Time.valueOf(CalendarTime.toLocalTime(appointmentSerie.getFromTime()))) //
 		    .set(QAppointmentSeries.appointmentSeries.toTime,
@@ -229,6 +240,7 @@ public class CalendarManager {
 		    .valueOf(appointment.get(QAppointmentSeries.appointmentSeries.reminderTimeUnit));
 	    CalendarDay startDate = CalendarDay
 		    .of(appointment.get(QAppointmentSeries.appointmentSeries.startDate).toLocalDate());
+	    String timezone = appointment.get(QAppointmentSeries.appointmentSeries.timezone);
 	    CalendarTime fromTime = CalendarTime
 		    .of(appointment.get(QAppointmentSeries.appointmentSeries.fromTime).toLocalTime());
 	    CalendarTime toTime = CalendarTime
@@ -238,7 +250,7 @@ public class CalendarManager {
 	    Turnus turnus = Turnus.valueOf(appointment.get(QAppointmentSeries.appointmentSeries.turnus));
 	    int skipping = appointment.get(QAppointmentSeries.appointmentSeries.skipping);
 	    return new AppointmentSerie(type, title, description, new ArrayList<>(), timeAmount != null, timeAmount,
-		    timeUnit, startDate, fromTime, toTime, occupancy, turnus, skipping);
+		    timeUnit, startDate, timezone, fromTime, toTime, occupancy, turnus, skipping);
 	}
     }
 

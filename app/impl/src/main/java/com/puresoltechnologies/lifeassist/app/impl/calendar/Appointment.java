@@ -1,9 +1,11 @@
 package com.puresoltechnologies.lifeassist.app.impl.calendar;
 
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
@@ -25,9 +27,11 @@ public class Appointment {
     private final int timeAmount;
     private final TimeUnit timeUnit;
     private final CalendarDay date;
+    private final String timezone;
     private final CalendarTime fromTime;
     private final CalendarTime toTime;
     private final OccupancyStatus occupancy;
+    private final ZoneId zoneId;
 
     @JsonCreator
     public Appointment(//
@@ -40,6 +44,7 @@ public class Appointment {
 	    @JsonProperty("timeAmount") int timeAmount, //
 	    @JsonProperty("timeUnit") TimeUnit timeUnit, //
 	    @JsonProperty("date") CalendarDay date, //
+	    @JsonProperty("timezone") String timezone, //
 	    @JsonProperty("fromTime") CalendarTime fromTime, //
 	    @JsonProperty("toTime") CalendarTime toTime, //
 	    @JsonProperty("occupancy") OccupancyStatus occupancy) {
@@ -53,9 +58,11 @@ public class Appointment {
 	this.timeAmount = timeAmount;
 	this.timeUnit = timeUnit;
 	this.date = date;
+	this.timezone = timezone;
 	this.fromTime = fromTime;
 	this.toTime = toTime;
 	this.occupancy = occupancy;
+	zoneId = ZoneId.of(timezone);
     }
 
     public Appointment(//
@@ -67,11 +74,12 @@ public class Appointment {
 	    int timeAmount, //
 	    TimeUnit timeUnit, //
 	    CalendarDay date, //
+	    String timezone, //
 	    CalendarTime fromTime, //
 	    CalendarTime toTime, //
 	    OccupancyStatus occupancy) {
-	this(-1l, type, title, description, participans, reminding, timeAmount, timeUnit, date, fromTime, toTime,
-		occupancy);
+	this(-1l, type, title, description, participans, reminding, timeAmount, timeUnit, date, timezone, fromTime,
+		toTime, occupancy);
     }
 
     public long getId() {
@@ -110,6 +118,10 @@ public class Appointment {
 	return date;
     }
 
+    public String getTimezone() {
+	return timezone;
+    }
+
     public CalendarTime getFromTime() {
 	return fromTime;
     }
@@ -120,6 +132,11 @@ public class Appointment {
 
     public OccupancyStatus getOccupancy() {
 	return occupancy;
+    }
+
+    @JsonIgnore
+    public ZoneId getZoneId() {
+	return zoneId;
     }
 
     @Override
