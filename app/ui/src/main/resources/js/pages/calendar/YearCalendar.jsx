@@ -20,7 +20,7 @@ export default class YearCalendar extends React.Component {
     constructor( props ) {
         super( props );
         var storedCalendar = store.getState().calendar;
-        if (storedCalendar !== this.props.params.year) {
+        if ( storedCalendar !== this.props.params.year ) {
             store.dispatch( changeYear( this.props.params.year ) );
         }
         this.state = { calendar: storedCalendar, calendarData: null };
@@ -56,7 +56,7 @@ export default class YearCalendar extends React.Component {
             return <div></div>;
         }
 
-        return <div>   
+        return <div>
             <YearView calendar={this.state.calendarData} />
         </div >;
     }

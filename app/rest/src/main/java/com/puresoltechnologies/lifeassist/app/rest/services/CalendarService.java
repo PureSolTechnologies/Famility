@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,6 +34,7 @@ import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentSerie;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentType;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarFactory;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
+import com.puresoltechnologies.lifeassist.app.impl.calendar.DurationUnit;
 
 @Path("/calendar")
 public class CalendarService {
@@ -89,10 +89,17 @@ public class CalendarService {
     }
 
     @GET
-    @Path("/appointments/time-units")
+    @Path("/appointments/duration-units")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TimeUnit> getTimeUnits() {
-	return calendarManager.getTimeUnits();
+    public List<DurationUnit> getDurationUnits() {
+	return calendarManager.getDurationUnits();
+    }
+
+    @GET
+    @Path("/appointments/reminder-duration-units")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<DurationUnit> getReminderDurationUnits() {
+	return calendarManager.getReminderDurationUnits();
     }
 
     @PUT
@@ -195,24 +202,25 @@ public class CalendarService {
     }
 
     @GET
-    @Path("/appointments/{year}")
+    @Path("/appointments/year/{year}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Appointment> getYearAppointments(@PathParam("year") int year) {
+    public Collection<Appointment> getYearAppointments(@PathParam("year") int year) throws SQLException {
 	return calendarManager.getYearAppointments(year);
     }
 
     @GET
-    @Path("/appointments/{year}/{month}")
+    @Path("/appointments/year/{year}/month/{month}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Appointment> getMonthAppointments(@PathParam("year") int year, @PathParam("month") int month) {
+    public Collection<Appointment> getMonthAppointments(@PathParam("year") int year, @PathParam("month") int month)
+	    throws SQLException {
 	return calendarManager.getMonthAppointments(year, month);
     }
 
     @GET
-    @Path("/appointments/{year}/{month}/{day}")
+    @Path("/appointments/year/{year}/month/{month}/day/{day}")
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Appointment> getDayAppointments(@PathParam("year") int year, @PathParam("month") int month,
-	    @PathParam("day") int day) {
+	    @PathParam("day") int day) throws SQLException {
 	return calendarManager.getDayAppointments(year, month, day);
     }
 

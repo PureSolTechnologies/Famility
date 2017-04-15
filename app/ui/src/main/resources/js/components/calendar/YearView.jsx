@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import CalendarController from '../../controller/CalendarController';
+
 import SingleMonth from './SingleMonth';
 import YearSelector from './YearSelector';
 
@@ -12,7 +14,17 @@ export default class YearView extends React.Component {
 
     constructor( props ) {
         super( props );
-        this.state = { calendar: props.calendar };
+        this.state = { calendar: props.calendar, appointments: [] };
+    }
+
+    componentDidMount() {
+        var component = this;
+        CalendarController.getYearAppointment( this.state.calendar.year,
+            function( appointments ) {
+                component.setState( { appointments: appointments });
+            },
+            function( response ) { });
+
     }
 
     componentWillReceiveProps( nextProps ) {

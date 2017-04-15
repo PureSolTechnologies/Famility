@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,7 @@ import com.puresoltechnologies.lifeassist.app.impl.calendar.Appointment;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentSerie;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentType;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.OccupancyStatus;
+import com.puresoltechnologies.lifeassist.app.impl.calendar.Reminder;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.Turnus;
 
 public class CalendarServiceIT extends AbstractCalendarServiceTest {
@@ -55,8 +57,8 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
     public void testAppointmentCRUD() throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 	JerseyWebTarget client = getRestClient("/appointments");
 	Appointment original = new Appointment(AppointmentType.GENERAL, "Title", "Description", new ArrayList<>(), true,
-		1, TimeUnit.DAYS, new CalendarDay(1978, 5, 16), "Europe/Stockholm", new CalendarTime(13, 35, 0),
-		new CalendarTime(14, 0, 0), OccupancyStatus.OCCUPIED);
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED);
 	Entity<Appointment> entity = Entity.entity(original, MediaType.APPLICATION_JSON);
 	Response response = client.request().put(entity);
 	assertEquals(Status.CREATED.getStatusCode(), response.getStatus());
@@ -71,8 +73,8 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
 	assertEquals(createdAppointment, read);
 
 	Appointment updated = new Appointment(AppointmentType.GENERAL, "Title2", "Description2", new ArrayList<>(),
-		true, 1, TimeUnit.DAYS, new CalendarDay(1978, 5, 16), "Europe/Stockholm", new CalendarTime(13, 35, 0),
-		new CalendarTime(14, 0, 0), OccupancyStatus.OCCUPIED);
+		true, new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED);
 	entity = Entity.entity(updated, MediaType.APPLICATION_JSON);
 	response = client.request().post(entity);
 	assertEquals(Status.OK.getStatusCode(), response.getStatus());
@@ -97,8 +99,9 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
 	    throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 	JerseyWebTarget client = getRestClient("/appointmentSeries");
 	AppointmentSerie original = new AppointmentSerie(AppointmentType.GENERAL, "Title", "Description",
-		new ArrayList<>(), true, 1, TimeUnit.DAYS, new CalendarDay(1978, 5, 16), "Europe/Stockholm",
-		new CalendarTime(13, 35, 0), new CalendarTime(14, 0, 0), OccupancyStatus.OCCUPIED, Turnus.WEEKLY, 2);
+		new ArrayList<>(), true, new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16),
+		"Europe/Stockholm", new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED,
+		Turnus.WEEKLY, 2);
 	Entity<AppointmentSerie> entity = Entity.entity(original, MediaType.APPLICATION_JSON);
 	Response response = client.request().put(entity);
 	assertEquals(Status.CREATED.getStatusCode(), response.getStatus());
@@ -113,8 +116,9 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
 	assertEquals(createdAppointmentSerie, read);
 
 	AppointmentSerie updated = new AppointmentSerie(AppointmentType.GENERAL, "Title2", "Description2",
-		new ArrayList<>(), true, 1, TimeUnit.DAYS, new CalendarDay(1978, 5, 16), "Europe/Stockholm",
-		new CalendarTime(13, 35, 0), new CalendarTime(14, 0, 0), OccupancyStatus.OCCUPIED, Turnus.DAILY, 2);
+		new ArrayList<>(), true, new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16),
+		"Europe/Stockholm", new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED,
+		Turnus.DAILY, 2);
 	entity = Entity.entity(updated, MediaType.APPLICATION_JSON);
 	response = client.request().post(entity);
 	assertEquals(Status.OK.getStatusCode(), response.getStatus());

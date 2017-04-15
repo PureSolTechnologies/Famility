@@ -60,12 +60,12 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "type varchar(12) not null, " //
 			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
-			+ "start_date date, "//
+			+ "first_occurrence timestamp, "//
 			+ "timezone varchar, "//
-			+ "from_time time, "//
-			+ "to_time time, "//
-			+ "reminder_time_amount integer, " //
-			+ "reminder_time_unit varchar(6), " //
+			+ "duration_amount int, "//
+			+ "duration_unit varchar, "//
+			+ "reminder_amount int, " //
+			+ "reminder_unit varchar, " //
 			+ "occupancy varchar(9), " //
 			+ "turnus varchar(7), " //
 			+ "skipping int, " //
@@ -79,12 +79,12 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "type varchar(12) not null, " //
 			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
-			+ "date date, "//
+			+ "occurrence timestamp, "//
 			+ "timezone varchar, "//
-			+ "from_time time, "//
-			+ "to_time time, "//
-			+ "reminder_time_amount integer, " //
-			+ "reminder_time_unit varchar(6), " //
+			+ "duration_amount int, "//
+			+ "duration_unit varchar, "//
+			+ "reminder_amount int, " //
+			+ "reminder_unit varchar, " //
 			+ "occupancy varchar(9), " //
 			+ "CONSTRAINT " + APPOINTMENTS_TABLE + "_PK PRIMARY KEY (id), "//
 			+ "CONSTRAINT " + APPOINTMENTS_TABLE + "_" + APPOINTMENT_SERIES_TABLE

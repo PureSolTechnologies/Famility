@@ -8,6 +8,28 @@ export default class CalendarController {
         return CalendarController.namesOfMonths[month - 1];
     }
 
+    static getDurationUnits( successfulCallback, errorCallback ) {
+        restController.GET( '/calendar/appointments/duration-units',
+            null,
+            function( response ) {
+                var units = JSON.parse( response.response );
+                successfulCallback( units );
+            },
+            errorCallback
+        );
+    }
+
+    static getReminderDurationUnits( successfulCallback, errorCallback ) {
+        restController.GET( '/calendar/appointments/reminder-duration-units',
+            null,
+            function( response ) {
+                var units = JSON.parse( response.response );
+                successfulCallback( units );
+            },
+            errorCallback
+        );
+    }
+
     static getCalendar( year, successfulCallback, errorCallback ) {
         var calendar = window.sessionStorage.getItem( 'calendarData.' + year );
         if ( calendar ) {
@@ -69,4 +91,15 @@ export default class CalendarController {
         );
     }
 
+    static getYearAppointment( year, successCallback, errorCallback ) {
+        restController.GET( '/calendar/appointments/year/' + year,
+            null,
+            function( response ) {
+                var appointments = JSON.parse( response.response );
+                successCallback( appointments );
+            },
+            errorCallback
+        );
+    }
 }
+

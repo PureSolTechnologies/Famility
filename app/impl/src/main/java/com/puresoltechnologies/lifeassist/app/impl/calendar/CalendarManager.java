@@ -1,18 +1,23 @@
 package com.puresoltechnologies.lifeassist.app.impl.calendar;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
@@ -40,11 +45,19 @@ public class CalendarManager {
 	}
     }
 
-    public List<TimeUnit> getTimeUnits() {
-	List<TimeUnit> timeUnits = new ArrayList<>();
-	timeUnits.add(TimeUnit.MINUTES);
-	timeUnits.add(TimeUnit.HOURS);
-	timeUnits.add(TimeUnit.DAYS);
+    public List<DurationUnit> getDurationUnits() {
+	List<DurationUnit> timeUnits = new ArrayList<>();
+	timeUnits.add(new DurationUnit(ChronoUnit.MINUTES, "Minutes"));
+	timeUnits.add(new DurationUnit(ChronoUnit.HOURS, "Hours"));
+	timeUnits.add(new DurationUnit(ChronoUnit.DAYS, "Days"));
+	return timeUnits;
+    }
+
+    public List<DurationUnit> getReminderDurationUnits() {
+	List<DurationUnit> timeUnits = new ArrayList<>();
+	timeUnits.add(new DurationUnit(ChronoUnit.MINUTES, "Minutes"));
+	timeUnits.add(new DurationUnit(ChronoUnit.HOURS, "Hours"));
+	timeUnits.add(new DurationUnit(ChronoUnit.DAYS, "Days"));
 	return timeUnits;
     }
 
@@ -74,7 +87,10 @@ public class CalendarManager {
 
     public long createAppointment(Appointment appointment) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("appointment_series_id_seq"));
+	    LocalDate date = CalendarDay.toLocalDate(appointment.getDate());
+	    LocalTime time = CalendarTime.toLocalTime(appointment.getTime());
+	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, appointment.getZoneId());
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("appointments_id_seq"));
 	    long id = query.fetchOne();
 	    queryFactory//
 		    .insert(QAppointments.appointments)//
@@ -82,14 +98,12 @@ public class CalendarManager {
 		    .set(QAppointments.appointments.type, appointment.getType().name()) //
 		    .set(QAppointments.appointments.title, appointment.getTitle()) //
 		    .set(QAppointments.appointments.description, appointment.getDescription()) //
-		    .set(QAppointments.appointments.date, Date.valueOf(CalendarDay.toLocalDate(appointment.getDate()))) //
+		    .set(QAppointments.appointments.occurrence, Timestamp.from(occurrence.toInstant())) //
 		    .set(QAppointments.appointments.timezone, appointment.getTimezone()) //
-		    .set(QAppointments.appointments.fromTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointment.getFromTime()))) //
-		    .set(QAppointments.appointments.toTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointment.getToTime()))) //
-		    .set(QAppointments.appointments.reminderTimeAmount, appointment.getTimeAmount()) //
-		    .set(QAppointments.appointments.reminderTimeUnit, appointment.getTimeUnit().name()) //
+		    .set(QAppointments.appointments.durationAmount, appointment.getDurationAmount()) //
+		    .set(QAppointments.appointments.durationUnit, appointment.getDurationUnit().name()) //
+		    .set(QAppointments.appointments.reminderAmount, appointment.getReminder().getAmount()) //
+		    .set(QAppointments.appointments.reminderUnit, appointment.getReminder().getUnit().name()) //
 		    .set(QAppointments.appointments.occupancy, appointment.getOccupancy().name()) //
 		    .execute();
 	    queryFactory.commit();
@@ -106,18 +120,20 @@ public class CalendarManager {
 
     public boolean updateAppointment(long id, Appointment appointment) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    LocalDate date = CalendarDay.toLocalDate(appointment.getDate());
+	    LocalTime time = CalendarTime.toLocalTime(appointment.getTime());
+	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, appointment.getZoneId());
 	    long updated = queryFactory//
 		    .update(QAppointments.appointments)//
 		    .set(QAppointments.appointments.type, appointment.getType().name()) //
 		    .set(QAppointments.appointments.title, appointment.getTitle()) //
 		    .set(QAppointments.appointments.description, appointment.getDescription()) //
-		    .set(QAppointments.appointments.date, Date.valueOf(CalendarDay.toLocalDate(appointment.getDate()))) //
-		    .set(QAppointments.appointments.fromTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointment.getFromTime()))) //
-		    .set(QAppointments.appointments.toTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointment.getToTime()))) //
-		    .set(QAppointments.appointments.reminderTimeAmount, appointment.getTimeAmount()) //
-		    .set(QAppointments.appointments.reminderTimeUnit, appointment.getTimeUnit().name()) //
+		    .set(QAppointments.appointments.occurrence, Timestamp.from(occurrence.toInstant())) //
+		    .set(QAppointments.appointments.timezone, appointment.getTimezone()) //
+		    .set(QAppointments.appointments.durationAmount, appointment.getDurationAmount()) //
+		    .set(QAppointments.appointments.durationUnit, appointment.getDurationUnit().name()) //
+		    .set(QAppointments.appointments.reminderAmount, appointment.getReminder().getAmount()) //
+		    .set(QAppointments.appointments.reminderUnit, appointment.getReminder().getUnit().name()) //
 		    .set(QAppointments.appointments.occupancy, appointment.getOccupancy().name()) //
 		    .where(QAppointments.appointments.id.eq(id)) //
 		    .execute();
@@ -132,23 +148,31 @@ public class CalendarManager {
 		    .select(QAppointments.appointments.all()) //
 		    .from(QAppointments.appointments) //
 		    .where(QAppointments.appointments.id.eq(id));
-	    Tuple appointment = query.fetchOne();
-	    if (appointment == null) {
+	    Tuple tuple = query.fetchOne();
+	    if (tuple == null) {
 		return null;
 	    }
-	    AppointmentType type = AppointmentType.valueOf(appointment.get(QAppointments.appointments.type));
-	    String title = appointment.get(QAppointments.appointments.title);
-	    String description = appointment.get(QAppointments.appointments.description);
-	    Integer timeAmount = appointment.get(QAppointments.appointments.reminderTimeAmount);
-	    TimeUnit timeUnit = TimeUnit.valueOf(appointment.get(QAppointments.appointments.reminderTimeUnit));
-	    CalendarDay date = CalendarDay.of(appointment.get(QAppointments.appointments.date).toLocalDate());
-	    String timezone = appointment.get(QAppointments.appointments.timezone);
-	    CalendarTime fromTime = CalendarTime.of(appointment.get(QAppointments.appointments.fromTime).toLocalTime());
-	    CalendarTime toTime = CalendarTime.of(appointment.get(QAppointments.appointments.toTime).toLocalTime());
-	    OccupancyStatus occupancy = OccupancyStatus.valueOf(appointment.get(QAppointments.appointments.occupancy));
-	    return new Appointment(type, title, description, new ArrayList<>(), timeAmount != null, timeAmount,
-		    timeUnit, date, timezone, fromTime, toTime, occupancy);
+	    return createAppointment(tuple);
 	}
+    }
+
+    private Appointment createAppointment(Tuple tuple) {
+	AppointmentType type = AppointmentType.valueOf(tuple.get(QAppointments.appointments.type));
+	String title = tuple.get(QAppointments.appointments.title);
+	String description = tuple.get(QAppointments.appointments.description);
+	LocalDateTime occurrence = tuple.get(QAppointments.appointments.occurrence).toLocalDateTime();
+	String timezone = tuple.get(QAppointments.appointments.timezone);
+
+	int durationAmount = tuple.get(QAppointments.appointments.durationAmount);
+	ChronoUnit durationUnit = ChronoUnit.valueOf(tuple.get(QAppointments.appointments.durationUnit));
+
+	int reminderAmount = tuple.get(QAppointments.appointments.reminderAmount);
+	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QAppointments.appointments.reminderUnit));
+
+	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QAppointments.appointments.occupancy));
+	return new Appointment(type, title, description, new ArrayList<>(), reminderAmount > 0,
+		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(occurrence), timezone,
+		CalendarTime.of(occurrence), durationAmount, durationUnit, occupancy);
     }
 
     public boolean removeAppointment(long id) throws SQLException {
@@ -164,6 +188,9 @@ public class CalendarManager {
 
     public long createAppointmentSerie(AppointmentSerie appointmentSerie) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    LocalDate date = CalendarDay.toLocalDate(appointmentSerie.getStartDate());
+	    LocalTime time = CalendarTime.toLocalTime(appointmentSerie.getStartTime());
+	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, appointmentSerie.getZoneId());
 	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("appointment_series_id_seq"));
 	    long id = query.fetchOne();
 	    queryFactory//
@@ -172,15 +199,14 @@ public class CalendarManager {
 		    .set(QAppointmentSeries.appointmentSeries.type, appointmentSerie.getType().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.title, appointmentSerie.getTitle()) //
 		    .set(QAppointmentSeries.appointmentSeries.description, appointmentSerie.getDescription()) //
-		    .set(QAppointmentSeries.appointmentSeries.startDate,
-			    Date.valueOf(CalendarDay.toLocalDate(appointmentSerie.getStartDate()))) //
+		    .set(QAppointmentSeries.appointmentSeries.firstOccurrence, Timestamp.from(occurrence.toInstant())) //
 		    .set(QAppointmentSeries.appointmentSeries.timezone, appointmentSerie.getTimezone()) //
-		    .set(QAppointmentSeries.appointmentSeries.fromTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointmentSerie.getFromTime()))) //
-		    .set(QAppointmentSeries.appointmentSeries.toTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointmentSerie.getToTime()))) //
-		    .set(QAppointmentSeries.appointmentSeries.reminderTimeAmount, appointmentSerie.getTimeAmount()) //
-		    .set(QAppointmentSeries.appointmentSeries.reminderTimeUnit, appointmentSerie.getTimeUnit().name()) //
+		    .set(QAppointmentSeries.appointmentSeries.durationAmount, appointmentSerie.getDurationAmount()) //
+		    .set(QAppointmentSeries.appointmentSeries.durationUnit, appointmentSerie.getDurationUnit().name()) //
+		    .set(QAppointmentSeries.appointmentSeries.reminderAmount,
+			    appointmentSerie.getReminder().getAmount()) //
+		    .set(QAppointmentSeries.appointmentSeries.reminderUnit,
+			    appointmentSerie.getReminder().getUnit().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.occupancy, appointmentSerie.getOccupancy().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.turnus, appointmentSerie.getTurnus().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.skipping, appointmentSerie.getSkipping()) //
@@ -199,19 +225,22 @@ public class CalendarManager {
 
     public boolean updateAppointmentSerie(long id, AppointmentSerie appointmentSerie) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    LocalDate date = CalendarDay.toLocalDate(appointmentSerie.getStartDate());
+	    LocalTime time = CalendarTime.toLocalTime(appointmentSerie.getStartTime());
+	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, appointmentSerie.getZoneId());
 	    long updated = queryFactory//
 		    .update(QAppointmentSeries.appointmentSeries)//
 		    .set(QAppointmentSeries.appointmentSeries.type, appointmentSerie.getType().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.title, appointmentSerie.getTitle()) //
 		    .set(QAppointmentSeries.appointmentSeries.description, appointmentSerie.getDescription()) //
-		    .set(QAppointmentSeries.appointmentSeries.startDate,
-			    Date.valueOf(CalendarDay.toLocalDate(appointmentSerie.getStartDate()))) //
-		    .set(QAppointmentSeries.appointmentSeries.fromTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointmentSerie.getFromTime()))) //
-		    .set(QAppointmentSeries.appointmentSeries.toTime,
-			    Time.valueOf(CalendarTime.toLocalTime(appointmentSerie.getToTime()))) //
-		    .set(QAppointmentSeries.appointmentSeries.reminderTimeAmount, appointmentSerie.getTimeAmount()) //
-		    .set(QAppointmentSeries.appointmentSeries.reminderTimeUnit, appointmentSerie.getTimeUnit().name()) //
+		    .set(QAppointmentSeries.appointmentSeries.firstOccurrence, Timestamp.from(occurrence.toInstant())) //
+		    .set(QAppointmentSeries.appointmentSeries.timezone, appointmentSerie.getTimezone()) //
+		    .set(QAppointmentSeries.appointmentSeries.durationAmount, appointmentSerie.getDurationAmount()) //
+		    .set(QAppointmentSeries.appointmentSeries.durationUnit, appointmentSerie.getDurationUnit().name()) //
+		    .set(QAppointmentSeries.appointmentSeries.reminderAmount,
+			    appointmentSerie.getReminder().getAmount()) //
+		    .set(QAppointmentSeries.appointmentSeries.reminderUnit,
+			    appointmentSerie.getReminder().getUnit().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.occupancy, appointmentSerie.getOccupancy().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.turnus, appointmentSerie.getTurnus().name()) //
 		    .set(QAppointmentSeries.appointmentSeries.skipping, appointmentSerie.getSkipping()) //
@@ -228,30 +257,33 @@ public class CalendarManager {
 		    .select(QAppointmentSeries.appointmentSeries.all()) //
 		    .from(QAppointmentSeries.appointmentSeries) //
 		    .where(QAppointmentSeries.appointmentSeries.id.eq(id));
-	    Tuple appointment = query.fetchOne();
-	    if (appointment == null) {
+	    Tuple tuple = query.fetchOne();
+	    if (tuple == null) {
 		return null;
 	    }
-	    AppointmentType type = AppointmentType.valueOf(appointment.get(QAppointmentSeries.appointmentSeries.type));
-	    String title = appointment.get(QAppointmentSeries.appointmentSeries.title);
-	    String description = appointment.get(QAppointmentSeries.appointmentSeries.description);
-	    Integer timeAmount = appointment.get(QAppointmentSeries.appointmentSeries.reminderTimeAmount);
-	    TimeUnit timeUnit = TimeUnit
-		    .valueOf(appointment.get(QAppointmentSeries.appointmentSeries.reminderTimeUnit));
-	    CalendarDay startDate = CalendarDay
-		    .of(appointment.get(QAppointmentSeries.appointmentSeries.startDate).toLocalDate());
-	    String timezone = appointment.get(QAppointmentSeries.appointmentSeries.timezone);
-	    CalendarTime fromTime = CalendarTime
-		    .of(appointment.get(QAppointmentSeries.appointmentSeries.fromTime).toLocalTime());
-	    CalendarTime toTime = CalendarTime
-		    .of(appointment.get(QAppointmentSeries.appointmentSeries.toTime).toLocalTime());
-	    OccupancyStatus occupancy = OccupancyStatus
-		    .valueOf(appointment.get(QAppointmentSeries.appointmentSeries.occupancy));
-	    Turnus turnus = Turnus.valueOf(appointment.get(QAppointmentSeries.appointmentSeries.turnus));
-	    int skipping = appointment.get(QAppointmentSeries.appointmentSeries.skipping);
-	    return new AppointmentSerie(type, title, description, new ArrayList<>(), timeAmount != null, timeAmount,
-		    timeUnit, startDate, timezone, fromTime, toTime, occupancy, turnus, skipping);
+	    return createAppointmentSeries(tuple);
 	}
+    }
+
+    private AppointmentSerie createAppointmentSeries(Tuple tuple) {
+	AppointmentType type = AppointmentType.valueOf(tuple.get(QAppointmentSeries.appointmentSeries.type));
+	String title = tuple.get(QAppointmentSeries.appointmentSeries.title);
+	String description = tuple.get(QAppointmentSeries.appointmentSeries.description);
+	LocalDateTime firstOccurrence = tuple.get(QAppointmentSeries.appointmentSeries.firstOccurrence)
+		.toLocalDateTime();
+	String timezone = tuple.get(QAppointmentSeries.appointmentSeries.timezone);
+
+	int durationAmount = tuple.get(QAppointmentSeries.appointmentSeries.durationAmount);
+	ChronoUnit durationUnit = ChronoUnit.valueOf(tuple.get(QAppointments.appointments.durationUnit));
+
+	int reminderAmount = tuple.get(QAppointmentSeries.appointmentSeries.reminderAmount);
+	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QAppointmentSeries.appointmentSeries.reminderUnit));
+	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QAppointmentSeries.appointmentSeries.occupancy));
+	Turnus turnus = Turnus.valueOf(tuple.get(QAppointmentSeries.appointmentSeries.turnus));
+	int skipping = tuple.get(QAppointmentSeries.appointmentSeries.skipping);
+	return new AppointmentSerie(type, title, description, new ArrayList<>(), reminderAmount > 0,
+		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence), timezone,
+		CalendarTime.of(firstOccurrence), durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
     public boolean removeAppointmentSerie(long id) throws SQLException {
@@ -265,19 +297,52 @@ public class CalendarManager {
 	}
     }
 
-    public Collection<Appointment> getYearAppointments(int year) {
-	// TODO Auto-generated method stub
-	return null;
+    public Collection<Appointment> getYearAppointments(int year) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Tuple> select = queryFactory.select(QAppointments.appointments.all())
+		    .from(QAppointments.appointments) //
+		    .where(QAppointments.appointments.occurrence
+			    .goe(Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0))))
+		    .where(QAppointments.appointments.occurrence
+			    .loe(Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59))));
+	    List<Appointment> appointments = new ArrayList<>();
+	    for (Tuple tuple : select.fetch()) {
+		appointments.add(createAppointment(tuple));
+	    }
+	    return appointments;
+	}
     }
 
-    public Collection<Appointment> getMonthAppointments(int year, int month) {
-	// TODO Auto-generated method stub
-	return null;
+    public Collection<Appointment> getMonthAppointments(int year, int month) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    int lastDay = Month.of(month).length(Year.of(year).isLeap());
+	    SQLQuery<Tuple> select = queryFactory.select(QAppointments.appointments.all())
+		    .from(QAppointments.appointments) //
+		    .where(QAppointments.appointments.occurrence
+			    .goe(Timestamp.valueOf(LocalDateTime.of(year, month, 1, 0, 0))))
+		    .where(QAppointments.appointments.occurrence
+			    .loe(Timestamp.valueOf(LocalDateTime.of(year, month, lastDay, 23, 59, 59))));
+	    List<Appointment> appointments = new ArrayList<>();
+	    for (Tuple tuple : select.fetch()) {
+		appointments.add(createAppointment(tuple));
+	    }
+	    return appointments;
+	}
     }
 
-    public Collection<Appointment> getDayAppointments(int year, int month, int day) {
-	// TODO Auto-generated method stub
-	return null;
+    public Collection<Appointment> getDayAppointments(int year, int month, int day) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Tuple> select = queryFactory.select(QAppointments.appointments.all())
+		    .from(QAppointments.appointments) //
+		    .where(QAppointments.appointments.occurrence.between(
+			    Timestamp.valueOf(LocalDateTime.of(year, month, day, 0, 0)),
+			    Timestamp.valueOf(LocalDateTime.of(year, month, day, 23, 59, 59))));
+	    List<Appointment> appointments = new ArrayList<>();
+	    for (Tuple tuple : select.fetch()) {
+		appointments.add(createAppointment(tuple));
+	    }
+	    return appointments;
+	}
     }
 
 }

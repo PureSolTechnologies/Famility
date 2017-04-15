@@ -16,15 +16,18 @@ export default class CreateAppointment extends React.Component {
             date: '',
             timezone: 'Europe/Berlin',
             beginTime: '',
-            endTime: '',
+            durationAmount: 1,
+            durationUnit: 'HOURS',
             appointmentType: 'GENERAL',
             title: '',
             description: '',
             participans: [],
             reminding: false,
-            timeAmount: 0,
-            timeUnit: 'HOURS',
-            occupancy: 'OCCUPIED'
+            reminderDurationAmount: 15,
+            reminderDurationUnit: 'MINUTES',
+            occupancy: 'OCCUPIED',
+            durationUnits: [],
+            reminderDurationUnits: []
         };
         if ( this.props.params.date ) {
             this.state.date = this.props.params.date;
@@ -32,20 +35,40 @@ export default class CreateAppointment extends React.Component {
         if ( this.props.params.beginTime ) {
             this.state.beginTime = this.props.params.beginTime;
         }
-        if ( this.props.params.endTime ) {
-            this.state.endTime = this.props.params.endTime;
-        }
         this.changeDate = this.changeDate.bind( this );
         this.changeTimezone = this.changeTimezone.bind( this );
         this.changeBeginTime = this.changeBeginTime.bind( this );
-        this.changeEndTime = this.changeEndTime.bind( this );
+        this.changeDurationAmount = this.changeDurationAmount.bind( this );
+        this.changeDurationUnit = this.changeDurationUnit.bind( this );
         this.changeType = this.changeType.bind( this );
         this.changeTitle = this.changeTitle.bind( this );
         this.changeDescription = this.changeDescription.bind( this );
         this.changeReminding = this.changeReminding.bind( this );
-        this.changeTimeAmount = this.changeTimeAmount.bind( this );
-        this.changeTimeUnit = this.changeTimeUnit.bind( this );
+        this.changeReminderDurationAmount = this.changeReminderDurationAmount.bind( this );
+        this.changeReminderDurationUnit = this.changeReminderDurationUnit.bind( this );
         this.create = this.create.bind( this );
+    }
+
+    componentDidMount() {
+        var component = this;
+        CalendarController.getDurationUnits(
+            function( units ) {
+                component.setState( {
+                    durationUnits: units,
+                    durationAmount: 1,
+                    durationUnit: 'HOURS'
+                });
+            },
+            function( response ) { });
+        CalendarController.getReminderDurationUnits(
+            function( units ) {
+                component.setState( {
+                    reminderDurationUnits: units,
+                    reminderDurationAmount: 15,
+                    reminderDurationUnit: 'MINUTES'
+                });
+            },
+            function( response ) { });
     }
 
     changeDate( event ) {
@@ -66,10 +89,17 @@ export default class CreateAppointment extends React.Component {
         });
     }
 
-    changeEndTime( event ) {
-        var endTime = event.target.value;
+    changeDurationAmount( event ) {
+        var durationAmount = event.target.value;
         this.setState( {
-            endTime: endTime
+            durationAmount: durationAmount
+        });
+    }
+
+    changeDurationUnit( event ) {
+        var durationUnit = event.target.value;
+        this.setState( {
+            durationUnit: durationUnit
         });
     }
 
@@ -101,17 +131,17 @@ export default class CreateAppointment extends React.Component {
         });
     }
 
-    changeTimeAmount( event ) {
+    changeReminderDurationAmount( event ) {
         var amount = event.target.value;
         this.setState( {
-            timeAmount: amount
+            reminderDurationAmount: amount
         });
     }
 
-    changeTimeUnit( event ) {
+    changeReminderDurationUnit( event ) {
         var unit = event.target.value;
         this.setState( {
-            timeUnit: unit
+            reminderDurationUnit: unit
         });
     }
 
@@ -124,12 +154,15 @@ export default class CreateAppointment extends React.Component {
         appointment.description = this.state.description;
         appointment.participants = [];
         appointment.reminding = this.state.reminding;
-        appointment.timeAmount = this.state.timeAmount;
-        appointment.timeUnit = this.state.timeUnit;
+        appointment.reminder = {
+            amount: this.state.reminderDurationAmount,
+            unit: this.state.reminderDurationUnit
+        };
         appointment.date = CalendarDay.fromString( this.state.date );
         appointment.timezone = this.state.timezone;
-        appointment.fromTime = CalendarTime.fromString( this.state.beginTime );
-        appointment.toTime = CalendarTime.fromString( this.state.endTime );
+        appointment.time = CalendarTime.fromString( this.state.beginTime );
+        appointment.durationAmount = this.state.durationAmount;
+        appointment.durationUnit = this.state.durationUnit;
         appointment.occupancy = this.state.occupancy;
 
         CalendarController.createAppointment( appointment,
@@ -140,6 +173,14 @@ export default class CreateAppointment extends React.Component {
     }
 
     render() {
+        var durationUnits = [];
+        for ( var durationUnit of this.state.durationUnits ) {
+            durationUnits.push( <option key={durationUnit.unit} value={durationUnit.unit}>{durationUnit.name}</option> );
+        }
+        var reminderDurationUnits = [];
+        for ( var reminderDurationUnit of this.state.reminderDurationUnits ) {
+            reminderDurationUnits.push( <option key={reminderDurationUnit.unit} key={reminderDurationUnit.value}>{reminderDurationUnit.name}</option> );
+        }
         return <Dialog title="Create Appointment">
             <form className="border-0">
                 <h3>Time</h3>
@@ -158,8 +199,13 @@ export default class CreateAppointment extends React.Component {
                         <input type="time" className="form-control" id="beginTime" value={this.state.beginTime} onChange={this.changeBeginTime}></input>
                     </div>
                     <div className="col-md-6">
-                        <label htmlFor="endTime">End</label>
-                        <input type="time" className="form-control" id="endTime" value={this.state.endTime} onChange={this.changeEndTime}></input>
+                        <label htmlFor="duration">Duration</label>
+                        <div className="input-group">
+                            <input type="number" className="form-control" id="period" placeholder="" value={this.state.durationAmount} onChange={this.changeDurationAmount} />
+                            <select className="form-control" value={this.state.durationUnit} onChange={this.changeDurationUnit}>
+                                {durationUnits}
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <hr />
@@ -199,11 +245,9 @@ export default class CreateAppointment extends React.Component {
                         <div className="form-group">
                             <label htmlFor="period">Period</label>
                             <div className="input-group">
-                                <input type="number" className="form-control" id="period" placeholder="" disabled={!this.state.reminding} value={this.state.timeAmount} onChange={this.changeTimeAmount} />
-                                <select className="form-control" disabled={!this.state.reminding} value={this.state.timeUnit} onChange={this.changeTimeUnit}>
-                                    <option value="MINUTES">Minutes</option>
-                                    <option value="HOURS">Hours</option>
-                                    <option value="DAYS">Days</option>
+                                <input type="number" className="form-control" id="period" placeholder="" disabled={!this.state.reminding} value={this.state.reminderDurationAmount} onChange={this.changeReminderDurationAmount} />
+                                <select className="form-control" disabled={!this.state.reminding} value={this.state.reminderDurationUnit} onChange={this.reminderDurationUnit}>
+                                    {reminderDurationUnits}
                                 </select>
                             </div>
                         </div>
