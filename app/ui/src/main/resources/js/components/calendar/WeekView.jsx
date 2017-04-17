@@ -3,9 +3,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import store from '../../flux/Store';
 
-import YearSelector from './YearSelector';
-import MonthSelector from './MonthSelector';
-import DaySelector from './DaySelector';
+import AppointmentsChart from './AppointmentsChart';
 
 export default class WeekView extends React.Component {
 
@@ -19,7 +17,7 @@ export default class WeekView extends React.Component {
 
     constructor( props ) {
         super( props );
-        this.state = { month: props.month, day: props.day, calendar: props.calendar };
+        this.state = { month: props.month, day: props.day, calendar: props.calendar, appointments: [] };
         this.previousWeek = this.previousWeek.bind( this );
         this.nextWeek = this.nextWeek.bind( this );
     }
@@ -80,7 +78,7 @@ export default class WeekView extends React.Component {
             );
         }
         return <div>
-            <h1>Week <ArrowLeftIcon onClick={this.previousWeek} /> {week} <ArrowRightIcon onClick={this.nextWeek} /> <YearSelector /></h1>
+        <AppointmentsChart calendar={this.state.calendar} appointments={this.state.appointments}/>
             <table className="table table-hover">
                 <thead className="thead-inverse">
                     <tr>

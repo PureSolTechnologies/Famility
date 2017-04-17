@@ -1,22 +1,31 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 
-import YearSelector from './YearSelector';
-import MonthSelector from './MonthSelector';
-import DaySelector from './DaySelector';
+import CalendarController from '../../controller/CalendarController';
+import AppointmentsChart from './AppointmentsChart';
 
 export default class DayView extends React.Component {
 
     static propTypes = {
-        calendar: React.PropTypes.string.isRequired,
+        calendar: React.PropTypes.object.isRequired,
         month: React.PropTypes.string.isRequired,
         day: React.PropTypes.string.isRequired
     };
 
     constructor( props ) {
         super( props );
-        this.state = { month: props.month, day: props.day, calendar: props.calendar };
+        this.state = { month: props.month, day: props.day, calendar: props.calendar, appointments: [] };
         this.createAppointment = this.createAppointment.bind( this );
+    }
+
+    componentDidMount() {
+        var component = this;
+        CalendarController.getMonthAppointments( this.state.calendar.year, this.state.month, this.state.day,
+            function( appointments ) {
+                component.setState( { appointments: appointments });
+            },
+            function( response ) { });
+
     }
 
     componentWillReceiveProps( nextProps ) {
@@ -63,7 +72,7 @@ export default class DayView extends React.Component {
             );
         }
         return <div>
-            <h1><DaySelector />.&nbsp;<MonthSelector />.&nbsp;<YearSelector /></h1>
+            <AppointmentsChart calendar={this.state.calendar} appointments={this.state.appointments}/>
             <table className="table table-hover">
                 <thead className="thead-inverse">
                     <tr>

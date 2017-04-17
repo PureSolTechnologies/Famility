@@ -91,11 +91,60 @@ export default class CalendarController {
         );
     }
 
-    static getYearAppointment( year, successCallback, errorCallback ) {
+    static getYearAppointments( year, successCallback, errorCallback ) {
         restController.GET( '/calendar/appointments/year/' + year,
             null,
             function( response ) {
                 var appointments = JSON.parse( response.response );
+                appointments.months = [];
+                for ( var i = 1; i <= 12; i++ ) {
+                    appointments.months[i] = [];
+                }
+                for ( var appointment of appointments ) {
+                    var month = appointment.date.month;
+                    var dayOfMonth = appointment.date.dayOfMonth;
+                    appointments.months[month][dayOfMonth] = appointment;
+                }
+                successCallback( appointments );
+            },
+            errorCallback
+        );
+    }
+
+    static getMonthAppointments( year, month, successCallback, errorCallback ) {
+        restController.GET( '/calendar/appointments/year/' + year + '/month/' + month,
+            null,
+            function( response ) {
+                var appointments = JSON.parse( response.response );
+                appointments.months = [];
+                for ( var i = 1; i <= 12; i++ ) {
+                    appointments.months[i] = [];
+                }
+                for ( var appointment of appointments ) {
+                    var month = appointment.date.month;
+                    var dayOfMonth = appointment.date.dayOfMonth;
+                    appointments.months[month][dayOfMonth] = appointment;
+                }
+                successCallback( appointments );
+            },
+            errorCallback
+        );
+    }
+
+    static getDayAppointments( year, month, day, successCallback, errorCallback ) {
+        restController.GET( '/calendar/appointments/year/' + year + '/month/' + month + '/day/' + day,
+            null,
+            function( response ) {
+                var appointments = JSON.parse( response.response );
+                appointments.months = [];
+                for ( var i = 1; i <= 12; i++ ) {
+                    appointments.months[i] = [];
+                }
+                for ( var appointment of appointments ) {
+                    var month = appointment.date.month;
+                    var dayOfMonth = appointment.date.dayOfMonth;
+                    appointments.months[month][dayOfMonth] = appointment;
+                }
                 successCallback( appointments );
             },
             errorCallback

@@ -1,36 +1,29 @@
 import React from 'react';
-import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import store from '../../flux/Store';
 import { changeYear, changeMonth } from '../../flux/CalendarActions';
 
-import Tab from '../../components/Tab';
-import TabComponent from '../../components/TabComponent';
-
-import DayView from '../../components/calendar/DayView';
-import WeekView from '../../components/calendar/WeekView';
+import MonthSelector from '../../components/calendar/MonthSelector';
+import YearSelector from '../../components/calendar/YearSelector';
 import MonthView from '../../components/calendar/MonthView';
-import YearView from '../../components/calendar/YearView';
-
-import CalendarController from '../../controller/CalendarController';
 
 export default class MonthCalendar extends React.Component {
 
-
     constructor( props ) {
         super( props );
+        var year = parseInt( this.props.params.year );
+        var month = parseInt( this.props.params.month );
         var storedCalendar = store.getState().calendar;
-        if (storedCalendar !== this.props.params.year) {
-            store.dispatch( changeYear( this.props.params.year ) );
-        }       
-        if (storedCalendar !== this.props.params.month) {
-            store.dispatch( changeMonth( this.props.params.month ) );
-        }  
-        this.state = { calendar: storedCalendar, calendarData: null };
+        if ( storedCalendar.year !== year ) {
+            store.dispatch( changeYear( year ) );
+        }
+        if ( storedCalendar.month !== month ) {
+            store.dispatch( changeMonth( month ) );
+        }
+        this.state = { year: year, month: month };
     }
 
     componentDidMount() {
-        this.readCalendar( this.state.calendar.year );
         this.unsubscribeStore = store.subscribe(() => this.update() );
     }
 
@@ -39,28 +32,16 @@ export default class MonthCalendar extends React.Component {
     }
 
     update() {
-        const yearState = store.getState().calendar.year;
-        this.readCalendar( yearState );
-    }
-
-    readCalendar( year ) {
-        var component = this;
-        CalendarController.getCalendar( year,
-            function( calendar ) {
-                component.setState( { calendarData: calendar });
-            },
-            function( response ) {
-            }
-        );
+        var calendar = store.getState().calendar;
+        if (( calendar.year !== this.state.year ) || ( calendar.month !== this.state.month )) {
+            this.setState( { year: calendar.year, month: calendar.month });
+        }
     }
 
     render() {
-        if ( !this.state.calendarData ) {
-            return <div></div>;
-        }
-
         return <div>
-            <MonthView calendar={this.state.calendarData} month={this.state.calendar.month} />
+            <h1><MonthSelector />.&nbsp;<YearSelector /></h1>
+            <MonthView year={this.state.year} month={this.state.month} />
         </div >;
     }
 }

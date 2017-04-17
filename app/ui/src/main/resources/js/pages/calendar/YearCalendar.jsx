@@ -1,33 +1,27 @@
 import React from 'react';
-import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import store from '../../flux/Store';
 import { changeYear } from '../../flux/CalendarActions';
 
-import Tab from '../../components/Tab';
-import TabComponent from '../../components/TabComponent';
-
-import DayView from '../../components/calendar/DayView';
-import WeekView from '../../components/calendar/WeekView';
-import MonthView from '../../components/calendar/MonthView';
+import YearSelector from '../../components/calendar/YearSelector';
 import YearView from '../../components/calendar/YearView';
 
-import CalendarController from '../../controller/CalendarController';
-
+/**
+ * This component shows a single year in calendar form.
+ */
 export default class YearCalendar extends React.Component {
-
 
     constructor( props ) {
         super( props );
+        var year = parseInt( this.props.params.year );
         var storedCalendar = store.getState().calendar;
-        if ( storedCalendar !== this.props.params.year ) {
-            store.dispatch( changeYear( this.props.params.year ) );
+        if ( storedCalendar.year !== year ) {
+            store.dispatch( changeYear( year ) );
         }
-        this.state = { calendar: storedCalendar, calendarData: null };
+        this.state = { year: year };
     }
 
     componentDidMount() {
-        this.readCalendar( this.state.calendar.year );
         this.unsubscribeStore = store.subscribe(() => this.update() );
     }
 
@@ -36,28 +30,16 @@ export default class YearCalendar extends React.Component {
     }
 
     update() {
-        const yearState = store.getState().calendar.year;
-        this.readCalendar( yearState );
-    }
-
-    readCalendar( year ) {
-        var component = this;
-        CalendarController.getCalendar( year,
-            function( calendar ) {
-                component.setState( { calendarData: calendar });
-            },
-            function( response ) {
-            }
-        );
+        const year = store.getState().calendar.year;
+        if ( year !== this.state.year ) {
+            this.setState( { year: year });
+        }
     }
 
     render() {
-        if ( !this.state.calendarData ) {
-            return <div></div>;
-        }
-
         return <div>
-            <YearView calendar={this.state.calendarData} />
+            <h1><YearSelector /></h1>
+            <YearView year={this.state.year} />
         </div >;
     }
 }

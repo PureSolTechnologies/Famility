@@ -3,13 +3,34 @@ import { Link } from 'react-router';
 
 export default class SingleMonth extends React.Component {
 
+
+    static propTypes = {
+        month: React.PropTypes.number.isRequired,
+        data: React.PropTypes.object.isRequired,
+        appointments: React.PropTypes.array.isRequired,
+    };
     constructor( props ) {
         super( props );
+        this.state = { month: props.month, data: props.data, apointments: props.appointments };
+    }
+
+    componentWillReceiveProps( nextProps ) {
+        var newState = {};
+        if ( this.state.month != nextProps.month ) {
+            newState.month = nextProps.month;
+        }
+        if ( this.state.data != nextProps.data ) {
+            newState.data = nextProps.data;
+        }
+        if ( this.state.appointments != nextProps.appointments ) {
+            newState.appointments = nextProps.appointments;
+        }
+        this.setState( newState );
     }
 
     render() {
         var weeks = [];
-        var days = this.props.data.days;
+        var days = this.state.data.days;
         var startWeek = days["1"]["weekOfYear"];
         var endWeek = days[Object.keys( days ).length]["weekOfYear"];
         if ( startWeek > endWeek ) {
@@ -24,7 +45,11 @@ export default class SingleMonth extends React.Component {
                     daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                 } else {
                     if ( day ) {
-                        daysRow.push( <td key={daysRow.length}><Link to={'/calendar/day/' + this.props.data.year + '/' + this.props.data.month + '/' + dayId}>{dayId}</Link></td> );
+                        if ( (this.state.appointments) && (this.state.appointments[dayId]) ) {
+                            daysRow.push( <td key={daysRow.length} className="btn-warning"><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
+                        } else {
+                            daysRow.push( <td key={daysRow.length}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
+                        }
                     } else {
                         daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                     }
@@ -34,7 +59,7 @@ export default class SingleMonth extends React.Component {
             }
             weeks.push(
                 <tr key={week}>
-                    <th><Link to={'/calendar/week/' + this.props.data.year + '/' + week}>{week > 0 ? week : ""}</Link></th>
+                    <th><Link to={'/calendar/week/' + this.state.data.year + '/' + week}>{week > 0 ? week : ""}</Link></th>
                     {daysRow}
                 </tr>
             );

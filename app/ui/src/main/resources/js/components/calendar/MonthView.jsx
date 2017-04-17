@@ -1,36 +1,60 @@
 import React from 'react';
-import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import SingleMonth from './SingleMonth';
+import CalendarController from '../../controller/CalendarController';
 
-import MonthSelector from './MonthSelector';
-import YearSelector from './YearSelector';
-
+/**
+ * This component shows a single month in calendar form.
+ */
 export default class MonthView extends React.Component {
 
     static propTypes = {
-        calendar: React.PropTypes.string.isRequired,
-        month: React.PropTypes.string.isRequired
+        year: React.PropTypes.number.isRequired,
+        month: React.PropTypes.number.isRequired
     };
 
     constructor( props ) {
         super( props );
-        this.state = { month: props.month, calendar: props.calendar };
+        this.state = { 
+                month: props.month, 
+                year: props.year, 
+                appointments: [] 
+        };
+    }
+
+    componentDidMount() {
+        var component = this;
+        CalendarController.getCalendar( this.state.year,
+            function( calendar ) {
+                component.setState( { calendarData: calendar });
+                CalendarController.getMonthAppointments( component.state.year, component.state.month,
+                    function( appointments ) {
+                        component.setState( { appointments: appointments });
+                    },
+                    function( response ) { });
+            },
+            function( response ) {
+            }
+        );
     }
 
     componentWillReceiveProps( nextProps ) {
-        if ( this.state.calendar != nextProps.calendar ) {
-            this.setState( { calendar: nextProps.calendar });
-        }
-        if ( this.state.month != nextProps.month ) {
-            this.setState( { month: nextProps.month });
+        if ( (this.state.year != nextProps.year) || ( this.state.month != nextProps.month )) {
+            this.state.year = nextProps.year;
+            this.state.month = nextProps.month;
+            this.componentDidMount();
         }
     }
 
+
     render() {
+        if (this.state.calendarData) {
         return <div>
-            <h1><MonthSelector />.&nbsp;<YearSelector /></h1>
-            <SingleMonth month={this.state.calendar.months[this.state.month].name} data={this.state.calendar.months[this.state.month]} />
-        </div>;
+            <SingleMonth month={this.state.month} data={this.state.calendarData.months[this.state.month]} appointments={this.state.appointments.months ? this.state.appointments.months[this.state.month] : []} />
+        </div>;            
+        } else {
+            return <div>
+        </div>;                        
+        }
     }
 }
