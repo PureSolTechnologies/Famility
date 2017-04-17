@@ -3,7 +3,6 @@ import React from 'react';
 import store from '../../flux/Store';
 import { changeYear } from '../../flux/CalendarActions';
 
-import YearSelector from '../../components/calendar/YearSelector';
 import YearView from '../../components/calendar/YearView';
 
 /**
@@ -38,7 +37,6 @@ export default class YearCalendar extends React.Component {
 
     render() {
         return <div>
-            <h1><YearSelector /></h1>
             <YearView year={this.state.year} />
         </div >;
     }

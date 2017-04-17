@@ -41,7 +41,7 @@ export default class DaySelector extends React.Component {
     }
 
     render() {
-        return ( <span><ArrowLeftIcon onClick={this.previous} /> {this.state.day} <ArrowRightIcon onClick={this.next} /></span> );
+        return ( <span><ArrowLeftIcon onClick={this.previous} /> <ArrowRightIcon onClick={this.next} /> {this.state.day}</span> );
     }
 
 }

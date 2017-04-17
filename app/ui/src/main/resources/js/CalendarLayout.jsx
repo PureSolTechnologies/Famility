@@ -1,13 +1,23 @@
 import React from 'react';
 
-import Menu from './Menu';
-import Footer from './Footer';
+import DateSelector from './components/calendar/DateSelector';
 
-export default function CalendarLayout( {children}) {
-    return (
-        <div>
-            <h1>Calendar</h1>
-            {children}
-        </div>
-    );
+export default class CalendarLayout extends React.Component {
+
+    constructor( props ) {
+        super( props );
+    }
+
+    render() {
+        return (
+            <div className="row">
+                <div className="col-md-2">
+                    <DateSelector />
+                </div>
+                <div className="col-md-10">
+                    {this.props.children}
+                </div>
+            </div>
+        );
+    }
 }

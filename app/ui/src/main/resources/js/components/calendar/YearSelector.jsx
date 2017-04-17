@@ -41,7 +41,7 @@ export default class YearSelector extends React.Component {
     }
 
     render() {
-        return ( <span><ArrowLeftIcon onClick={this.previous} /> {this.state.year} <ArrowRightIcon onClick={this.next} /></span> );
+        return ( <span><ArrowLeftIcon onClick={this.previous} /> <ArrowRightIcon onClick={this.next} /> {this.state.year}</span> );
     }
 
 }

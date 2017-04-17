@@ -4,9 +4,6 @@ import store from '../../flux/Store';
 import { changeYear, changeMonth, changeDay } from '../../flux/CalendarActions';
 
 import DayView from '../../components/calendar/DayView';
-import YearSelector from '../../components/calendar/YearSelector';
-import MonthSelector from '../../components/calendar/MonthSelector';
-import DaySelector from '../../components/calendar/DaySelector';
 
 import CalendarController from '../../controller/CalendarController';
 
@@ -59,7 +56,6 @@ export default class DayCalendar extends React.Component {
         }
 
         return <div>
-            <h1><DaySelector />.&nbsp;<MonthSelector />.&nbsp;<YearSelector /></h1>
            <DayView calendar={this.state.calendarData} month={this.state.calendar.month} day={this.state.calendar.day} />
         </div >;
     }

@@ -3,11 +3,10 @@ import { Link } from 'react-router';
 
 export default class SingleMonth extends React.Component {
 
-
     static propTypes = {
         month: React.PropTypes.number.isRequired,
         data: React.PropTypes.object.isRequired,
-        appointments: React.PropTypes.array.isRequired,
+        appointments: React.PropTypes.array,
     };
     constructor( props ) {
         super( props );

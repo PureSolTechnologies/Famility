@@ -1,12 +1,15 @@
 import React from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
+import CalendarController from '../../controller/CalendarController';
 import { changeMonth } from '../../flux/CalendarActions';
 import store from '../../flux/Store';
 
 export default class MonthSelector extends React.Component {
 
-    unsubscribeStore = null;
+    static propTypes = {
+        name: React.PropTypes.bool
+    };
 
     constructor( props ) {
         super( props );
@@ -41,7 +44,7 @@ export default class MonthSelector extends React.Component {
     }
 
     render() {
-        return ( <span><ArrowLeftIcon onClick={this.previous} /> {this.state.month} <ArrowRightIcon onClick={this.next} /></span> );
+        return ( <span><ArrowLeftIcon onClick={this.previous} /> <ArrowRightIcon onClick={this.next} /> {this.props.name ? CalendarController.getNameOfMonth( this.state.month ) : this.state.month}</span> );
     }
 
 }
