@@ -41,10 +41,14 @@ export default class DateSelector extends React.Component {
 
     render() {
         if ( this.state.calendarData ) {
-            return <div>
-                <Link to={'/calendar/year/' + this.state.year}><h2><YearSelector /></h2></Link>                
-                <Link to={'/calendar/month/' + this.state.year + '/' + this.state.month }><h3><MonthSelector name={true} /> </h3></Link>
-                <SingleMonth data={this.state.calendarData.months[this.state.month]} month={this.state.month} />
+            return <div className="card">
+                <div className="card-header" style={{ margin: "0pt", padding: "5pt" }}>
+                    <Link to={'/calendar/year/' + this.state.year}><h2><YearSelector /></h2></Link>                
+                    <Link to={'/calendar/month/' + this.state.year + '/' + this.state.month }><h3><MonthSelector name={true} /> </h3></Link>
+                </div>
+                <div className="card-block" style={{ margin: "0pt", padding: "0pt" }}>
+                    <SingleMonth data={this.state.calendarData.months[this.state.month]} month={this.state.month} />
+                </div>
             </div>;
         } else {
             return <div></div>;

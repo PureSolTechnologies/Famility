@@ -13,11 +13,11 @@ export default class YearCalendar extends React.Component {
     constructor( props ) {
         super( props );
         var year = parseInt( this.props.params.year );
+        this.state = { year: year };
         var storedCalendar = store.getState().calendar;
         if ( storedCalendar.year !== year ) {
             store.dispatch( changeYear( year ) );
         }
-        this.state = { year: year };
     }
 
     componentDidMount() {

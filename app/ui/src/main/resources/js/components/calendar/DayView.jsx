@@ -2,14 +2,13 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 
 import CalendarController from '../../controller/CalendarController';
-import AppointmentsChart from './AppointmentsChart';
 
 export default class DayView extends React.Component {
 
     static propTypes = {
         calendar: React.PropTypes.object.isRequired,
-        month: React.PropTypes.string.isRequired,
-        day: React.PropTypes.string.isRequired
+        month: React.PropTypes.number.isRequired,
+        day: React.PropTypes.number.isRequired
     };
 
     constructor( props ) {
@@ -20,7 +19,7 @@ export default class DayView extends React.Component {
 
     componentDidMount() {
         var component = this;
-        CalendarController.getMonthAppointments( this.state.calendar.year, this.state.month, this.state.day,
+        CalendarController.getDayAppointments( this.state.calendar.year, this.state.month, this.state.day,
             function( appointments ) {
                 component.setState( { appointments: appointments });
             },
@@ -72,7 +71,6 @@ export default class DayView extends React.Component {
             );
         }
         return <div>
-            <AppointmentsChart calendar={this.state.calendar} appointments={this.state.appointments}/>
             <table className="table table-hover">
                 <thead className="thead-inverse">
                     <tr>

@@ -44,7 +44,7 @@ export default class SingleMonth extends React.Component {
                     daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                 } else {
                     if ( day ) {
-                        if ( (this.state.appointments) && (this.state.appointments[dayId]) ) {
+                        if ( ( this.state.appointments ) && ( this.state.appointments[dayId] ) ) {
                             daysRow.push( <td key={daysRow.length} className="btn-warning"><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
                         } else {
                             daysRow.push( <td key={daysRow.length}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
@@ -58,7 +58,7 @@ export default class SingleMonth extends React.Component {
             }
             weeks.push(
                 <tr key={week}>
-                    <th><Link to={'/calendar/week/' + this.state.data.year + '/' + week}>{week > 0 ? week : ""}</Link></th>
+                    <th style={{ borderRight: '1pt solid #000000' }}><Link to={'/calendar/week/' + this.state.data.year + '/' + week}>{week > 0 ? week : ''}</Link></th>
                     {daysRow}
                 </tr>
             );

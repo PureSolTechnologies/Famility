@@ -12,21 +12,29 @@ export default class DayCalendar extends React.Component {
 
     constructor( props ) {
         super( props );
+        var year = parseInt( this.props.params.year );
+        var month = parseInt( this.props.params.month );
+        var day = parseInt( this.props.params.day );
         var storedCalendar = store.getState().calendar;
-        if (storedCalendar !== this.props.params.year) {
-            store.dispatch( changeYear( this.props.params.year ) );
+        if (storedCalendar.year !== year) {
+            store.dispatch( changeYear( year ) );
         }       
-        if (storedCalendar !== this.props.params.month) {
-            store.dispatch( changeMonth( this.props.params.month ) );
+        if (storedCalendar.month !== month) {
+            store.dispatch( changeMonth( month ) );
         }       
-        if( storedCalendar !== this.props.params.day ) {
-            store.dispatch( changeDay( this.props.params.day ) );
+        if( storedCalendar.day !== day ) {
+            store.dispatch( changeDay( day ) );
         }        
-        this.state = { calendar: storedCalendar, calendarData: null };
+        this.state = { 
+            year: year, 
+            month: month, 
+            day: day, 
+            calendarData: null 
+        };
     }
 
     componentDidMount() {
-        this.readCalendar( this.state.calendar.year );
+        this.readCalendar( this.state.year );
         this.unsubscribeStore = store.subscribe(() => this.update() );
     }
 
@@ -56,7 +64,7 @@ export default class DayCalendar extends React.Component {
         }
 
         return <div>
-           <DayView calendar={this.state.calendarData} month={this.state.calendar.month} day={this.state.calendar.day} />
+           <DayView calendar={this.state.calendarData} month={this.state.month} day={this.state.day} />
         </div >;
     }
 }

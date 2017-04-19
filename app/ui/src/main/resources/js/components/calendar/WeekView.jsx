@@ -3,21 +3,22 @@ import { ArrowLeftIcon, ArrowRightIcon } from 'react-octicons';
 
 import store from '../../flux/Store';
 
-import AppointmentsChart from './AppointmentsChart';
-
 export default class WeekView extends React.Component {
 
     static propTypes = {
-        calendar: React.PropTypes.string.isRequired,
-        month: React.PropTypes.string.isRequired,
-        day: React.PropTypes.string.isRequired
+        calendar: React.PropTypes.object.isRequired,
+        week: React.PropTypes.number.isRequired,
     };
 
     unsubscribeStore = null;
 
     constructor( props ) {
         super( props );
-        this.state = { month: props.month, day: props.day, calendar: props.calendar, appointments: [] };
+        this.state = { 
+                week: props.week, 
+                calendar: props.calendar, 
+                appointments: [] 
+        };
         this.previousWeek = this.previousWeek.bind( this );
         this.nextWeek = this.nextWeek.bind( this );
     }
@@ -43,11 +44,10 @@ export default class WeekView extends React.Component {
     }
 
     getDate( week, day ) {
-        var weekObject = this.state.calendar.weeks[week];
-        if ( !weekObject[day] ) {
+        if ( !week[day] ) {
             return '';
         }
-        return weekObject[day].dayOfMonth + '.' + weekObject[day].month + '.' + weekObject[day].year;
+        return week[day].dayOfMonth + '.' + week[day].month + '.' + week[day].year;
     }
 
     previousWeek() {
@@ -59,53 +59,55 @@ export default class WeekView extends React.Component {
     }
 
 
-    render() {
-        var day = this.state.calendar.months[this.state.month].days[this.state.day];
-        var week = day.weekOfYear;
-        var rows = [];
-        for ( var i = 0; i <= 23; i++ ) {
-            rows.push(
-                <tr key={i}>
-                    <th>{i} h</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            );
+    render() {        
+        if (this.state.calendar) {
+            var rows = [];           
+            var week = this.state.calendar.weeks[this.state.week];
+            for ( var i = 0; i <= 23; i++ ) {
+                rows.push(
+                    <tr key={i}>
+                        <th>{i} h</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                );
+            }
+            return <div>
+                <table className="table table-hover">
+                    <thead className="thead-inverse">
+                        <tr>
+                            <th></th>
+                            <th>{this.getDate( week, 1 )}</th>
+                            <th>{this.getDate( week, 2 )}</th>
+                            <th>{this.getDate( week, 3 )}</th>
+                            <th>{this.getDate( week, 4 )}</th>
+                            <th>{this.getDate( week, 5 )}</th>
+                            <th>{this.getDate( week, 6 )}</th>
+                            <th>{this.getDate( week, 7 )}</th>
+                        </tr>
+                        <tr>
+                            <th>Time</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                            <th>Saturday</th>
+                            <th>Sunday</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                </table>
+            </div>;
+        } else {
+            return <div></div>;
         }
-        return <div>
-        <AppointmentsChart calendar={this.state.calendar} appointments={this.state.appointments}/>
-            <table className="table table-hover">
-                <thead className="thead-inverse">
-                    <tr>
-                        <th></th>
-                        <th>{this.getDate( week, 1 )}</th>
-                        <th>{this.getDate( week, 2 )}</th>
-                        <th>{this.getDate( week, 3 )}</th>
-                        <th>{this.getDate( week, 4 )}</th>
-                        <th>{this.getDate( week, 5 )}</th>
-                        <th>{this.getDate( week, 6 )}</th>
-                        <th>{this.getDate( week, 7 )}</th>
-                    </tr>
-                    <tr>
-                        <th>Time</th>
-                        <th>Monday</th>
-                        <th>Tuesday</th>
-                        <th>Wednesday</th>
-                        <th>Thursday</th>
-                        <th>Friday</th>
-                        <th>Saturday</th>
-                        <th>Sunday</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-        </div>;
     }
 }

@@ -18,7 +18,10 @@ export default class MonthCalendar extends React.Component {
         if ( storedCalendar.month !== month ) {
             store.dispatch( changeMonth( month ) );
         }
-        this.state = { year: year, month: month };
+        this.state = {
+            year: year, 
+            month: month
+        };
     }
 
     componentDidMount() {

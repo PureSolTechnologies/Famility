@@ -10,18 +10,19 @@ import CalendarController from '../../controller/CalendarController';
 
 export default class WeekCalendar extends React.Component {
 
-
     constructor( props ) {
         super( props );
+        var year = parseInt( this.props.params.year );
+        var week = parseInt( this.props.params.week );
+        this.state = { year: year, week: week, calendarData: null };
         var storedCalendar = store.getState().calendar;
-        if ( storedCalendar !== this.props.params.year ) {
-            store.dispatch( changeYear( this.props.params.year ) );
+        if ( storedCalendar !== year ) {
+            store.dispatch( changeYear( year ) );
         }
-        this.state = { calendar: storedCalendar, calendarData: null };
     }
 
     componentDidMount() {
-        this.readCalendar( this.state.calendar.year );
+        this.readCalendar( this.state.year );
         this.unsubscribeStore = store.subscribe(() => this.update() );
     }
 
@@ -30,20 +31,21 @@ export default class WeekCalendar extends React.Component {
     }
 
     update() {
-        const yearState = store.getState().calendar.year;
-        this.readCalendar( yearState );
+        const year = store.getState().calendar.year;
+        this.readCalendar( year );
     }
 
     readCalendar( year ) {
         var component = this;
         CalendarController.getCalendar( year,
             function( calendar ) {
-                var week = calendar.weeks[component.props.params.week];
+                var weekId = component.state.week;
+                var week = calendar.weeks[weekId];
                 if ( week ) {
                     store.dispatch( changeMonth( week[1].month ) );
                     store.dispatch( changeDay( week[1].dayOfMonth ) );
                 }
-                component.setState( { calendarData: calendar });
+                component.setState( { year: year, calendarData: calendar });
             },
             function( response ) {
             }
@@ -56,7 +58,7 @@ export default class WeekCalendar extends React.Component {
         }
 
         return <div>
-           <WeekView calendar={this.state.calendarData} month={this.state.calendar.month} day={this.state.calendar.day} />
+           <WeekView calendar={this.state.calendarData} week={this.state.week} />
         </div >;
     }
 }
