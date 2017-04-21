@@ -89,6 +89,20 @@ public class CalendarService {
     }
 
     @GET
+    @Path("/appointments/today")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Appointment> getAppointmentsToday() throws SQLException {
+	return calendarManager.getAppointmentsToday();
+    }
+
+    @GET
+    @Path("/appointments/tomorrow")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Appointment> getAppointmentsTomorrow() throws SQLException {
+	return calendarManager.getAppointmentsTomorrow();
+    }
+
+    @GET
     @Path("/appointments/duration-units")
     @Produces(MediaType.APPLICATION_JSON)
     public List<DurationUnit> getDurationUnits() {

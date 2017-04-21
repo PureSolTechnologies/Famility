@@ -3,6 +3,8 @@ import React from 'react';
 import LocalWeather from '../components/LocalWeather';
 import PeopleController from '../controller/PeopleController';
 import CalendarController from '../controller/CalendarController';
+import AppointmentsToday from '../components/calendar/AppointmentsToday';
+import AppointmentsTomorrow from '../components/calendar/AppointmentsTomorrow';
 
 export default class MainDashboard extends React.Component {
     1
@@ -65,10 +67,16 @@ export default class MainDashboard extends React.Component {
                     </div>
                 </div>
                 <div className="col-md-6">
-                    <div className="card">
+                        <div className="card">
                         <h3 className="card-header">Today's appointments</h3>
-                        <div className="card-block">
-                            <p className="card-text">...</p>
+                        <div className="card-block" style={{padding: "0pt"}}>
+                            <AppointmentsToday />
+                        </div>
+                    </div>
+                        <div className="card">
+                        <h3 className="card-header">Tomorrow's appointments</h3>
+                        <div className="card-block" style={{padding: "0pt"}}>
+                            <AppointmentsTomorrow />
                         </div>
                     </div>
                 </div>

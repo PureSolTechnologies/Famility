@@ -91,21 +91,29 @@ export default class CalendarController {
         );
     }
 
+    static createAppointmentsResult( entity ) {
+        var appointments = JSON.parse( entity );
+        appointments.months = [];
+        for ( var i = 1; i <= 12; i++ ) {
+            appointments.months[i] = [];
+        }
+        for ( var appointment of appointments ) {
+            var month = appointment.date.month;
+            var dayOfMonth = appointment.date.dayOfMonth;
+            if ( !appointments.months[month][dayOfMonth] ) {
+                appointments.months[month][dayOfMonth] = [];
+            }
+            appointments.months[month][dayOfMonth].push( appointment );
+        }
+        return appointments;
+    }
+
     static getYearAppointments( year, successCallback, errorCallback ) {
         restController.GET( '/calendar/appointments/year/' + year,
             null,
             function( response ) {
-                var appointments = JSON.parse( response.response );
-                appointments.months = [];
-                for ( var i = 1; i <= 12; i++ ) {
-                    appointments.months[i] = [];
-                }
-                for ( var appointment of appointments ) {
-                    var month = appointment.date.month;
-                    var dayOfMonth = appointment.date.dayOfMonth;
-                    appointments.months[month][dayOfMonth] = appointment;
-                }
-                successCallback( appointments );
+                var result = CalendarController.createAppointmentsResult( response.response );
+                successCallback( result );
             },
             errorCallback
         );
@@ -115,17 +123,8 @@ export default class CalendarController {
         restController.GET( '/calendar/appointments/year/' + year + '/month/' + month,
             null,
             function( response ) {
-                var appointments = JSON.parse( response.response );
-                appointments.months = [];
-                for ( var i = 1; i <= 12; i++ ) {
-                    appointments.months[i] = [];
-                }
-                for ( var appointment of appointments ) {
-                    var month = appointment.date.month;
-                    var dayOfMonth = appointment.date.dayOfMonth;
-                    appointments.months[month][dayOfMonth] = appointment;
-                }
-                successCallback( appointments );
+                var result = CalendarController.createAppointmentsResult( response.response );
+                successCallback( result );
             },
             errorCallback
         );
@@ -135,17 +134,30 @@ export default class CalendarController {
         restController.GET( '/calendar/appointments/year/' + year + '/month/' + month + '/day/' + day,
             null,
             function( response ) {
-                var appointments = JSON.parse( response.response );
-                appointments.months = [];
-                for ( var i = 1; i <= 12; i++ ) {
-                    appointments.months[i] = [];
-                }
-                for ( var appointment of appointments ) {
-                    var month = appointment.date.month;
-                    var dayOfMonth = appointment.date.dayOfMonth;
-                    appointments.months[month][dayOfMonth] = appointment;
-                }
-                successCallback( appointments );
+                var result = CalendarController.createAppointmentsResult( response.response );
+                successCallback( result );
+            },
+            errorCallback
+        );
+    }
+
+    static getAppointmentsToday( successCallback, errorCallback ) {
+        restController.GET( '/calendar/appointments/today',
+            null,
+            function( response ) {
+                var result = CalendarController.createAppointmentsResult( response.response );
+                successCallback( result );
+            },
+            errorCallback
+        );
+    }
+
+    static getAppointmentsTomorrow( successCallback, errorCallback ) {
+        restController.GET( '/calendar/appointments/tomorrow',
+            null,
+            function( response ) {
+                var result = CalendarController.createAppointmentsResult( response.response );
+                successCallback( result );
             },
             errorCallback
         );

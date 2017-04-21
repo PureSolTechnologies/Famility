@@ -28,7 +28,7 @@ export default class PeopleController {
         //{"name":"Rick-Rainer Ludwig","birthday":{"year":1978,"month":5,"dayOfMonth":16,"dayOfWeek":2,"weekOfYear":20,"quarterOfYear":2}}
         var d = new Date( birthday );
         restController.PUT( '/people', { "Content-Type": "application/json; charset=utf-8" },
-            { name: userName, birthday: { year: d.getYear(), month: d.getMonth(), dayOfMonth: d.getDate() } },
+            { name: userName, birthday: { year: d.getYear() + 1900, month: d.getMonth() + 1 , dayOfMonth: d.getDate() } },
             successCallback,
             errorCallback
         );

@@ -77,18 +77,18 @@ export default class WeekView extends React.Component {
                     </tr>
                 );
             }
-            return <div>
-                <table className="table table-hover">
+            return <div>          
+                <table style={{bgcolor: '#ff0000'}} className="table table-hover">
                     <thead className="thead-inverse">
                         <tr>
-                            <th></th>
-                            <th>{this.getDate( week, 1 )}</th>
-                            <th>{this.getDate( week, 2 )}</th>
-                            <th>{this.getDate( week, 3 )}</th>
-                            <th>{this.getDate( week, 4 )}</th>
-                            <th>{this.getDate( week, 5 )}</th>
-                            <th>{this.getDate( week, 6 )}</th>
-                            <th>{this.getDate( week, 7 )}</th>
+                            <th style={{width:'9%'}}></th>
+                            <th style={{width:'13%'}}>{this.getDate( week, 1 )}</th>
+                            <th style={{width:'13%'}}>{this.getDate( week, 2 )}</th>
+                            <th style={{width:'13%'}}>{this.getDate( week, 3 )}</th>
+                            <th style={{width:'13%'}}>{this.getDate( week, 4 )}</th>
+                            <th style={{width:'13%'}}>{this.getDate( week, 5 )}</th>
+                            <th style={{width:'13%'}}>{this.getDate( week, 6 )}</th>
+                            <th style={{width:'13%'}}>{this.getDate( week, 7 )}</th>
                         </tr>
                         <tr>
                             <th>Time</th>
@@ -102,7 +102,7 @@ export default class WeekView extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {rows}
+                            {rows}
                     </tbody>
                 </table>
             </div>;

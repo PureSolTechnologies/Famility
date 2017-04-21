@@ -297,6 +297,17 @@ public class CalendarManager {
 	}
     }
 
+    public Collection<Appointment> getAppointmentsToday() throws SQLException {
+	LocalDate today = LocalDate.now();
+	return getDayAppointments(today.getYear(), today.getMonth().getValue(), today.getDayOfMonth());
+    }
+
+    public Collection<Appointment> getAppointmentsTomorrow() throws SQLException {
+	LocalDate today = LocalDate.now();
+	LocalDate tomorrow = today.plusDays(1);
+	return getDayAppointments(tomorrow.getYear(), tomorrow.getMonth().getValue(), tomorrow.getDayOfMonth());
+    }
+
     public Collection<Appointment> getYearAppointments(int year) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> select = queryFactory.select(QAppointments.appointments.all())
