@@ -1,10 +1,10 @@
 export default class CalendarDay {
 
-    static fromAppointment( appointment ) {
+    static fromEntry( entry ) {
         var day = new CalendarDay;
-        day.year = appointment.date.year;
-        day.month = appointment.date.month;
-        day.dayOfMonth = appointment.date.dayOfMonth;
+        day.year = entry.date.year;
+        day.month = entry.date.month;
+        day.dayOfMonth = entry.date.dayOfMonth;
         return day;
     }
 

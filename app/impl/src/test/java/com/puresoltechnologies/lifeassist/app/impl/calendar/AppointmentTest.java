@@ -20,12 +20,12 @@ public class AppointmentTest {
     public void testSerialization() throws IOException {
 	List<Person> arrayList = new ArrayList<>();
 	arrayList.add(new Person(12345, "name", new CalendarDay(2015, 2, 3)));
-	Appointment appointment = new Appointment(AppointmentType.BIRTHDAY, "Birthday", "description",
-		new ArrayList<>(), true, new Reminder(3, ChronoUnit.HOURS), new CalendarDay(2017, 1, 2), "Europe/Rome",
+	Entry appointment = new Entry("birthday", "Birthday", "description", new ArrayList<>(), true,
+		new Reminder(3, ChronoUnit.HOURS), new CalendarDay(2017, 1, 2), "Europe/Rome",
 		new CalendarTime(12, 30, 0), 30, ChronoUnit.MINUTES, OccupancyStatus.AWAY);
 	String serialized = JsonSerializer.toString(appointment);
 	System.out.println(serialized);
-	Appointment deserialized = JsonSerializer.fromString(serialized, Appointment.class);
+	Entry deserialized = JsonSerializer.fromString(serialized, Entry.class);
 	assertEquals(appointment, deserialized);
     }
 

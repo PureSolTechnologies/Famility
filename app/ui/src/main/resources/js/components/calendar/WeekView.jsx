@@ -17,7 +17,7 @@ export default class WeekView extends React.Component {
         this.state = { 
                 week: props.week, 
                 calendar: props.calendar, 
-                appointments: [] 
+                entries: [] 
         };
         this.previousWeek = this.previousWeek.bind( this );
         this.nextWeek = this.nextWeek.bind( this );

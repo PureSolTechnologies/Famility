@@ -13,15 +13,15 @@ export default class DayView extends React.Component {
 
     constructor( props ) {
         super( props );
-        this.state = { month: props.month, day: props.day, calendar: props.calendar, appointments: [] };
-        this.createAppointment = this.createAppointment.bind( this );
+        this.state = { month: props.month, day: props.day, calendar: props.calendar, entries: [] };
+        this.createEntry = this.createEntry.bind( this );
     }
 
     componentDidMount() {
         var component = this;
-        CalendarController.getDayAppointments( this.state.calendar.year, this.state.month, this.state.day,
-            function( appointments ) {
-                component.setState( { appointments: appointments });
+        CalendarController.getDayEntries( this.state.calendar.year, this.state.month, this.state.day,
+            function( entries ) {
+                component.setState( { entries: entries });
             },
             function( response ) { });
 
@@ -39,7 +39,7 @@ export default class DayView extends React.Component {
         }
     }
 
-    createAppointment( hour ) {
+    createEntry( hour ) {
         var year = this.state.calendar.year;
         var month = this.state.month;
         if ( month < 10 ) {
@@ -56,7 +56,7 @@ export default class DayView extends React.Component {
         if ( hour2 < 10 ) {
             hour2 = '0' + hour2;
         }
-        browserHistory.push( '/dialog/calendar/create-appointment/' + year + '-' + month + '-' + day + '/' + hour + ':00:00' + '/' + hour2 + ':00:00' );
+        browserHistory.push( '/dialog/calendar/create-entry/' + year + '-' + month + '-' + day + '/' + hour + ':00:00' + '/' + hour2 + ':00:00' );
     }
 
     render() {
@@ -64,7 +64,7 @@ export default class DayView extends React.Component {
         for ( var i = 0; i <= 23; i++ ) {
             const hour = i;
             rows.push(
-                <tr key={i} onClick={() => this.createAppointment( hour )}>
+                <tr key={i} onClick={() => this.createEntry( hour )}>
                     <th>{hour} h</th>
                     <td></td>
                 </tr>
@@ -75,7 +75,7 @@ export default class DayView extends React.Component {
                 <thead className="thead-inverse">
                     <tr>
                         <th>Time</th>
-                        <th>Appointments</th>
+                        <th>Entry</th>
                     </tr>
                 </thead>
                 <tbody>

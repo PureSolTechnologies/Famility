@@ -1,4 +1,4 @@
-export default class Appointment {
+export default class Entry {
 
     id;
     type;

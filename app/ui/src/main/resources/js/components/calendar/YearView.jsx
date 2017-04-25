@@ -15,7 +15,7 @@ export default class YearView extends React.Component {
         super( props );
         this.state = { 
                 year: props.year, 
-                appointments: [] 
+                entries: [] 
         };
     }
 
@@ -24,9 +24,9 @@ export default class YearView extends React.Component {
         CalendarController.getCalendar( this.state.year,
             function( calendar ) {
                 component.setState( { calendarData: calendar });
-                CalendarController.getYearAppointments( component.state.year,
-                    function( appointments ) {
-                        component.setState( { appointments: appointments });
+                CalendarController.getYearEntries( component.state.year,
+                    function( entries ) {
+                        component.setState( { entries: entries });
                     },
                     function( response ) { });
             },
@@ -55,7 +55,7 @@ export default class YearView extends React.Component {
                                 <h3><Link to={'/calendar/month/' + this.state.calendarData.year + '/' + month} >{this.state.calendarData.months[month].name}</Link></h3>
                             </div>
                             <div className="card-block" style={{ margin: "0pt", padding: "0pt" }}>
-                                <SingleMonth month={month} data={this.state.calendarData ? this.state.calendarData.months[month] : []} appointments={this.state.appointments && this.state.appointments.months ? this.state.appointments.months[month] : []} />
+                                <SingleMonth month={month} data={this.state.calendarData ? this.state.calendarData.months[month] : []} entries={this.state.entries && this.state.entries.months ? this.state.entries.months[month] : []} />
                             </div>
                         </div>
                     </div> );

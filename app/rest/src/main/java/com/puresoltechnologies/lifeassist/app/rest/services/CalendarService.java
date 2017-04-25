@@ -29,24 +29,23 @@ import javax.ws.rs.core.UriInfo;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarYear;
 import com.puresoltechnologies.lifeassist.app.api.calendar.TimeZoneInformation;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Appointment;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentSerie;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentType;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarFactory;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.DurationUnit;
+import com.puresoltechnologies.lifeassist.app.impl.calendar.Entry;
+import com.puresoltechnologies.lifeassist.app.impl.calendar.EntrySerie;
 
 @Path("/calendar")
 public class CalendarService {
 
-    private static final Field appointmentIdField;
-    private static final Field appointmentSerieIdField;
+    private static final Field entryIdField;
+    private static final Field entrySerieIdField;
     static {
 	try {
-	    appointmentIdField = Appointment.class.getDeclaredField("id");
-	    appointmentIdField.setAccessible(true);
-	    appointmentSerieIdField = AppointmentSerie.class.getDeclaredField("id");
-	    appointmentSerieIdField.setAccessible(true);
+	    entryIdField = Entry.class.getDeclaredField("id");
+	    entryIdField.setAccessible(true);
+	    entrySerieIdField = EntrySerie.class.getDeclaredField("id");
+	    entrySerieIdField.setAccessible(true);
 	} catch (NoSuchFieldException | SecurityException e) {
 	    throw new RuntimeException(e);
 	}
@@ -55,9 +54,9 @@ public class CalendarService {
     private static final CalendarManager calendarManager = new CalendarManager();
 
     @GET
-    @Path("/year/{year}")
+    @Path("/{year}")
     @Produces(MediaType.APPLICATION_JSON)
-    public CalendarYear getCalendarYear(@PathParam("year") int year) {
+    public CalendarYear getYear(@PathParam("year") int year) {
 	return CalendarFactory.createYear(year);
     }
 
@@ -82,160 +81,159 @@ public class CalendarService {
     }
 
     @GET
-    @Path("/appointments/types")
+    @Path("/entries/types")
     @Produces(MediaType.APPLICATION_JSON)
-    public AppointmentType[] getAppointmentTypes() {
-	return calendarManager.getAppointmentTypes();
+    public List<String> getEntryTypes() throws SQLException {
+	return calendarManager.getEntryTypes();
     }
 
     @GET
-    @Path("/appointments/today")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Appointment> getAppointmentsToday() throws SQLException {
-	return calendarManager.getAppointmentsToday();
-    }
-
-    @GET
-    @Path("/appointments/tomorrow")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Appointment> getAppointmentsTomorrow() throws SQLException {
-	return calendarManager.getAppointmentsTomorrow();
-    }
-
-    @GET
-    @Path("/appointments/duration-units")
+    @Path("/entries/duration-units")
     @Produces(MediaType.APPLICATION_JSON)
     public List<DurationUnit> getDurationUnits() {
 	return calendarManager.getDurationUnits();
     }
 
     @GET
-    @Path("/appointments/reminder-duration-units")
+    @Path("/entries/reminder-duration-units")
     @Produces(MediaType.APPLICATION_JSON)
     public List<DurationUnit> getReminderDurationUnits() {
 	return calendarManager.getReminderDurationUnits();
     }
 
+    @GET
+    @Path("/entries/today")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Entry> getEntriesToday() throws SQLException {
+	return calendarManager.getEntriesToday();
+    }
+
+    @GET
+    @Path("/entries/tomorrow")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Entry> getEntriesTomorrow() throws SQLException {
+	return calendarManager.getEntriesTomorrow();
+    }
+
     @PUT
-    @Path("/appointments")
+    @Path("/entries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAppointment(@Context UriInfo uriInfo, Appointment appointment)
+    public Response createEntry(@Context UriInfo uriInfo, Entry entry)
 	    throws SQLException, IllegalArgumentException, IllegalAccessException {
-	long id = calendarManager.createAppointment(appointment);
-	appointmentIdField.set(appointment, id);
+	long id = calendarManager.createEntry(entry);
+	entryIdField.set(entry, id);
 	ResponseBuilder created = Response.created(uriInfo.getRequestUri().resolve(String.valueOf(id)));
-	created.entity(appointment);
+	created.entity(entry);
 	return created.build();
     }
 
     @POST
-    @Path("/appointments/{id}")
+    @Path("/entries/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updateAppointment(@PathParam("id") long id, Appointment appointment) throws SQLException {
-	boolean updated = calendarManager.updateAppointment(id, appointment);
+    public boolean updateEntry(@PathParam("id") long id, Entry entry) throws SQLException {
+	boolean updated = calendarManager.updateEntry(id, entry);
 	if (!updated) {
-	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+	    throw new NotFoundException("Entry id '" + id + "' was not found.");
 	}
 	return updated;
     }
 
     @GET
-    @Path("/appointments/{id}")
+    @Path("/entries/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Appointment getAppointment(@PathParam("id") long id) throws SQLException {
-	Appointment appointment = calendarManager.getAppointment(id);
-	if (appointment == null) {
-	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+    public Entry getEntry(@PathParam("id") long id) throws SQLException {
+	Entry entry = calendarManager.getEntry(id);
+	if (entry == null) {
+	    throw new NotFoundException("Entry id '" + id + "' was not found.");
 	}
-	return appointment;
+	return entry;
     }
 
     @DELETE
-    @Path("/appointments/{id}")
+    @Path("/entries/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean removeAppointment(@PathParam("id") long id) throws SQLException {
-	boolean deleted = calendarManager.removeAppointment(id);
+    public boolean removeEntry(@PathParam("id") long id) throws SQLException {
+	boolean deleted = calendarManager.removeEntry(id);
 	if (!deleted) {
-	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+	    throw new NotFoundException("Entry id '" + id + "' was not found.");
 	}
 	return deleted;
     }
 
     @PUT
-    @Path("/appointmentSeries")
+    @Path("/entrieseries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAppointmentSeries(@Context UriInfo uriInfo, AppointmentSerie appointmentSerie)
+    public Response createEntrySeries(@Context UriInfo uriInfo, EntrySerie entrySerie)
 	    throws SQLException, IllegalArgumentException, IllegalAccessException {
-	long id = calendarManager.createAppointmentSerie(appointmentSerie);
-	appointmentSerieIdField.set(appointmentSerie, id);
+	long id = calendarManager.createEntrySerie(entrySerie);
+	entrySerieIdField.set(entrySerie, id);
 	ResponseBuilder created = Response.created(uriInfo.getRequestUri().resolve(String.valueOf(id)));
-	created.entity(appointmentSerie);
+	created.entity(entrySerie);
 	return created.build();
     }
 
     @POST
-    @Path("/appointmentSeries/{id}")
+    @Path("/entrieseries/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updateAppointmentSeries(@PathParam("id") long id, AppointmentSerie appointmentSerie)
-	    throws SQLException {
-	boolean updated = calendarManager.updateAppointmentSerie(id, appointmentSerie);
+    public boolean updateEntrySeries(@PathParam("id") long id, EntrySerie entrySerie) throws SQLException {
+	boolean updated = calendarManager.updateEntrySerie(id, entrySerie);
 	if (!updated) {
-	    throw new NotFoundException("Appointment id '" + id + "' was not found.");
+	    throw new NotFoundException("Entry id '" + id + "' was not found.");
 	}
 	return updated;
     }
 
     @GET
-    @Path("/appointmentSeries/{id}")
+    @Path("/entrieseries/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public AppointmentSerie getAppointmentSeries(@PathParam("id") long id) throws SQLException {
-	AppointmentSerie appointmentSerie = calendarManager.getAppointmentSerie(id);
-	if (appointmentSerie == null) {
-	    throw new NotFoundException("AppointmentSerie id '" + id + "' was not found.");
+    public EntrySerie getEntrySerie(@PathParam("id") long id) throws SQLException {
+	EntrySerie entrySerie = calendarManager.getEntrySerie(id);
+	if (entrySerie == null) {
+	    throw new NotFoundException("EntrySerie id '" + id + "' was not found.");
 	}
-	return appointmentSerie;
+	return entrySerie;
     }
 
     @DELETE
-    @Path("/appointmentSeries/{id}")
+    @Path("/entrieseries/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean removeAppointmentSeries(@PathParam("id") long id) throws SQLException {
-	boolean deleted = calendarManager.removeAppointmentSerie(id);
+    public boolean removeEntrySeries(@PathParam("id") long id) throws SQLException {
+	boolean deleted = calendarManager.removeEntrySerie(id);
 	if (!deleted) {
-	    throw new NotFoundException("AppointmentSerie id '" + id + "' was not found.");
+	    throw new NotFoundException("EntrySerie id '" + id + "' was not found.");
 	}
 	return deleted;
     }
 
     @GET
-    @Path("/appointments/year/{year}")
+    @Path("/entries/year/{year}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Appointment> getYearAppointments(@PathParam("year") int year) throws SQLException {
-	return calendarManager.getYearAppointments(year);
+    public Collection<Entry> getYearEntries(@PathParam("year") int year) throws SQLException {
+	return calendarManager.getYearEntries(year);
     }
 
     @GET
-    @Path("/appointments/year/{year}/month/{month}")
+    @Path("/entries/year/{year}/month/{month}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Appointment> getMonthAppointments(@PathParam("year") int year, @PathParam("month") int month)
+    public Collection<Entry> getMonthEntries(@PathParam("year") int year, @PathParam("month") int month)
 	    throws SQLException {
-	return calendarManager.getMonthAppointments(year, month);
+	return calendarManager.getMonthEntries(year, month);
     }
 
     @GET
-    @Path("/appointments/year/{year}/month/{month}/day/{day}")
+    @Path("/entries/year/{year}/month/{month}/day/{day}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Appointment> getDayAppointments(@PathParam("year") int year, @PathParam("month") int month,
+    public Collection<Entry> getDayEntries(@PathParam("year") int year, @PathParam("month") int month,
 	    @PathParam("day") int day) throws SQLException {
-	return calendarManager.getDayAppointments(year, month, day);
+	return calendarManager.getDayEntries(year, month, day);
     }
 
 }

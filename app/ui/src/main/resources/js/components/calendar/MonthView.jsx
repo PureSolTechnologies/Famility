@@ -18,7 +18,7 @@ export default class MonthView extends React.Component {
         this.state = { 
                 month: props.month, 
                 year: props.year, 
-                appointments: [] 
+                entries: [] 
         };
     }
 
@@ -27,9 +27,9 @@ export default class MonthView extends React.Component {
         CalendarController.getCalendar( this.state.year,
             function( calendar ) {
                 component.setState( { calendarData: calendar });
-                CalendarController.getMonthAppointments( component.state.year, component.state.month,
-                    function( appointments ) {
-                        component.setState( { appointments: appointments });
+                CalendarController.getMonthEntries( component.state.year, component.state.month,
+                    function( entries ) {
+                        component.setState( { entries: entries });
                     },
                     function( response ) { });
             },
@@ -50,7 +50,7 @@ export default class MonthView extends React.Component {
     render() {
         if (this.state.calendarData) {
         return <div>
-            <SingleMonth month={this.state.month} data={this.state.calendarData.months[this.state.month]} appointments={this.state.appointments.months ? this.state.appointments.months[this.state.month] : []} />
+            <SingleMonth month={this.state.month} data={this.state.calendarData.months[this.state.month]} entries={this.state.entries.months ? this.state.entries.months[this.state.month] : []} />
         </div>;            
         } else {
             return <div>

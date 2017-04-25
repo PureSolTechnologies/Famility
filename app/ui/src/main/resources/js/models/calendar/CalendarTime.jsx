@@ -1,10 +1,10 @@
 export default class CalendarTime {
 
-    static fromAppointment( appointment ) {
+    static fromEntry( entry ) {
         var time = new CalendarTime;
-        time.hour = appointment.time.hour;
-        time.minute = appointment.time.minute;
-        time.second = appointment.time.second;
+        time.hour = entry.time.hour;
+        time.minute = entry.time.minute;
+        time.second = entry.time.second;
         return time;
     }
 

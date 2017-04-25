@@ -3,12 +3,12 @@ import { browserHistory } from 'react-router';
 
 import CalendarController from '../../../controller/CalendarController';
 import Dialog from '../../../components/dialog/Dialog';
-import Appointment from '../../../models/calendar/Appointment';
+import Entry from '../../../models/calendar/Entry';
 import CalendarDay from '../../../models/calendar/CalendarDay';
 import CalendarTime from '../../../models/calendar/CalendarTime';
 import TimeZoneSelector from '../../../components/calendar/TimeZoneSelector';
 
-export default class CreateAppointment extends React.Component {
+export default class CreateEntry extends React.Component {
 
     constructor( props ) {
         super( props );
@@ -18,7 +18,7 @@ export default class CreateAppointment extends React.Component {
             beginTime: '',
             durationAmount: 1,
             durationUnit: 'HOURS',
-            appointmentType: 'GENERAL',
+            type: 'GENERAL',
             title: '',
             description: '',
             participans: [],
@@ -104,9 +104,9 @@ export default class CreateAppointment extends React.Component {
     }
 
     changeType( event ) {
-        var appointmentType = event.target.value;
+        var type = event.target.value;
         this.setState( {
-            appointmentType: appointmentType
+            type: type
         });
     }
 
@@ -147,27 +147,27 @@ export default class CreateAppointment extends React.Component {
 
     create() {
         var component = this;
-        var appointment = new Appointment;
-        appointment.id = -1;
-        appointment.type = this.state.appointmentType;
-        appointment.title = this.state.title;
-        appointment.description = this.state.description;
-        appointment.participants = [];
-        appointment.reminding = this.state.reminding;
-        appointment.reminder = {
+        var entry = new Entry;
+        entry.id = -1;
+        entry.type = this.state.type;
+        entry.title = this.state.title;
+        entry.description = this.state.description;
+        entry.participants = [];
+        entry.reminding = this.state.reminding;
+        entry.reminder = {
             amount: this.state.reminderDurationAmount,
             unit: this.state.reminderDurationUnit
         };
-        appointment.date = CalendarDay.fromString( this.state.date );
-        appointment.timezone = this.state.timezone;
-        appointment.time = CalendarTime.fromString( this.state.beginTime );
-        appointment.durationAmount = this.state.durationAmount;
-        appointment.durationUnit = this.state.durationUnit;
-        appointment.occupancy = this.state.occupancy;
+        entry.date = CalendarDay.fromString( this.state.date );
+        entry.timezone = this.state.timezone;
+        entry.time = CalendarTime.fromString( this.state.beginTime );
+        entry.durationAmount = this.state.durationAmount;
+        entry.durationUnit = this.state.durationUnit;
+        entry.occupancy = this.state.occupancy;
 
-        CalendarController.createAppointment( appointment,
+        CalendarController.createEntry( entry,
             function( response ) {
-                component.props.router.push( '/calendar/day/' + appointment.date.year + '/' + appointment.date.month + '/' + appointment.date.dayOfMonth );
+                component.props.router.push( '/calendar/day/' + entry.date.year + '/' + entry.date.month + '/' + entry.date.dayOfMonth );
             },
             function( response ) { });
     }
@@ -181,7 +181,7 @@ export default class CreateAppointment extends React.Component {
         for ( var reminderDurationUnit of this.state.reminderDurationUnits ) {
             reminderDurationUnits.push( <option key={reminderDurationUnit.unit} key={reminderDurationUnit.value}>{reminderDurationUnit.name}</option> );
         }
-        return <Dialog title="Create Appointment">
+        return <Dialog title="Create Calendar Entry">
             <form className="border-0">
                 <h3>Time</h3>
                 <div className="row">
@@ -212,8 +212,8 @@ export default class CreateAppointment extends React.Component {
                 <h3>Information</h3>
                 <div className="row">
                     <div className="col-lg-3">
-                        <label htmlFor="appointmentType">Appointment Type</label>
-                        <select className="form-control" id="appointmentType" value={this.state.appointmentType} onChange={this.changeType}>
+                        <label htmlFor="entryType">Entry Type</label>
+                        <select className="form-control" id="entryType" value={this.state.type} onChange={this.changeType}>
                             <option value="GENERAL">General</option>
                             <option value="BIRTHDAY">Birthday</option>
                             <option value="ANNIVERSARY">Anniversary</option>

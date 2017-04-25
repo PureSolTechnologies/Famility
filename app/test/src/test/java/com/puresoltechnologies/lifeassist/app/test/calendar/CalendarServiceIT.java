@@ -23,9 +23,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Appointment;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentSerie;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.AppointmentType;
+import com.puresoltechnologies.lifeassist.app.impl.calendar.Entry;
+import com.puresoltechnologies.lifeassist.app.impl.calendar.EntrySerie;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.OccupancyStatus;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.Reminder;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.Turnus;
@@ -38,9 +37,9 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
 	JerseyWebTarget client = getRestClient("/appointments/types");
 	Response response = client.request().get();
 	assertEquals(200, response.getStatus());
-	MappingIterator<AppointmentType> appointmentTypes = convertCollectionEntity(response, AppointmentType.class);
+	MappingIterator<String> appointmentTypes = convertCollectionEntity(response, String.class);
 	assertNotNull(appointmentTypes);
-	assertEquals(AppointmentType.values().length, appointmentTypes.readAll().size());
+	assertEquals(4, appointmentTypes.readAll().size());
     }
 
     @Test
@@ -56,24 +55,24 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
     @Test
     public void testAppointmentCRUD() throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 	JerseyWebTarget client = getRestClient("/appointments");
-	Appointment original = new Appointment(AppointmentType.GENERAL, "Title", "Description", new ArrayList<>(), true,
+	Entry original = new Entry("appointment", "Title", "Description", new ArrayList<>(), true,
 		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED);
-	Entity<Appointment> entity = Entity.entity(original, MediaType.APPLICATION_JSON);
+	Entity<Entry> entity = Entity.entity(original, MediaType.APPLICATION_JSON);
 	Response response = client.request().put(entity);
 	assertEquals(Status.CREATED.getStatusCode(), response.getStatus());
-	Appointment createdAppointment = convertEntity(response, Appointment.class);
+	Entry createdAppointment = convertEntity(response, Entry.class);
 	assertNotNull(createdAppointment);
 	assertTrue(createdAppointment.getId() > 0);
 
 	client = getRestClient("/appointments/" + createdAppointment.getId());
 	response = client.request().get();
 	assertEquals(Status.OK.getStatusCode(), response.getStatus());
-	Appointment read = convertEntity(response, Appointment.class);
+	Entry read = convertEntity(response, Entry.class);
 	assertEquals(createdAppointment, read);
 
-	Appointment updated = new Appointment(AppointmentType.GENERAL, "Title2", "Description2", new ArrayList<>(),
-		true, new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+	Entry updated = new Entry("appointment", "Title2", "Description2", new ArrayList<>(), true,
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED);
 	entity = Entity.entity(updated, MediaType.APPLICATION_JSON);
 	response = client.request().post(entity);
@@ -81,7 +80,7 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
 
 	response = client.request().get();
 	assertEquals(Status.OK.getStatusCode(), response.getStatus());
-	Appointment readUpdated = convertEntity(response, Appointment.class);
+	Entry readUpdated = convertEntity(response, Entry.class);
 	assertEquals(updated, readUpdated);
 
 	response = client.request().delete();
@@ -98,34 +97,32 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
     public void testAppointmentSerieCRUD()
 	    throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 	JerseyWebTarget client = getRestClient("/appointmentSeries");
-	AppointmentSerie original = new AppointmentSerie(AppointmentType.GENERAL, "Title", "Description",
-		new ArrayList<>(), true, new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16),
-		"Europe/Stockholm", new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED,
-		Turnus.WEEKLY, 2);
-	Entity<AppointmentSerie> entity = Entity.entity(original, MediaType.APPLICATION_JSON);
+	EntrySerie original = new EntrySerie("appointment", "Title", "Description", new ArrayList<>(), true,
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.WEEKLY, 2);
+	Entity<EntrySerie> entity = Entity.entity(original, MediaType.APPLICATION_JSON);
 	Response response = client.request().put(entity);
 	assertEquals(Status.CREATED.getStatusCode(), response.getStatus());
-	AppointmentSerie createdAppointmentSerie = convertEntity(response, AppointmentSerie.class);
+	EntrySerie createdAppointmentSerie = convertEntity(response, EntrySerie.class);
 	assertNotNull(createdAppointmentSerie);
 	assertTrue(createdAppointmentSerie.getId() > 0);
 
 	client = getRestClient("/appointmentSeries/" + createdAppointmentSerie.getId());
 	response = client.request().get();
 	assertEquals(Status.OK.getStatusCode(), response.getStatus());
-	AppointmentSerie read = convertEntity(response, AppointmentSerie.class);
+	EntrySerie read = convertEntity(response, EntrySerie.class);
 	assertEquals(createdAppointmentSerie, read);
 
-	AppointmentSerie updated = new AppointmentSerie(AppointmentType.GENERAL, "Title2", "Description2",
-		new ArrayList<>(), true, new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16),
-		"Europe/Stockholm", new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED,
-		Turnus.DAILY, 2);
+	EntrySerie updated = new EntrySerie("appointment", "Title2", "Description2", new ArrayList<>(), true,
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.DAILY, 2);
 	entity = Entity.entity(updated, MediaType.APPLICATION_JSON);
 	response = client.request().post(entity);
 	assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
 	response = client.request().get();
 	assertEquals(Status.OK.getStatusCode(), response.getStatus());
-	AppointmentSerie readUpdated = convertEntity(response, AppointmentSerie.class);
+	EntrySerie readUpdated = convertEntity(response, EntrySerie.class);
 	assertEquals(updated, readUpdated);
 
 	response = client.request().delete();

@@ -9,7 +9,7 @@ export default class CalendarController {
     }
 
     static getDurationUnits( successfulCallback, errorCallback ) {
-        restController.GET( '/calendar/appointments/duration-units',
+        restController.GET( '/calendar/entries/duration-units',
             null,
             function( response ) {
                 var units = JSON.parse( response.response );
@@ -20,7 +20,7 @@ export default class CalendarController {
     }
 
     static getReminderDurationUnits( successfulCallback, errorCallback ) {
-        restController.GET( '/calendar/appointments/reminder-duration-units',
+        restController.GET( '/calendar/entries/reminder-duration-units',
             null,
             function( response ) {
                 var units = JSON.parse( response.response );
@@ -73,90 +73,90 @@ export default class CalendarController {
         );
     }
 
-    static createAppointment( appointment, successfulCallback, errorCallback ) {
-        restController.PUT( '/calendar/appointments',
+    static createEntry( entry, successfulCallback, errorCallback ) {
+        restController.PUT( '/calendar/entries',
             { "Content-Type": "application/json; charset=utf-8" },
-            appointment,
+            entry,
             successfulCallback,
             errorCallback
         );
     }
 
-    static createAppointmentSerie( appointmentSerie, successfulCallback, errorCallback ) {
-        restController.PUT( '/calendar/appointmentSeries',
+    static createEntrySerie( entrySerie, successfulCallback, errorCallback ) {
+        restController.PUT( '/calendar/entrySeries',
             { "Content-Type": "application/json; charset=utf-8" },
-            appointmentSerie,
+            entrySerie,
             successfulCallback,
             errorCallback
         );
     }
 
-    static createAppointmentsResult( entity ) {
-        var appointments = JSON.parse( entity );
-        appointments.months = [];
+    static createEntriesResult( entity ) {
+        var entries = JSON.parse( entity );
+        entries.months = [];
         for ( var i = 1; i <= 12; i++ ) {
-            appointments.months[i] = [];
+            entries.months[i] = [];
         }
-        for ( var appointment of appointments ) {
-            var month = appointment.date.month;
-            var dayOfMonth = appointment.date.dayOfMonth;
-            if ( !appointments.months[month][dayOfMonth] ) {
-                appointments.months[month][dayOfMonth] = [];
+        for ( var entry of entries ) {
+            var month = entry.date.month;
+            var dayOfMonth = entry.date.dayOfMonth;
+            if ( !entries.months[month][dayOfMonth] ) {
+                entries.months[month][dayOfMonth] = [];
             }
-            appointments.months[month][dayOfMonth].push( appointment );
+            entries.months[month][dayOfMonth].push( entry );
         }
-        return appointments;
+        return entries;
     }
 
-    static getYearAppointments( year, successCallback, errorCallback ) {
-        restController.GET( '/calendar/appointments/year/' + year,
+    static getYearEntries( year, successCallback, errorCallback ) {
+        restController.GET( '/calendar/entries/year/' + year,
             null,
             function( response ) {
-                var result = CalendarController.createAppointmentsResult( response.response );
+                var result = CalendarController.createEntriesResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getMonthAppointments( year, month, successCallback, errorCallback ) {
-        restController.GET( '/calendar/appointments/year/' + year + '/month/' + month,
+    static getMonthEntries( year, month, successCallback, errorCallback ) {
+        restController.GET( '/calendar/entries/year/' + year + '/month/' + month,
             null,
             function( response ) {
-                var result = CalendarController.createAppointmentsResult( response.response );
+                var result = CalendarController.createEntriesResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getDayAppointments( year, month, day, successCallback, errorCallback ) {
-        restController.GET( '/calendar/appointments/year/' + year + '/month/' + month + '/day/' + day,
+    static getDayEntries( year, month, day, successCallback, errorCallback ) {
+        restController.GET( '/calendar/entries/year/' + year + '/month/' + month + '/day/' + day,
             null,
             function( response ) {
-                var result = CalendarController.createAppointmentsResult( response.response );
+                var result = CalendarController.createEntriesResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getAppointmentsToday( successCallback, errorCallback ) {
-        restController.GET( '/calendar/appointments/today',
+    static getEntriesToday( successCallback, errorCallback ) {
+        restController.GET( '/calendar/entries/today',
             null,
             function( response ) {
-                var result = CalendarController.createAppointmentsResult( response.response );
+                var result = CalendarController.createEntriesResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getAppointmentsTomorrow( successCallback, errorCallback ) {
-        restController.GET( '/calendar/appointments/tomorrow',
+    static getEntriesTomorrow( successCallback, errorCallback ) {
+        restController.GET( '/calendar/entries/tomorrow',
             null,
             function( response ) {
-                var result = CalendarController.createAppointmentsResult( response.response );
+                var result = CalendarController.createEntriesResult( response.response );
                 successCallback( result );
             },
             errorCallback

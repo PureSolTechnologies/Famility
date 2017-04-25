@@ -6,11 +6,11 @@ export default class SingleMonth extends React.Component {
     static propTypes = {
         month: React.PropTypes.number.isRequired,
         data: React.PropTypes.object.isRequired,
-        appointments: React.PropTypes.array,
+        entries: React.PropTypes.array,
     };
     constructor( props ) {
         super( props );
-        this.state = { month: props.month, data: props.data, apointments: props.appointments };
+        this.state = { month: props.month, data: props.data, entries: props.entries };
     }
 
     componentWillReceiveProps( nextProps ) {
@@ -21,8 +21,8 @@ export default class SingleMonth extends React.Component {
         if ( this.state.data != nextProps.data ) {
             newState.data = nextProps.data;
         }
-        if ( this.state.appointments != nextProps.appointments ) {
-            newState.appointments = nextProps.appointments;
+        if ( this.state.entries != nextProps.entries ) {
+            newState.entries = nextProps.entries;
         }
         this.setState( newState );
     }
@@ -44,7 +44,7 @@ export default class SingleMonth extends React.Component {
                     daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                 } else {
                     if ( day ) {
-                        if ( ( this.state.appointments ) && ( this.state.appointments[dayId] ) ) {
+                        if ( ( this.state.entries ) && ( this.state.entries[dayId] ) ) {
                             daysRow.push( <td key={daysRow.length} className="btn-warning"><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
                         } else {
                             daysRow.push( <td key={daysRow.length}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );

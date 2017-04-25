@@ -23,7 +23,7 @@ import PeopleAdministrator from './pages/PeopleAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
 
-import CreateAppointment from './pages/dialog/calendar/CreateAppointment';
+import CreateEntry from './pages/dialog/calendar/CreateEntry';
 import AddUser from './pages/dialog/people/AddUser';
 
 function getCurrentYear() {
@@ -69,7 +69,7 @@ ReactDOM.render(
                 </Route>
             </Route>
             <Route path="/dialog" component={DialogLayout}>
-                <Route path="calendar/create-appointment(/:date)(/:beginTime)(/:endTime)" component={CreateAppointment} />
+                <Route path="calendar/create-entry(/:date)(/:beginTime)(/:endTime)" component={CreateEntry} />
                 <Route path="people/add" component={AddUser} />
             </Route>
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >

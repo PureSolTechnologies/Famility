@@ -13,42 +13,47 @@ import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
 import com.puresoltechnologies.lifeassist.app.api.people.Person;
 
 /**
- * This class is used to transfer the data for a single appointment.
+ * This class is used to transfer the data for a single appointment serie.
  * 
  * @author Rick-Rainer Ludwig
  */
-public class Appointment {
+public class EntrySerie {
 
     private final long id;
-    private final AppointmentType type;
+    private final String type;
     private final String title;
     private final String description;
     private final Collection<Person> participants;
     private final boolean reminding;
     private final Reminder reminder;
-    private final CalendarDay date;
+    private final CalendarDay startDate;
     private final String timezone;
-    private final CalendarTime time;
+    private final CalendarTime startTime;
     private final int durationAmount;
     private final ChronoUnit durationUnit;
     private final OccupancyStatus occupancy;
+    private final Turnus turnus;
+    private final int skipping;
     private final ZoneId zoneId;
 
     @JsonCreator
-    public Appointment(//
+    public EntrySerie( //
 	    @JsonProperty("id") long id, //
-	    @JsonProperty("type") AppointmentType type, //
+	    @JsonProperty("type") String type, //
 	    @JsonProperty("title") String title, //
 	    @JsonProperty("description") String description, //
 	    @JsonProperty("participants") Collection<Person> participants, //
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("reminder") Reminder reminder, //
-	    @JsonProperty("date") CalendarDay date, //
+	    @JsonProperty("startDate") CalendarDay startDate, //
 	    @JsonProperty("timezone") String timezone, //
-	    @JsonProperty("time") CalendarTime time, //
+	    @JsonProperty("startTime") CalendarTime startTime, //
 	    @JsonProperty("durationAmount") int durationAmount, //
 	    @JsonProperty("durationUnit") ChronoUnit durationUnit, //
-	    @JsonProperty("occupancy") OccupancyStatus occupancy) {
+	    @JsonProperty("occupancy") OccupancyStatus occupancy, //
+	    @JsonProperty("turnus") Turnus turnus, //
+	    @JsonProperty("skipping") int skipping //
+    ) {
 	super();
 	this.id = id;
 	this.type = type;
@@ -57,37 +62,42 @@ public class Appointment {
 	this.participants = participants;
 	this.reminding = reminding;
 	this.reminder = reminder;
-	this.date = date;
+	this.startDate = startDate;
 	this.timezone = timezone;
-	this.time = time;
+	this.startTime = startTime;
 	this.durationAmount = durationAmount;
 	this.durationUnit = durationUnit;
 	this.occupancy = occupancy;
+	this.turnus = turnus;
+	this.skipping = skipping;
 	zoneId = ZoneId.of(timezone);
     }
 
-    public Appointment(//
-	    AppointmentType type, //
+    public EntrySerie( //
+	    String type, //
 	    String title, //
 	    String description, //
-	    Collection<Person> participans, //
+	    Collection<Person> participants, //
 	    boolean reminding, //
 	    Reminder reminder, //
-	    CalendarDay date, //
+	    CalendarDay startDate, //
 	    String timezone, //
-	    CalendarTime time, //
+	    CalendarTime startTime, //
 	    int durationAmount, //
 	    ChronoUnit durationUnit, //
-	    OccupancyStatus occupancy) {
-	this(-1l, type, title, description, participans, reminding, reminder, date, timezone, time, durationAmount,
-		durationUnit, occupancy);
+	    OccupancyStatus occupancy, //
+	    Turnus turnus, //
+	    int skipping //
+    ) {
+	this(-1l, type, title, description, participants, reminding, reminder, startDate, timezone, startTime,
+		durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
     public long getId() {
 	return id;
     }
 
-    public AppointmentType getType() {
+    public String getType() {
 	return type;
     }
 
@@ -111,16 +121,16 @@ public class Appointment {
 	return reminder;
     }
 
-    public CalendarDay getDate() {
-	return date;
+    public CalendarDay getStartDate() {
+	return startDate;
     }
 
     public String getTimezone() {
 	return timezone;
     }
 
-    public CalendarTime getTime() {
-	return time;
+    public CalendarTime getStartTime() {
+	return startTime;
     }
 
     @JsonIgnore
@@ -140,6 +150,14 @@ public class Appointment {
 	return occupancy;
     }
 
+    public Turnus getTurnus() {
+	return turnus;
+    }
+
+    public int getSkipping() {
+	return skipping;
+    }
+
     @JsonIgnore
     public ZoneId getZoneId() {
 	return zoneId;
@@ -149,7 +167,6 @@ public class Appointment {
     public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + ((date == null) ? 0 : date.hashCode());
 	result = prime * result + ((description == null) ? 0 : description.hashCode());
 	result = prime * result + durationAmount;
 	result = prime * result + ((durationUnit == null) ? 0 : durationUnit.hashCode());
@@ -158,9 +175,12 @@ public class Appointment {
 	result = prime * result + ((participants == null) ? 0 : participants.hashCode());
 	result = prime * result + ((reminder == null) ? 0 : reminder.hashCode());
 	result = prime * result + (reminding ? 1231 : 1237);
-	result = prime * result + ((time == null) ? 0 : time.hashCode());
+	result = prime * result + skipping;
+	result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+	result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
 	result = prime * result + ((timezone == null) ? 0 : timezone.hashCode());
 	result = prime * result + ((title == null) ? 0 : title.hashCode());
+	result = prime * result + ((turnus == null) ? 0 : turnus.hashCode());
 	result = prime * result + ((type == null) ? 0 : type.hashCode());
 	result = prime * result + ((zoneId == null) ? 0 : zoneId.hashCode());
 	return result;
@@ -174,12 +194,7 @@ public class Appointment {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	Appointment other = (Appointment) obj;
-	if (date == null) {
-	    if (other.date != null)
-		return false;
-	} else if (!date.equals(other.date))
-	    return false;
+	EntrySerie other = (EntrySerie) obj;
 	if (description == null) {
 	    if (other.description != null)
 		return false;
@@ -205,10 +220,17 @@ public class Appointment {
 	    return false;
 	if (reminding != other.reminding)
 	    return false;
-	if (time == null) {
-	    if (other.time != null)
+	if (skipping != other.skipping)
+	    return false;
+	if (startDate == null) {
+	    if (other.startDate != null)
 		return false;
-	} else if (!time.equals(other.time))
+	} else if (!startDate.equals(other.startDate))
+	    return false;
+	if (startTime == null) {
+	    if (other.startTime != null)
+		return false;
+	} else if (!startTime.equals(other.startTime))
 	    return false;
 	if (timezone == null) {
 	    if (other.timezone != null)
@@ -220,7 +242,12 @@ public class Appointment {
 		return false;
 	} else if (!title.equals(other.title))
 	    return false;
-	if (type != other.type)
+	if (turnus != other.turnus)
+	    return false;
+	if (type == null) {
+	    if (other.type != null)
+		return false;
+	} else if (!type.equals(other.type))
 	    return false;
 	if (zoneId == null) {
 	    if (other.zoneId != null)
@@ -229,4 +256,5 @@ public class Appointment {
 	    return false;
 	return true;
     }
+
 }

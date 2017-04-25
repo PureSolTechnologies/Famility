@@ -18,7 +18,7 @@ import com.puresoltechnologies.versioning.Version;
 
 public class UsersTransformator implements ComponentTransformator {
 
-    private static final String USERS_TABLE = "users";
+    static final String USERS_TABLE = "users";
 
     @Override
     public String getComponentName() {
@@ -27,7 +27,8 @@ public class UsersTransformator implements ComponentTransformator {
 
     @Override
     public Set<String> getDependencies() {
-	return new HashSet<>();
+	Set<String> dependencies = new HashSet<>();
+	return dependencies;
     }
 
     @Override
@@ -53,8 +54,10 @@ public class UsersTransformator implements ComponentTransformator {
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar not null, " //
-			+ "birthday date not null," //
-			+ "CONSTRAINT " + USERS_TABLE + "_PK PRIMARY KEY (id))",
+			+ "birthday date not null, " //
+			+ "birthday_entry_serie_id bigint not null, " //
+			+ "CONSTRAINT " + USERS_TABLE + "_PK PRIMARY KEY (id)" //
+			+ ")",
 		"Create users table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE SEQUENCE user_id_seq INCREMENT BY 1 OWNED BY " + USERS_TABLE + ".id",
