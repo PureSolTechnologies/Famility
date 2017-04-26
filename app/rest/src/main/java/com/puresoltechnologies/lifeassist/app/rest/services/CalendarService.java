@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarYear;
+import com.puresoltechnologies.lifeassist.app.api.calendar.EntryType;
 import com.puresoltechnologies.lifeassist.app.api.calendar.TimeZoneInformation;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarFactory;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
@@ -83,7 +84,7 @@ public class CalendarService {
     @GET
     @Path("/entries/types")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> getEntryTypes() throws SQLException {
+    public List<EntryType> getEntryTypes() throws SQLException {
 	return calendarManager.getEntryTypes();
     }
 
@@ -99,6 +100,13 @@ public class CalendarService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<DurationUnit> getReminderDurationUnits() {
 	return calendarManager.getReminderDurationUnits();
+    }
+
+    @GET
+    @Path("/entries/turnus-units")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<DurationUnit> getTurnusUnits() {
+	return calendarManager.getTurnusUnits();
     }
 
     @GET

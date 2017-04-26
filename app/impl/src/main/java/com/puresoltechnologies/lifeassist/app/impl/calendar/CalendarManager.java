@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
+import com.puresoltechnologies.lifeassist.app.api.calendar.EntryType;
 import com.puresoltechnologies.lifeassist.app.api.calendar.TimeZoneInformation;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
@@ -62,10 +63,25 @@ public class CalendarManager {
 	return timeUnits;
     }
 
-    public List<String> getEntryTypes() throws SQLException {
+    public List<DurationUnit> getTurnusUnits() {
+	List<DurationUnit> timeUnits = new ArrayList<>();
+	timeUnits.add(new DurationUnit(ChronoUnit.WEEKS, "Weekly"));
+	timeUnits.add(new DurationUnit(ChronoUnit.MONTHS, "Monthly"));
+	timeUnits.add(new DurationUnit(ChronoUnit.YEARS, "Yearly"));
+	return timeUnits;
+    }
+
+    public List<EntryType> getEntryTypes() throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<String> query = queryFactory.select(QEntryTypes.entryTypes.type).from(QEntryTypes.entryTypes);
-	    return query.fetch();
+	    SQLQuery<Tuple> query = queryFactory.select(QEntryTypes.entryTypes.type, QEntryTypes.entryTypes.name)
+		    .from(QEntryTypes.entryTypes);
+	    List<EntryType> entryTypes = new ArrayList<>();
+	    for (Tuple tuple : query.fetch()) {
+		String type = tuple.get(QEntryTypes.entryTypes.type);
+		String name = tuple.get(QEntryTypes.entryTypes.name);
+		entryTypes.add(new EntryType(type, name));
+	    }
+	    return entryTypes;
 	}
     }
 

@@ -8,6 +8,17 @@ export default class CalendarController {
         return CalendarController.namesOfMonths[month - 1];
     }
 
+    static getEntryTypes( successfulCallback, errorCallback ) {
+        restController.GET( '/calendar/entries/types',
+            null,
+            function( response ) {
+                var types = JSON.parse( response.response );
+                successfulCallback( types );
+            },
+            errorCallback
+        );
+    }
+
     static getDurationUnits( successfulCallback, errorCallback ) {
         restController.GET( '/calendar/entries/duration-units',
             null,
@@ -21,6 +32,17 @@ export default class CalendarController {
 
     static getReminderDurationUnits( successfulCallback, errorCallback ) {
         restController.GET( '/calendar/entries/reminder-duration-units',
+            null,
+            function( response ) {
+                var units = JSON.parse( response.response );
+                successfulCallback( units );
+            },
+            errorCallback
+        );
+    }
+
+    static getTurnusUnits( successfulCallback, errorCallback ) {
+        restController.GET( '/calendar/entries/turnus-units',
             null,
             function( response ) {
                 var units = JSON.parse( response.response );
