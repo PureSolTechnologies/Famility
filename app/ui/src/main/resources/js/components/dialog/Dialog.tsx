@@ -1,13 +1,13 @@
-import React from 'react';
+import * as React from 'react';
 
-export default class Dialog extends React.Component {
+export default class Dialog extends React.Component<any, undefined> {
 
 
     static propTypes = {
         title: React.PropTypes.string.isRequired,
     };
 
-    constructor( props ) {
+    constructor( props: any ) {
         super( props );
     }
 

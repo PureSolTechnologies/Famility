@@ -1,15 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
-import { SignInIcon, SignOutIcon } from 'react-octicons';
+const { SignInIcon, SignOutIcon } = require('react-octicons');
 
 import { logout } from '../flux/LoginActions';
 import store from '../flux/Store';
 
-export default class LoginControl extends React.Component {
+export default class LoginControl extends React.Component<any, any> {
 
-    unsubscribeStore = null;
-    
-    constructor( props ) {
+    unsubscribeStore : any = null;
+
+    constructor( props: any ) {
         super( props );
         this.state = {
             login: store.getState().login

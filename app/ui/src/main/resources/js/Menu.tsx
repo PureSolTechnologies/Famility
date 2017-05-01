@@ -1,6 +1,6 @@
-import React from 'react';
+import * as  React from 'react';
 import { Link } from 'react-router';
-import { SettingsIcon, CalendarIcon, HomeIcon, PlugIcon } from 'react-octicons';
+const { SettingsIcon, CalendarIcon, HomeIcon, PlugIcon } = require('react-octicons');
 
 import LoginControl from './components/LoginControl';
 import PureSolTechnologies from './components/PureSolTechnologies';

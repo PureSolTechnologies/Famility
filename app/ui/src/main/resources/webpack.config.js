@@ -7,7 +7,7 @@ module.exports = env => {
   const {ifProd, ifNotProd} = getIfUtils(env)
 
   return validate({
-    entry: './js/main.jsx',
+    entry: ['./js/main.jsx'],
     context: __dirname,
     output: {
       path: resolve(__dirname, './build'),
@@ -16,7 +16,7 @@ module.exports = env => {
       pathinfo: ifNotProd(),
     },
     resolve: {
-        extensions: [".jsx", ".js"]
+        extensions: [".tsx", ".ts", ".jsx", ".js"]
     },
     devtool: ifNotProd('source-map', 'eval'),
     devServer: {
@@ -28,7 +28,8 @@ module.exports = env => {
         {test: /\.jsx$/, exclude: /node_modules/, loader: 'babel-loader'},
         {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
         {test: /\.css$/, loader: 'style-loader!css-loader'},
-        {test: /(\.eot|\.woff2|\.woff|\.ttf|\.svg)/, loader: 'file-loader'},
+        {test: /(\.eot|\.woff2|\.woff|\.ttf|\.svg)$/, loader: 'file-loader'},
+        {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader'},
       ],
     },
     plugins: removeEmpty([
@@ -49,6 +50,6 @@ module.exports = env => {
           warnings: false,
         },
       })),
-    ])
+    ]),
   });
 };
