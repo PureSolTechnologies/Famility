@@ -105,7 +105,7 @@ public class CalendarManager {
 	return timezones;
     }
 
-    public long createEntry(Entry entry) throws SQLException {
+    public long insertEntry(Entry entry) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    LocalDate date = CalendarDay.toLocalDate(entry.getDate());
 	    LocalTime time = CalendarTime.toLocalTime(entry.getTime());
@@ -172,11 +172,11 @@ public class CalendarManager {
 	    if (tuple == null) {
 		return null;
 	    }
-	    return createEntry(tuple);
+	    return insertEntry(tuple);
 	}
     }
 
-    private Entry createEntry(Tuple tuple) {
+    private Entry insertEntry(Tuple tuple) {
 	String type = tuple.get(QEntries.entries.type);
 	String title = tuple.get(QEntries.entries.title);
 	String description = tuple.get(QEntries.entries.description);
@@ -206,12 +206,12 @@ public class CalendarManager {
 	}
     }
 
-    public long createEntrySerie(EntrySerie entrySerie) throws SQLException {
+    public long insertEntrySerie(EntrySerie entrySerie) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    LocalDate date = CalendarDay.toLocalDate(entrySerie.getStartDate());
 	    LocalTime time = CalendarTime.toLocalTime(entrySerie.getStartTime());
 	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, entrySerie.getZoneId());
-	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("entry_serie_id_seq"));
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("entry_serie_id_seq	"));
 	    long id = query.fetchOne();
 	    queryFactory//
 		    .insert(QEntrySeries.entrySeries)//
@@ -277,11 +277,11 @@ public class CalendarManager {
 	    if (tuple == null) {
 		return null;
 	    }
-	    return createEntrySerie(tuple);
+	    return insertEntrySerie(tuple);
 	}
     }
 
-    private EntrySerie createEntrySerie(Tuple tuple) {
+    private EntrySerie insertEntrySerie(Tuple tuple) {
 	String type = tuple.get(QEntrySeries.entrySeries.type);
 	String title = tuple.get(QEntrySeries.entrySeries.title);
 	String description = tuple.get(QEntrySeries.entrySeries.description);
@@ -331,7 +331,7 @@ public class CalendarManager {
 			    .loe(Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59))));
 	    List<Entry> appointments = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
-		appointments.add(createEntry(tuple));
+		appointments.add(insertEntry(tuple));
 	    }
 	    return appointments;
 	}
@@ -346,7 +346,7 @@ public class CalendarManager {
 			    .loe(Timestamp.valueOf(LocalDateTime.of(year, month, lastDay, 23, 59, 59))));
 	    List<Entry> entries = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
-		entries.add(createEntry(tuple));
+		entries.add(insertEntry(tuple));
 	    }
 	    return entries;
 	}
@@ -360,7 +360,7 @@ public class CalendarManager {
 			    Timestamp.valueOf(LocalDateTime.of(year, month, day, 23, 59, 59))));
 	    List<Entry> entries = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
-		entries.add(createEntry(tuple));
+		entries.add(insertEntry(tuple));
 	    }
 	    return entries;
 	}

@@ -1,5 +1,5 @@
 com.puresoltechnologies.lifeassist.app.installer.PasswordStoreTransformator
 com.puresoltechnologies.lifeassist.app.installer.EventLoggerTransformator
-com.puresoltechnologies.lifeassist.app.installer.UsersTransformator
+com.puresoltechnologies.lifeassist.app.installer.PeopleTransformator
 com.puresoltechnologies.lifeassist.app.installer.CalendarTransformator
 com.puresoltechnologies.lifeassist.app.installer.SettingsStoreTransformator

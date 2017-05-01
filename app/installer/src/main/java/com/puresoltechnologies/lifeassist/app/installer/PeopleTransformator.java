@@ -16,13 +16,13 @@ import com.puresoltechnologies.genesis.transformation.spi.ComponentTransformator
 import com.puresoltechnologies.genesis.transformation.spi.TransformationSequence;
 import com.puresoltechnologies.versioning.Version;
 
-public class UsersTransformator implements ComponentTransformator {
+public class PeopleTransformator implements ComponentTransformator {
 
-    static final String USERS_TABLE = "users";
+    static final String PEOPLE_TABLE = "people";
 
     @Override
     public String getComponentName() {
-	return "Users";
+	return "People";
     }
 
     @Override
@@ -50,18 +50,18 @@ public class UsersTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + USERS_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + PEOPLE_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar not null, " //
-			+ "birthday date not null, " //
-			+ "birthday_entry_serie_id bigint not null, " //
-			+ "CONSTRAINT " + USERS_TABLE + "_PK PRIMARY KEY (id)" //
+			+ "birthday date, " //
+			+ "birthday_entry_serie_id bigint, " //
+			+ "CONSTRAINT " + PEOPLE_TABLE + "_PK PRIMARY KEY (id)" //
 			+ ")",
-		"Create users table."));
+		"Create people table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SEQUENCE user_id_seq INCREMENT BY 1 OWNED BY " + USERS_TABLE + ".id",
-		"Sequence for user ids."));
+		"CREATE SEQUENCE person_id_seq INCREMENT BY 1 OWNED BY " + PEOPLE_TABLE + ".id",
+		"Sequence for person ids."));
 	return sequence;
     }
 
@@ -69,8 +69,8 @@ public class UsersTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP SEQUENCE IF EXISTS user_id_seq");
-		statement.execute("DROP TABLE IF EXISTS " + USERS_TABLE);
+		statement.execute("DROP SEQUENCE IF EXISTS person_id_seq");
+		statement.execute("DROP TABLE IF EXISTS " + PEOPLE_TABLE);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

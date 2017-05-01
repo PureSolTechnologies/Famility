@@ -38,10 +38,10 @@ public class PeopleService {
     }
 
     @GET
-    @Path("/{name}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Person getPerson(@PathParam("name") String name) throws SQLException {
-	return peopleManager.getPerson(name);
+    public Person getPerson(@PathParam("id") long id) throws SQLException {
+	return peopleManager.getPerson(id);
     }
 
     @DELETE

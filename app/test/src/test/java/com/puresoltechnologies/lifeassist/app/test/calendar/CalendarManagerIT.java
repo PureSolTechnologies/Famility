@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
+import com.puresoltechnologies.lifeassist.app.api.calendar.EntryType;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.DurationUnit;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.Entry;
@@ -27,7 +28,7 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
 
     @Test
     public void testGetAppointmentTypes() throws SQLException {
-	List<String> appointmentTypes = getCalendarManager().getEntryTypes();
+	List<EntryType> appointmentTypes = getCalendarManager().getEntryTypes();
 	assertNotNull(appointmentTypes);
 	assertEquals(4, appointmentTypes.size());
     }
@@ -45,7 +46,7 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
 	Entry original = new Entry("appointment", "Title", "Description", new ArrayList<>(), true,
 		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED);
-	long id = calendarManager.createEntry(original);
+	long id = calendarManager.insertEntry(original);
 	assertEquals(id, original.getId());
 
 	Entry read = calendarManager.getEntry(id);
@@ -73,7 +74,7 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
 	EntrySerie original = new EntrySerie("appointment", "Title", "Description", new ArrayList<>(), true,
 		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.WEEKLY, 2);
-	long id = calendarManager.createEntrySerie(original);
+	long id = calendarManager.insertEntrySerie(original);
 	assertEquals(id, original.getId());
 
 	EntrySerie read = calendarManager.getEntrySerie(id);

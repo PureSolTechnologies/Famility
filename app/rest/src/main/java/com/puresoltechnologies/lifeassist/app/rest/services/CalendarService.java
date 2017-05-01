@@ -127,9 +127,9 @@ public class CalendarService {
     @Path("/entries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createEntry(@Context UriInfo uriInfo, Entry entry)
+    public Response insertEntry(@Context UriInfo uriInfo, Entry entry)
 	    throws SQLException, IllegalArgumentException, IllegalAccessException {
-	long id = calendarManager.createEntry(entry);
+	long id = calendarManager.insertEntry(entry);
 	entryIdField.set(entry, id);
 	ResponseBuilder created = Response.created(uriInfo.getRequestUri().resolve(String.valueOf(id)));
 	created.entity(entry);
@@ -176,9 +176,9 @@ public class CalendarService {
     @Path("/entrieseries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createEntrySeries(@Context UriInfo uriInfo, EntrySerie entrySerie)
+    public Response insertEntrySeries(@Context UriInfo uriInfo, EntrySerie entrySerie)
 	    throws SQLException, IllegalArgumentException, IllegalAccessException {
-	long id = calendarManager.createEntrySerie(entrySerie);
+	long id = calendarManager.insertEntrySerie(entrySerie);
 	entrySerieIdField.set(entrySerie, id);
 	ResponseBuilder created = Response.created(uriInfo.getRequestUri().resolve(String.valueOf(id)));
 	created.entity(entrySerie);

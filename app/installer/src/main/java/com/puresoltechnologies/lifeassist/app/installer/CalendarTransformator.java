@@ -32,7 +32,7 @@ public class CalendarTransformator implements ComponentTransformator {
     @Override
     public Set<String> getDependencies() {
 	HashSet<String> dependencies = new HashSet<>();
-	dependencies.add("Users");
+	dependencies.add("People");
 	return dependencies;
     }
 
@@ -108,39 +108,40 @@ public class CalendarTransformator implements ComponentTransformator {
 		"CREATE TABLE IF NOT EXISTS " + ENTRY_SERIE_PARTICIPANTS_TABLE //
 			+ " (" //
 			+ "entry_serie_id bigint not null, " //
-			+ "user_id bigint not null, " //
-			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_PK PRIMARY KEY (entry_serie_id, user_id), " //
+			+ "person_id bigint not null, " //
+			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE
+			+ "_PK PRIMARY KEY (entry_serie_id, person_id), " //
 			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_" + ENTRY_SERIES_TABLE
 			+ "_FK FOREIGN KEY (entry_serie_id) REFERENCES entry_series (id), " //
-			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_users"
-			+ "_FK FOREIGN KEY (user_id) REFERENCES users (id)" //
+			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_people"
+			+ "_FK FOREIGN KEY (person_id) REFERENCES people (id)" //
 			+ ")",
 		"Create events table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE INDEX " //
-			+ ENTRY_SERIE_PARTICIPANTS_TABLE + "_user_id_idx"//
+			+ ENTRY_SERIE_PARTICIPANTS_TABLE + "_person_id_idx"//
 			+ " ON " + ENTRY_SERIE_PARTICIPANTS_TABLE //
-			+ " (user_id)",
-		"Creating index on user_id."));
+			+ " (person_id)",
+		"Creating index on person_id."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
 		"CREATE TABLE IF NOT EXISTS " + ENTRY_PARTICIPANTS_TABLE //
 			+ " (" //
 			+ "entry_id bigint not null, " //
-			+ "user_id bigint not null, " //
-			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_PK PRIMARY KEY (entry_id, user_id), " //
+			+ "person_id bigint not null, " //
+			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_PK PRIMARY KEY (entry_id, person_id), " //
 			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_" + ENTRIES_TABLE
 			+ "_FK FOREIGN KEY (entry_id) REFERENCES " + ENTRIES_TABLE + " (id), " //
-			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_users"
-			+ "_FK FOREIGN KEY (user_id) REFERENCES users (id)" //
+			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_people"
+			+ "_FK FOREIGN KEY (person_id) REFERENCES people (id)" //
 			+ ")",
 		"Create events table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE INDEX " //
-			+ ENTRY_PARTICIPANTS_TABLE + "_user_id_idx"//
+			+ ENTRY_PARTICIPANTS_TABLE + "_person_id_idx"//
 			+ " ON " + ENTRY_PARTICIPANTS_TABLE //
-			+ " (user_id)",
-		"Creating index on user_id."));
+			+ " (person_id)",
+		"Creating index on person_id."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE SEQUENCE entry_serie_id_seq INCREMENT BY 1 OWNED BY " + ENTRY_SERIES_TABLE + ".id",
 		"Sequence for entry serie ids."));
@@ -159,9 +160,9 @@ public class CalendarTransformator implements ComponentTransformator {
 		"INSERT INTO " + ENTRY_TYPES_TABLE + " (type, name) VALUES ('anniversary', 'Anniversary')",
 		"Add anniversary type."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"ALTER TABLE " + UsersTransformator.USERS_TABLE + " ADD CONSTRAINT " + UsersTransformator.USERS_TABLE
-			+ "_" + ENTRY_SERIES_TABLE + "_FK FOREIGN KEY (birthday_entry_serie_id) REFERENCES "
-			+ ENTRY_SERIES_TABLE + " (id)",
+		"ALTER TABLE " + PeopleTransformator.PEOPLE_TABLE + " ADD CONSTRAINT "
+			+ PeopleTransformator.PEOPLE_TABLE + "_" + ENTRY_SERIES_TABLE
+			+ "_FK FOREIGN KEY (birthday_entry_serie_id) REFERENCES " + ENTRY_SERIES_TABLE + " (id)",
 		"Add anniversary type."));
 
 	return sequence;
@@ -172,10 +173,10 @@ public class CalendarTransformator implements ComponentTransformator {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
 		statement.execute(
-			"ALTER TABLE IF EXISTS " + UsersTransformator.USERS_TABLE + " DROP CONSTRAINT IF EXISTS "
-				+ UsersTransformator.USERS_TABLE + "_" + ENTRY_SERIES_TABLE + "_FK");
-		statement.execute("DROP INDEX IF EXISTS " + ENTRIES_TABLE + "_user_id_idx");
-		statement.execute("DROP INDEX IF EXISTS " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_user_id_idx");
+			"ALTER TABLE IF EXISTS " + PeopleTransformator.PEOPLE_TABLE + " DROP CONSTRAINT IF EXISTS "
+				+ PeopleTransformator.PEOPLE_TABLE + "_" + ENTRY_SERIES_TABLE + "_FK");
+		statement.execute("DROP INDEX IF EXISTS " + ENTRIES_TABLE + "_person_id_idx");
+		statement.execute("DROP INDEX IF EXISTS " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_person_id_idx");
 		statement.execute("DROP TABLE IF EXISTS " + ENTRY_SERIE_PARTICIPANTS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + ENTRY_PARTICIPANTS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + ENTRIES_TABLE);

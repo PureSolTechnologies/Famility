@@ -21,7 +21,7 @@ import com.puresoltechnologies.versioning.Version;
 public class SettingsStoreTransformator implements ComponentTransformator {
 
     static final String SYSTEM_SETTINGS_TABLE = "system_settings";
-    private static final String USER_SETTINGS_TABLE = "user_settings";
+    private static final String PERSON_SETTINGS_TABLE = "person_settings";
 
     @Override
     public String getComponentName() {
@@ -31,7 +31,7 @@ public class SettingsStoreTransformator implements ComponentTransformator {
     @Override
     public Set<String> getDependencies() {
 	HashSet<String> dependencies = new HashSet<>();
-	dependencies.add("Users");
+	dependencies.add("People");
 	return dependencies;
     }
 
@@ -65,18 +65,18 @@ public class SettingsStoreTransformator implements ComponentTransformator {
 			+ "CONSTRAINT " + SYSTEM_SETTINGS_TABLE + "_PK PRIMARY KEY (parameter))",
 		"Create system settings table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + USER_SETTINGS_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + PERSON_SETTINGS_TABLE //
 			+ " (" //
-			+ "user_id bigint not null, " //
+			+ "person_id bigint not null, " //
 			+ "parameter varchar not null, " //
 			+ "value varchar, " //
-			+ "CONSTRAINT " + USER_SETTINGS_TABLE + "_PK PRIMARY KEY (user_id, parameter), "//
-			+ "CONSTRAINT " + USER_SETTINGS_TABLE
-			+ "_users_PK FOREIGN KEY (user_id) REFERENCES users (id), "//
-			+ "CONSTRAINT " + USER_SETTINGS_TABLE + "_" + SYSTEM_SETTINGS_TABLE
+			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE + "_PK PRIMARY KEY (person_id, parameter), "//
+			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE
+			+ "_people_PK FOREIGN KEY (person_id) REFERENCES people (id), "//
+			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE + "_" + SYSTEM_SETTINGS_TABLE
 			+ "_PK FOREIGN KEY (parameter) REFERENCES " + SYSTEM_SETTINGS_TABLE + " (parameter) "//
 			+ ")",
-		"Create user settings table."));
+		"Create person settings table."));
 	sequence.appendTransformation(new AddSystemParameter(sequence, "timezone", ParameterType.STRING,
 		ZoneId.systemDefault().getId(), "UTC", "", "The system time zone.", "Rick-Rainer Ludwig",
 		"Adds the system time zone and set it to current time zone."));
@@ -87,7 +87,7 @@ public class SettingsStoreTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP TABLE IF EXISTS " + USER_SETTINGS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + PERSON_SETTINGS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + SYSTEM_SETTINGS_TABLE);
 	    }
 	    connection.commit();
