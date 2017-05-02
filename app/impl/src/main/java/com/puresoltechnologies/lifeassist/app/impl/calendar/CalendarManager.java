@@ -312,23 +312,26 @@ public class CalendarManager {
 	}
     }
 
-    public Collection<Entry> getEntriesToday() throws SQLException {
+    public Collection<Entry> getEntriesToday(String type) throws SQLException {
 	LocalDate today = LocalDate.now();
-	return getDayEntries(today.getYear(), today.getMonth().getValue(), today.getDayOfMonth());
+	return getDayEntries(today.getYear(), today.getMonth().getValue(), today.getDayOfMonth(), type);
     }
 
-    public Collection<Entry> getEntriesTomorrow() throws SQLException {
+    public Collection<Entry> getEntriesTomorrow(String type) throws SQLException {
 	LocalDate today = LocalDate.now();
 	LocalDate tomorrow = today.plusDays(1);
-	return getDayEntries(tomorrow.getYear(), tomorrow.getMonth().getValue(), tomorrow.getDayOfMonth());
+	return getDayEntries(tomorrow.getYear(), tomorrow.getMonth().getValue(), tomorrow.getDayOfMonth(), type);
     }
 
-    public Collection<Entry> getYearEntries(int year) throws SQLException {
+    public Collection<Entry> getYearEntries(int year, String type) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries) //
 		    .where(QEntries.entries.occurrence.goe(Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0))))
 		    .where(QEntries.entries.occurrence
 			    .loe(Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59))));
+	    if (type != null) {
+		select.where(QEntries.entries.type.eq(type));
+	    }
 	    List<Entry> appointments = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
 		appointments.add(insertEntry(tuple));
@@ -337,13 +340,16 @@ public class CalendarManager {
 	}
     }
 
-    public Collection<Entry> getMonthEntries(int year, int month) throws SQLException {
+    public Collection<Entry> getMonthEntries(int year, int month, String type) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    int lastDay = Month.of(month).length(Year.of(year).isLeap());
 	    SQLQuery<Tuple> select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries) //
 		    .where(QEntries.entries.occurrence.goe(Timestamp.valueOf(LocalDateTime.of(year, month, 1, 0, 0))))
 		    .where(QEntries.entries.occurrence
 			    .loe(Timestamp.valueOf(LocalDateTime.of(year, month, lastDay, 23, 59, 59))));
+	    if (type != null) {
+		select.where(QEntries.entries.type.eq(type));
+	    }
 	    List<Entry> entries = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
 		entries.add(insertEntry(tuple));
@@ -352,12 +358,15 @@ public class CalendarManager {
 	}
     }
 
-    public Collection<Entry> getDayEntries(int year, int month, int day) throws SQLException {
+    public Collection<Entry> getDayEntries(int year, int month, int day, String type) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries) //
 		    .where(QEntries.entries.occurrence.between(
 			    Timestamp.valueOf(LocalDateTime.of(year, month, day, 0, 0)),
 			    Timestamp.valueOf(LocalDateTime.of(year, month, day, 23, 59, 59))));
+	    if (type != null) {
+		select.where(QEntries.entries.type.eq(type));
+	    }
 	    List<Entry> entries = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
 		entries.add(insertEntry(tuple));

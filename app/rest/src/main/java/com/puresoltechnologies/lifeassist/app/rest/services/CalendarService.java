@@ -112,15 +112,15 @@ public class CalendarService {
     @GET
     @Path("/entries/today")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Entry> getEntriesToday() throws SQLException {
-	return calendarManager.getEntriesToday();
+    public Collection<Entry> getEntriesToday(@QueryParam("type") String type) throws SQLException {
+	return calendarManager.getEntriesToday(type);
     }
 
     @GET
     @Path("/entries/tomorrow")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Entry> getEntriesTomorrow() throws SQLException {
-	return calendarManager.getEntriesTomorrow();
+    public Collection<Entry> getEntriesTomorrow(@QueryParam("type") String type) throws SQLException {
+	return calendarManager.getEntriesTomorrow(type);
     }
 
     @PUT
@@ -176,7 +176,7 @@ public class CalendarService {
     @Path("/entrieseries")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertEntrySeries(@Context UriInfo uriInfo, EntrySerie entrySerie)
+    public Response insertEntrySerie(@Context UriInfo uriInfo, EntrySerie entrySerie)
 	    throws SQLException, IllegalArgumentException, IllegalAccessException {
 	long id = calendarManager.insertEntrySerie(entrySerie);
 	entrySerieIdField.set(entrySerie, id);
@@ -189,7 +189,7 @@ public class CalendarService {
     @Path("/entrieseries/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean updateEntrySeries(@PathParam("id") long id, EntrySerie entrySerie) throws SQLException {
+    public boolean updateEntrySerie(@PathParam("id") long id, EntrySerie entrySerie) throws SQLException {
 	boolean updated = calendarManager.updateEntrySerie(id, entrySerie);
 	if (!updated) {
 	    throw new NotFoundException("Entry id '" + id + "' was not found.");
@@ -224,24 +224,25 @@ public class CalendarService {
     @GET
     @Path("/entries/year/{year}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Entry> getYearEntries(@PathParam("year") int year) throws SQLException {
-	return calendarManager.getYearEntries(year);
+    public Collection<Entry> getYearEntries(@PathParam("year") int year, @QueryParam("type") String type)
+	    throws SQLException {
+	return calendarManager.getYearEntries(year, type);
     }
 
     @GET
     @Path("/entries/year/{year}/month/{month}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Entry> getMonthEntries(@PathParam("year") int year, @PathParam("month") int month)
-	    throws SQLException {
-	return calendarManager.getMonthEntries(year, month);
+    public Collection<Entry> getMonthEntries(@PathParam("year") int year, @PathParam("month") int month,
+	    @QueryParam("type") String type) throws SQLException {
+	return calendarManager.getMonthEntries(year, month, type);
     }
 
     @GET
     @Path("/entries/year/{year}/month/{month}/day/{day}")
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Entry> getDayEntries(@PathParam("year") int year, @PathParam("month") int month,
-	    @PathParam("day") int day) throws SQLException {
-	return calendarManager.getDayEntries(year, month, day);
+	    @PathParam("day") int day, @QueryParam("type") String type) throws SQLException {
+	return calendarManager.getDayEntries(year, month, day, type);
     }
 
 }

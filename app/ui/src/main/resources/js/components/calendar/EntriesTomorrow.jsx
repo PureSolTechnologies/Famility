@@ -13,6 +13,7 @@ export default class EntriesTomorrow extends React.Component {
     componentDidMount() {
         var component = this;
         CalendarController.getEntriesTomorrow(
+            this.props.type,
             function( entries ) {
                 component.setState( { entries: entries });
             },

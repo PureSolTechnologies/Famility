@@ -1,20 +1,21 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
 
-export default class SingleMonth extends React.Component {
+export default class SingleMonth extends React.Component<any, any> {
 
     static propTypes = {
         month: React.PropTypes.number.isRequired,
         data: React.PropTypes.object.isRequired,
         entries: React.PropTypes.array,
     };
-    constructor( props ) {
+    
+    constructor( props: any ) {
         super( props );
         this.state = { month: props.month, data: props.data, entries: props.entries };
     }
 
-    componentWillReceiveProps( nextProps ) {
-        var newState = {};
+    componentWillReceiveProps( nextProps: any ) {
+        var newState: any = {};
         if ( this.state.month != nextProps.month ) {
             newState.month = nextProps.month;
         }
@@ -28,26 +29,34 @@ export default class SingleMonth extends React.Component {
     }
 
     render() {
-        var weeks = [];
+        var weeks:any[] = [];
         var days = this.state.data.days;
         var startWeek = days["1"]["weekOfYear"];
         var endWeek = days[Object.keys( days ).length]["weekOfYear"];
         if ( startWeek > endWeek ) {
             startWeek = 0;
         }
+        var now: any = new Date();
+        var nowYear: number = now.getYear() + 1900;
+        var nowMonth: number = now.getMonth() + 1;
+        var nowDay: number = now.getDate();
         var dayId = 1;
         var day = days[dayId];
         for ( var week = startWeek; week <= endWeek; week++ ) {
-            var daysRow = [];
+            var daysRow: any[] = [];
             for ( var dow = 1; dow <= 7; dow++ ) {
                 if ( ( day ) && ( dow < day["dayOfWeek"] ) ) {
                     daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                 } else {
                     if ( day ) {
+                        var style: any = {};
+                        if ((this.state.data.year === nowYear) && (this.state.data.month === nowMonth) && (dayId === nowDay)) {
+                            style.border = "solid red 2pt";
+                        }
                         if ( ( this.state.entries ) && ( this.state.entries[dayId] ) ) {
-                            daysRow.push( <td key={daysRow.length} className="btn-warning"><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
+                            daysRow.push( <td key={daysRow.length} className="btn-warning" style={style}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
                         } else {
-                            daysRow.push( <td key={daysRow.length}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
+                            daysRow.push( <td key={daysRow.length} style={style}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
                         }
                     } else {
                         daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
