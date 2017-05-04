@@ -88,4 +88,55 @@ public class PeopleManagerIT extends AbstractPeopleManagerTest {
 	}
     }
 
+    @Test
+    public void testAddBirthday() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Tuple> entrySeries = queryFactory.select(QEntrySeries.entrySeries.all())
+		    .from(QEntrySeries.entrySeries);
+	    assertEquals(0, entrySeries.fetch().size());
+
+	    PeopleManager peopleManager = getPeopleManager();
+	    Person original = new Person(1, "Rick-Rainer Ludwig", null);
+	    long id = peopleManager.addPerson(original);
+	    assertEquals(id, original.getId());
+	    entrySeries = queryFactory.select(QEntrySeries.entrySeries.all()).from(QEntrySeries.entrySeries);
+	    assertNull(entrySeries.fetchOne());
+
+	    Person read = peopleManager.getPerson(id);
+	    assertEquals(original, read);
+
+	    Person updated = new Person("Rick", new CalendarDay(1978, 5, 16));
+	    assertTrue(peopleManager.updatePerson(id, updated));
+
+	    entrySeries = queryFactory.select(QEntrySeries.entrySeries.all()).from(QEntrySeries.entrySeries);
+	    assertNotNull(entrySeries.fetchOne());
+	}
+    }
+
+    @Test
+    public void testDeleteBirthday() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Tuple> entrySeries = queryFactory.select(QEntrySeries.entrySeries.all())
+		    .from(QEntrySeries.entrySeries);
+	    assertEquals(0, entrySeries.fetch().size());
+
+	    PeopleManager peopleManager = getPeopleManager();
+	    Person original = new Person(1, "Rick-Rainer Ludwig", new CalendarDay(1978, 5, 16));
+	    long id = peopleManager.addPerson(original);
+	    assertEquals(id, original.getId());
+	    entrySeries = queryFactory.select(QEntrySeries.entrySeries.all()).from(QEntrySeries.entrySeries);
+	    assertNotNull(entrySeries.fetchOne());
+
+	    Person read = peopleManager.getPerson(id);
+	    assertEquals(original, read);
+
+	    Person updated = new Person("Rick", null);
+	    assertTrue(peopleManager.updatePerson(id, updated));
+
+	    entrySeries = queryFactory.select(QEntrySeries.entrySeries.all()).from(QEntrySeries.entrySeries);
+	    assertNull(entrySeries.fetchOne());
+	}
+
+    }
+
 }

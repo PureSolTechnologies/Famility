@@ -44,7 +44,7 @@ export default class MonthSelector extends React.Component {
     }
 
     render() {
-        return ( <span><ArrowLeftIcon onClick={this.previous} /> <ArrowRightIcon onClick={this.next} /> {this.props.name ? CalendarController.getNameOfMonth( this.state.month ) : this.state.month}</span> );
+        return ( <span><ArrowLeftIcon onClick={this.previous} />&nbsp;{this.props.name ? CalendarController.getNameOfMonth( this.state.month ) : this.state.month}<ArrowRightIcon onClick={this.next} /></span> );
     }
 
 }

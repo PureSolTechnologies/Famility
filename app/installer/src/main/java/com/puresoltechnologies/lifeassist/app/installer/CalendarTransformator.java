@@ -77,6 +77,7 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "occupancy varchar(9), " //
 			+ "turnus varchar(7), " //
 			+ "skipping int, " //
+			+ "entries_created_to date not null, "//
 			+ "CONSTRAINT " + ENTRY_SERIES_TABLE + "_PK PRIMARY KEY (id)," //
 			+ "CONSTRAINT " + ENTRY_SERIES_TABLE + "_" + ENTRY_TYPES_TABLE
 			+ "_FK FOREIGN KEY (type) REFERENCES " + ENTRY_TYPES_TABLE + " (type)" //

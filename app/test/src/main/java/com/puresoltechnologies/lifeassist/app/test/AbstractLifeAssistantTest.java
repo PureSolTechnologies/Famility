@@ -57,6 +57,11 @@ public abstract class AbstractLifeAssistantTest {
 	} else {
 	    DatabaseConnector.initialize(configuration.getDatabase());
 	}
+
+    }
+
+    @Before
+    public void clean() throws SQLException {
 	cleanupDB();
     }
 

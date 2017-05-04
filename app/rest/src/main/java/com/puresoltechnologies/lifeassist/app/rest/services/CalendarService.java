@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -121,6 +122,19 @@ public class CalendarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Entry> getEntriesTomorrow(@QueryParam("type") String type) throws SQLException {
 	return calendarManager.getEntriesTomorrow(type);
+    }
+
+    @GET
+    @Path("/entries")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Entry> getEntries(@QueryParam("type") String type, @QueryParam("from") String from,
+	    @QueryParam("to") String to) throws SQLException {
+	if ((from == null) || (to == null)) {
+	    throw new BadRequestException("Query parameters 'from' and 'to' are mendatory.");
+	}
+	LocalDateTime fromTimestamp = LocalDateTime.parse(from);
+	LocalDateTime toTimestamp = LocalDateTime.parse(to);
+	return calendarManager.getEntriesBetween(type, fromTimestamp, toTimestamp);
     }
 
     @PUT

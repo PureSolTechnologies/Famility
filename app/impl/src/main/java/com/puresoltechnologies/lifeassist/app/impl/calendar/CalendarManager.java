@@ -1,6 +1,7 @@
 package com.puresoltechnologies.lifeassist.app.impl.calendar;
 
 import java.lang.reflect.Field;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import com.mysema.commons.lang.CloseableIterator;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
 import com.puresoltechnologies.lifeassist.app.api.calendar.EntryType;
@@ -31,6 +33,8 @@ import com.puresoltechnologies.lifeassist.app.model.QEntryTypes;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
+import com.querydsl.sql.SQLQueryFactory;
+import com.querydsl.sql.dml.SQLUpdateClause;
 
 public class CalendarManager {
 
@@ -172,11 +176,11 @@ public class CalendarManager {
 	    if (tuple == null) {
 		return null;
 	    }
-	    return insertEntry(tuple);
+	    return convertTupleToEntry(tuple);
 	}
     }
 
-    private Entry insertEntry(Tuple tuple) {
+    private Entry convertTupleToEntry(Tuple tuple) {
 	String type = tuple.get(QEntries.entries.type);
 	String title = tuple.get(QEntries.entries.title);
 	String description = tuple.get(QEntries.entries.description);
@@ -277,11 +281,11 @@ public class CalendarManager {
 	    if (tuple == null) {
 		return null;
 	    }
-	    return insertEntrySerie(tuple);
+	    return convertTupleToEntrySerie(tuple);
 	}
     }
 
-    private EntrySerie insertEntrySerie(Tuple tuple) {
+    private EntrySerie convertTupleToEntrySerie(Tuple tuple) {
 	String type = tuple.get(QEntrySeries.entrySeries.type);
 	String title = tuple.get(QEntrySeries.entrySeries.title);
 	String description = tuple.get(QEntrySeries.entrySeries.description);
@@ -294,7 +298,7 @@ public class CalendarManager {
 	int reminderAmount = tuple.get(QEntrySeries.entrySeries.reminderAmount);
 	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QEntrySeries.entrySeries.reminderUnit));
 	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QEntrySeries.entrySeries.occupancy));
-	Turnus turnus = Turnus.valueOf(tuple.get(QEntrySeries.entrySeries.turnus));
+	Turnus turnus = Turnus.valueOf(Turnus.class, tuple.get(QEntrySeries.entrySeries.turnus));
 	int skipping = tuple.get(QEntrySeries.entrySeries.skipping);
 	return new EntrySerie(type, title, description, new ArrayList<>(), reminderAmount > 0,
 		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence), timezone,
@@ -324,55 +328,73 @@ public class CalendarManager {
     }
 
     public Collection<Entry> getYearEntries(int year, String type) throws SQLException {
-	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Tuple> select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries) //
-		    .where(QEntries.entries.occurrence.goe(Timestamp.valueOf(LocalDateTime.of(year, 1, 1, 0, 0))))
-		    .where(QEntries.entries.occurrence
-			    .loe(Timestamp.valueOf(LocalDateTime.of(year, 12, 31, 23, 59, 59))));
-	    if (type != null) {
-		select.where(QEntries.entries.type.eq(type));
-	    }
-	    List<Entry> appointments = new ArrayList<>();
-	    for (Tuple tuple : select.fetch()) {
-		appointments.add(insertEntry(tuple));
-	    }
-	    return appointments;
-	}
+	LocalDateTime from = LocalDateTime.of(year, 1, 1, 0, 0);
+	LocalDateTime to = LocalDateTime.of(year, 12, 31, 23, 59, 59);
+	return getEntriesBetween(type, from, to);
     }
 
     public Collection<Entry> getMonthEntries(int year, int month, String type) throws SQLException {
-	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    int lastDay = Month.of(month).length(Year.of(year).isLeap());
-	    SQLQuery<Tuple> select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries) //
-		    .where(QEntries.entries.occurrence.goe(Timestamp.valueOf(LocalDateTime.of(year, month, 1, 0, 0))))
-		    .where(QEntries.entries.occurrence
-			    .loe(Timestamp.valueOf(LocalDateTime.of(year, month, lastDay, 23, 59, 59))));
-	    if (type != null) {
-		select.where(QEntries.entries.type.eq(type));
-	    }
-	    List<Entry> entries = new ArrayList<>();
-	    for (Tuple tuple : select.fetch()) {
-		entries.add(insertEntry(tuple));
-	    }
-	    return entries;
-	}
+	LocalDateTime from = LocalDateTime.of(year, month, 1, 0, 0);
+	int lastDay = Month.of(month).length(Year.of(year).isLeap());
+	LocalDateTime to = LocalDateTime.of(year, month, lastDay, 23, 59, 59);
+	return getEntriesBetween(type, from, to);
     }
 
     public Collection<Entry> getDayEntries(int year, int month, int day, String type) throws SQLException {
+	LocalDateTime from = LocalDateTime.of(year, month, day, 0, 0);
+	LocalDateTime to = LocalDateTime.of(year, month, day, 23, 59, 59);
+	return getEntriesBetween(type, from, to);
+    }
+
+    public Collection<Entry> getEntriesBetween(String type, LocalDateTime from, LocalDateTime to) throws SQLException {
+	checkAndCreateSerieEntries(type, to.toLocalDate());
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries) //
-		    .where(QEntries.entries.occurrence.between(
-			    Timestamp.valueOf(LocalDateTime.of(year, month, day, 0, 0)),
-			    Timestamp.valueOf(LocalDateTime.of(year, month, day, 23, 59, 59))));
+		    .where(QEntries.entries.occurrence.between(Timestamp.valueOf(from), Timestamp.valueOf(to)));
 	    if (type != null) {
 		select.where(QEntries.entries.type.eq(type));
 	    }
 	    List<Entry> entries = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
-		entries.add(insertEntry(tuple));
+		entries.add(convertTupleToEntry(tuple));
 	    }
 	    return entries;
 	}
     }
 
+    private void checkAndCreateSerieEntries(String type, LocalDate to) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Tuple> seriesNeedingUpdate = queryFactory.select(QEntrySeries.entrySeries.all())
+		    .where(QEntrySeries.entrySeries.entriesCreatedTo.before(Date.valueOf(to)));
+	    if (type != null) {
+		seriesNeedingUpdate.where(QEntrySeries.entrySeries.type.eq(type));
+	    }
+	    try (CloseableIterator<Tuple> iterator = seriesNeedingUpdate.iterate()) {
+		while (iterator.hasNext()) {
+		    Tuple tuple = iterator.next();
+		    EntrySerie entrySerie = convertTupleToEntrySerie(tuple);
+		    Date lastDate = tuple.get(QEntrySeries.entrySeries.entriesCreatedTo);
+		    createSerieEntries(queryFactory, entrySerie, lastDate.toLocalDate(), to);
+		}
+	    }
+	}
+    }
+
+    private void createSerieEntries(SQLQueryFactory queryFactory, EntrySerie entrySerie, LocalDate from, LocalDate to)
+	    throws SQLException {
+	Turnus turnus = entrySerie.getTurnus();
+	LocalDate current = from.plus(turnus.getAmout(), turnus.getUnit());
+	while (current.isBefore(to) || current.isEqual(to)) {
+	    CalendarDay date = CalendarDay.of(current);
+	    Entry entry = new Entry(entrySerie.getType(), entrySerie.getTitle(), entrySerie.getDescription(),
+		    entrySerie.getParticipants(), entrySerie.getReminder() != null ? true : false,
+		    entrySerie.getReminder(), date, entrySerie.getTimezone(), entrySerie.getStartTime(),
+		    entrySerie.getDurationAmount(), entrySerie.getDurationUnit(), entrySerie.getOccupancy());
+	    insertEntry(entry);
+	    current = current.plus(turnus.getAmout(), turnus.getUnit());
+	}
+	SQLUpdateClause update = queryFactory.update(QEntrySeries.entrySeries).set(QEntrySeries.entrySeries.entriesCreatedTo, Date.valueOf(to))
+		.where(QEntrySeries.entrySeries.id.eq(entrySerie.getId()));
+	update.execute();
+    }
 }

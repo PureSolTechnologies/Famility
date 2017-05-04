@@ -8,7 +8,7 @@ export default class SingleMonth extends React.Component<any, any> {
         data: React.PropTypes.object.isRequired,
         entries: React.PropTypes.array,
     };
-    
+
     constructor( props: any ) {
         super( props );
         this.state = { month: props.month, data: props.data, entries: props.entries };
@@ -29,7 +29,7 @@ export default class SingleMonth extends React.Component<any, any> {
     }
 
     render() {
-        var weeks:any[] = [];
+        var weeks: any[] = [];
         var days = this.state.data.days;
         var startWeek = days["1"]["weekOfYear"];
         var endWeek = days[Object.keys( days ).length]["weekOfYear"];
@@ -49,15 +49,22 @@ export default class SingleMonth extends React.Component<any, any> {
                     daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                 } else {
                     if ( day ) {
+                        var isToday: boolean = false;
                         var style: any = {};
-                        if ((this.state.data.year === nowYear) && (this.state.data.month === nowMonth) && (dayId === nowDay)) {
+                        var className: string = "";
+                        if ( ( this.state.data.year === nowYear ) && ( this.state.data.month === nowMonth ) && ( dayId === nowDay ) ) {
                             style.border = "solid red 2pt";
+                            isToday = true;
                         }
                         if ( ( this.state.entries ) && ( this.state.entries[dayId] ) ) {
-                            daysRow.push( <td key={daysRow.length} className="btn-warning" style={style}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
-                        } else {
-                            daysRow.push( <td key={daysRow.length} style={style}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
+                            style.fontWeight = "900";
+                            if ( isToday ) {
+                                className = "alert-danger";
+                            } else {
+                                className = "alert-warning";
+                            }
                         }
+                        daysRow.push( <td key={daysRow.length} className={className} style={style}><Link to={'/calendar/day/' + this.state.data.year + '/' + this.state.data.month + '/' + dayId}>{dayId}</Link></td> );
                     } else {
                         daysRow.push( <td key={daysRow.length}>&nbsp;</td> );
                     }
@@ -76,13 +83,13 @@ export default class SingleMonth extends React.Component<any, any> {
             <thead style={{ border: "1pt solid  gray" }}>
                 <tr>
                     <th></th>
-                    <th>M</th>
-                    <th>T</th>
-                    <th>W</th>
-                    <th>T</th>
-                    <th>F</th>
-                    <th>S</th>
-                    <th>S</th>
+                    <th>Mo</th>
+                    <th>Tu</th>
+                    <th>We</th>
+                    <th>Th</th>
+                    <th>Fr</th>
+                    <th>Sa</th>
+                    <th>Su</th>
                 </tr>
             </thead>
             <tbody>
