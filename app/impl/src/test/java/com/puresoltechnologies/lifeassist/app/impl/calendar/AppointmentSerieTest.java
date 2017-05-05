@@ -20,9 +20,10 @@ public class AppointmentSerieTest {
     public void testSerialization() throws IOException {
 	List<Person> arrayList = new ArrayList<>();
 	arrayList.add(new Person(12345, "name", new CalendarDay(2015, 2, 3)));
-	EntrySerie appointment = new EntrySerie("birthday", "Birthday", "description", new ArrayList<>(),
-		true, new Reminder(3, ChronoUnit.HOURS), new CalendarDay(2017, 1, 2), "Europe/Berlin",
-		new CalendarTime(12, 30, 0), 2, ChronoUnit.HOURS, OccupancyStatus.AWAY, Turnus.WEEKLY, 1);
+	EntrySerie appointment = new EntrySerie("birthday", "Birthday", "description", new ArrayList<>(), true,
+		new Reminder(3, ChronoUnit.HOURS), new CalendarDay(2017, 1, 2), new CalendarDay(2017, 10, 2),
+		"Europe/Berlin", new CalendarTime(12, 30, 0), 2, ChronoUnit.HOURS, OccupancyStatus.AWAY, Turnus.WEEKLY,
+		1);
 	String serialized = JsonSerializer.toString(appointment);
 	System.out.println(serialized);
 	EntrySerie deserialized = JsonSerializer.fromString(serialized, EntrySerie.class);

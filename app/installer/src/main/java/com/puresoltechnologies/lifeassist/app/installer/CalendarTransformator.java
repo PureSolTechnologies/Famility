@@ -69,6 +69,7 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
 			+ "first_occurrence timestamp, "//
+			+ "last_occurrence date, "//
 			+ "timezone varchar, "//
 			+ "duration_amount int, "//
 			+ "duration_unit varchar, "//
@@ -77,7 +78,7 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "occupancy varchar(9), " //
 			+ "turnus varchar(7), " //
 			+ "skipping int, " //
-			+ "entries_created_to date not null, "//
+			+ "last_entry_created date not null, "//
 			+ "CONSTRAINT " + ENTRY_SERIES_TABLE + "_PK PRIMARY KEY (id)," //
 			+ "CONSTRAINT " + ENTRY_SERIES_TABLE + "_" + ENTRY_TYPES_TABLE
 			+ "_FK FOREIGN KEY (type) REFERENCES " + ENTRY_TYPES_TABLE + " (type)" //

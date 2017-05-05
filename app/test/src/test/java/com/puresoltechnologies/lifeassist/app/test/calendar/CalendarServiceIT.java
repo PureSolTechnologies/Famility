@@ -98,7 +98,7 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
 	    throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 	JerseyWebTarget client = getRestClient("/appointmentSeries");
 	EntrySerie original = new EntrySerie("appointment", "Title", "Description", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), null, "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.WEEKLY, 2);
 	Entity<EntrySerie> entity = Entity.entity(original, MediaType.APPLICATION_JSON);
 	Response response = client.request().put(entity);
@@ -114,7 +114,7 @@ public class CalendarServiceIT extends AbstractCalendarServiceTest {
 	assertEquals(createdAppointmentSerie, read);
 
 	EntrySerie updated = new EntrySerie("appointment", "Title2", "Description2", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), null, "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.DAILY, 2);
 	entity = Entity.entity(updated, MediaType.APPLICATION_JSON);
 	response = client.request().post(entity);

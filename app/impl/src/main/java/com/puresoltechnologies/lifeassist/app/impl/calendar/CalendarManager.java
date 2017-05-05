@@ -232,6 +232,8 @@ public class CalendarManager {
 		    .set(QEntrySeries.entrySeries.occupancy, entrySerie.getOccupancy().name()) //
 		    .set(QEntrySeries.entrySeries.turnus, entrySerie.getTurnus().name()) //
 		    .set(QEntrySeries.entrySeries.skipping, entrySerie.getSkipping()) //
+		    .set(QEntrySeries.entrySeries.lastEntryCreated,
+			    Date.valueOf(CalendarDay.toLocalDate(entrySerie.getStartDate()).minus(1, ChronoUnit.DAYS))) //
 		    .execute();
 	    queryFactory.commit();
 	    entrySerieIdField.set(entrySerie, id);
@@ -293,7 +295,7 @@ public class CalendarManager {
 	String timezone = tuple.get(QEntrySeries.entrySeries.timezone);
 
 	int durationAmount = tuple.get(QEntrySeries.entrySeries.durationAmount);
-	ChronoUnit durationUnit = ChronoUnit.valueOf(tuple.get(QEntries.entries.durationUnit));
+	ChronoUnit durationUnit = ChronoUnit.valueOf(tuple.get(QEntrySeries.entrySeries.durationUnit));
 
 	int reminderAmount = tuple.get(QEntrySeries.entrySeries.reminderAmount);
 	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QEntrySeries.entrySeries.reminderUnit));
@@ -301,7 +303,7 @@ public class CalendarManager {
 	Turnus turnus = Turnus.valueOf(Turnus.class, tuple.get(QEntrySeries.entrySeries.turnus));
 	int skipping = tuple.get(QEntrySeries.entrySeries.skipping);
 	return new EntrySerie(type, title, description, new ArrayList<>(), reminderAmount > 0,
-		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence), timezone,
+		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence), null, timezone,
 		CalendarTime.of(firstOccurrence), durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
@@ -364,8 +366,10 @@ public class CalendarManager {
 
     private void checkAndCreateSerieEntries(String type, LocalDate to) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Tuple> seriesNeedingUpdate = queryFactory.select(QEntrySeries.entrySeries.all())
-		    .where(QEntrySeries.entrySeries.entriesCreatedTo.before(Date.valueOf(to)));
+	    SQLQuery<Tuple> seriesNeedingUpdate = queryFactory //
+		    .select(QEntrySeries.entrySeries.all()) //
+		    .from(QEntrySeries.entrySeries) //
+		    .where(QEntrySeries.entrySeries.lastEntryCreated.before(Date.valueOf(to)));
 	    if (type != null) {
 		seriesNeedingUpdate.where(QEntrySeries.entrySeries.type.eq(type));
 	    }
@@ -373,7 +377,7 @@ public class CalendarManager {
 		while (iterator.hasNext()) {
 		    Tuple tuple = iterator.next();
 		    EntrySerie entrySerie = convertTupleToEntrySerie(tuple);
-		    Date lastDate = tuple.get(QEntrySeries.entrySeries.entriesCreatedTo);
+		    Date lastDate = tuple.get(QEntrySeries.entrySeries.lastEntryCreated);
 		    createSerieEntries(queryFactory, entrySerie, lastDate.toLocalDate(), to);
 		}
 	    }
@@ -391,9 +395,10 @@ public class CalendarManager {
 		    entrySerie.getReminder(), date, entrySerie.getTimezone(), entrySerie.getStartTime(),
 		    entrySerie.getDurationAmount(), entrySerie.getDurationUnit(), entrySerie.getOccupancy());
 	    insertEntry(entry);
-	    current = current.plus(turnus.getAmout(), turnus.getUnit());
+	    current = current.plus(turnus.getAmout() + entrySerie.getSkipping(), turnus.getUnit());
 	}
-	SQLUpdateClause update = queryFactory.update(QEntrySeries.entrySeries).set(QEntrySeries.entrySeries.entriesCreatedTo, Date.valueOf(to))
+	SQLUpdateClause update = queryFactory.update(QEntrySeries.entrySeries)
+		.set(QEntrySeries.entrySeries.lastEntryCreated, Date.valueOf(to))
 		.where(QEntrySeries.entrySeries.id.eq(entrySerie.getId()));
 	update.execute();
     }

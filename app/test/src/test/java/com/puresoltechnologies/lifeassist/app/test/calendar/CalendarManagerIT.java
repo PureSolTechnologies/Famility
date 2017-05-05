@@ -72,7 +72,7 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
     public void testAppointmentSerieCRUD() throws SQLException {
 	CalendarManager calendarManager = getCalendarManager();
 	EntrySerie original = new EntrySerie("appointment", "Title", "Description", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), null, "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.WEEKLY, 2);
 	long id = calendarManager.insertEntrySerie(original);
 	assertEquals(id, original.getId());
@@ -81,7 +81,7 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
 	assertEquals(original, read);
 
 	EntrySerie updated = new EntrySerie("appointment", "Title2", "Description2", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
+		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), null, "Europe/Stockholm",
 		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.DAILY, 2);
 	assertFalse(calendarManager.updateEntrySerie(updated));
 	assertTrue(calendarManager.updateEntrySerie(id, updated));

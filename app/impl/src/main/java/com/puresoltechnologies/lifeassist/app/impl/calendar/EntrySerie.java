@@ -27,6 +27,7 @@ public class EntrySerie {
     private final boolean reminding;
     private final Reminder reminder;
     private final CalendarDay startDate;
+    private final CalendarDay lastDate;
     private final String timezone;
     private final CalendarTime startTime;
     private final int durationAmount;
@@ -46,6 +47,7 @@ public class EntrySerie {
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("reminder") Reminder reminder, //
 	    @JsonProperty("startDate") CalendarDay startDate, //
+	    @JsonProperty("lastDate") CalendarDay lastDate, //
 	    @JsonProperty("timezone") String timezone, //
 	    @JsonProperty("startTime") CalendarTime startTime, //
 	    @JsonProperty("durationAmount") int durationAmount, //
@@ -63,6 +65,7 @@ public class EntrySerie {
 	this.reminding = reminding;
 	this.reminder = reminder;
 	this.startDate = startDate;
+	this.lastDate = lastDate;
 	this.timezone = timezone;
 	this.startTime = startTime;
 	this.durationAmount = durationAmount;
@@ -81,6 +84,7 @@ public class EntrySerie {
 	    boolean reminding, //
 	    Reminder reminder, //
 	    CalendarDay startDate, //
+	    CalendarDay lastDate, //
 	    String timezone, //
 	    CalendarTime startTime, //
 	    int durationAmount, //
@@ -89,7 +93,7 @@ public class EntrySerie {
 	    Turnus turnus, //
 	    int skipping //
     ) {
-	this(-1l, type, title, description, participants, reminding, reminder, startDate, timezone, startTime,
+	this(-1l, type, title, description, participants, reminding, reminder, startDate, lastDate, timezone, startTime,
 		durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
@@ -123,6 +127,10 @@ public class EntrySerie {
 
     public CalendarDay getStartDate() {
 	return startDate;
+    }
+
+    public CalendarDay getLastDate() {
+	return lastDate;
     }
 
     public String getTimezone() {
@@ -171,6 +179,7 @@ public class EntrySerie {
 	result = prime * result + durationAmount;
 	result = prime * result + ((durationUnit == null) ? 0 : durationUnit.hashCode());
 	result = prime * result + (int) (id ^ (id >>> 32));
+	result = prime * result + ((lastDate == null) ? 0 : lastDate.hashCode());
 	result = prime * result + ((occupancy == null) ? 0 : occupancy.hashCode());
 	result = prime * result + ((participants == null) ? 0 : participants.hashCode());
 	result = prime * result + ((reminder == null) ? 0 : reminder.hashCode());
@@ -205,6 +214,11 @@ public class EntrySerie {
 	if (durationUnit != other.durationUnit)
 	    return false;
 	if (id != other.id)
+	    return false;
+	if (lastDate == null) {
+	    if (other.lastDate != null)
+		return false;
+	} else if (!lastDate.equals(other.lastDate))
 	    return false;
 	if (occupancy != other.occupancy)
 	    return false;

@@ -87,8 +87,8 @@ public class PeopleManager {
 
     private EntrySerie createBirthdayEntrySerie(Person person) {
 	EntrySerie entrySerie = new EntrySerie("birthday", person.getName() + "'s Birthday", "", new ArrayList<>(),
-		true, new Reminder(3, ChronoUnit.DAYS), person.getBirthday(), "UTC", new CalendarTime(0, 0, 0), 24,
-		ChronoUnit.HOURS, OccupancyStatus.AVAILABLE, Turnus.YEARLY, 0);
+		true, new Reminder(3, ChronoUnit.DAYS), person.getBirthday(), null, "UTC", new CalendarTime(0, 0, 0),
+		24, ChronoUnit.HOURS, OccupancyStatus.AVAILABLE, Turnus.YEARLY, 0);
 	return entrySerie;
     }
 
