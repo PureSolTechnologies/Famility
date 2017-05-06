@@ -1,10 +1,12 @@
 package com.puresoltechnologies.lifeassist.app.api.calendar;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -32,6 +34,7 @@ public class CalendarTime {
     private final int hour;
     private final int minute;
     private final int second;
+    private final LocalTime localTime;
 
     @JsonCreator
     public CalendarTime(@JsonProperty("hour") int hour, //
@@ -41,6 +44,7 @@ public class CalendarTime {
 	this.hour = hour;
 	this.minute = minute;
 	this.second = second;
+	localTime = LocalTime.of(getHour(), getMinute(), getSecond());
     }
 
     public int getHour() {
@@ -53,6 +57,11 @@ public class CalendarTime {
 
     public int getSecond() {
 	return second;
+    }
+
+    @JsonIgnore
+    public LocalTime getLocalTime() {
+	return localTime;
     }
 
     @Override
@@ -85,6 +94,6 @@ public class CalendarTime {
 
     @Override
     public String toString() {
-	return hour + ":" + minute + ":" + second;
+	return DateTimeFormatter.ISO_LOCAL_TIME.format(localTime);
     }
 }

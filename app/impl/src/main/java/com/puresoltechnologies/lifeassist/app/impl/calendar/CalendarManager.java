@@ -224,6 +224,9 @@ public class CalendarManager {
 		    .set(QEntrySeries.entrySeries.title, entrySerie.getTitle()) //
 		    .set(QEntrySeries.entrySeries.description, entrySerie.getDescription()) //
 		    .set(QEntrySeries.entrySeries.firstOccurrence, Timestamp.from(occurrence.toInstant())) //
+		    .set(QEntrySeries.entrySeries.lastOccurrence,
+			    Date.valueOf(
+				    entrySerie.getLastDate() != null ? entrySerie.getLastDate().getLocalDate() : null)) //
 		    .set(QEntrySeries.entrySeries.timezone, entrySerie.getTimezone()) //
 		    .set(QEntrySeries.entrySeries.durationAmount, entrySerie.getDurationAmount()) //
 		    .set(QEntrySeries.entrySeries.durationUnit, entrySerie.getDurationUnit().name()) //
@@ -235,8 +238,17 @@ public class CalendarManager {
 		    .set(QEntrySeries.entrySeries.lastEntryCreated,
 			    Date.valueOf(CalendarDay.toLocalDate(entrySerie.getStartDate()).minus(1, ChronoUnit.DAYS))) //
 		    .execute();
+
+	    Entry entry = new Entry(entrySerie.getType(), entrySerie.getTitle(), entrySerie.getDescription(),
+		    entrySerie.getParticipants(), entrySerie.getReminder() != null ? true : false,
+		    entrySerie.getReminder(), entrySerie.getStartDate(), entrySerie.getTimezone(),
+		    entrySerie.getStartTime(), entrySerie.getDurationAmount(), entrySerie.getDurationUnit(),
+		    entrySerie.getOccupancy());
+	    insertEntry(entry);
+
 	    queryFactory.commit();
 	    entrySerieIdField.set(entrySerie, id);
+
 	    return id;
 	} catch (IllegalArgumentException | IllegalAccessException e) {
 	    throw new RuntimeException(e);
@@ -292,6 +304,7 @@ public class CalendarManager {
 	String title = tuple.get(QEntrySeries.entrySeries.title);
 	String description = tuple.get(QEntrySeries.entrySeries.description);
 	LocalDateTime firstOccurrence = tuple.get(QEntrySeries.entrySeries.firstOccurrence).toLocalDateTime();
+	LocalDate lastOccurence = tuple.get(QEntrySeries.entrySeries.lastOccurrence).toLocalDate();
 	String timezone = tuple.get(QEntrySeries.entrySeries.timezone);
 
 	int durationAmount = tuple.get(QEntrySeries.entrySeries.durationAmount);
@@ -303,8 +316,9 @@ public class CalendarManager {
 	Turnus turnus = Turnus.valueOf(Turnus.class, tuple.get(QEntrySeries.entrySeries.turnus));
 	int skipping = tuple.get(QEntrySeries.entrySeries.skipping);
 	return new EntrySerie(type, title, description, new ArrayList<>(), reminderAmount > 0,
-		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence), null, timezone,
-		CalendarTime.of(firstOccurrence), durationAmount, durationUnit, occupancy, turnus, skipping);
+		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence),
+		CalendarDay.of(lastOccurence), timezone, CalendarTime.of(firstOccurrence), durationAmount, durationUnit,
+		occupancy, turnus, skipping);
     }
 
     public boolean removeEntrySerie(long id) throws SQLException {
@@ -387,15 +401,17 @@ public class CalendarManager {
     private void createSerieEntries(SQLQueryFactory queryFactory, EntrySerie entrySerie, LocalDate from, LocalDate to)
 	    throws SQLException {
 	Turnus turnus = entrySerie.getTurnus();
-	LocalDate current = from.plus(turnus.getAmout(), turnus.getUnit());
-	while (current.isBefore(to) || current.isEqual(to)) {
-	    CalendarDay date = CalendarDay.of(current);
+	LocalDate currentDate = from.plus(turnus.getAmout(), turnus.getUnit());
+	LocalDate lastDate = entrySerie.getLastDate() != null ? entrySerie.getLastDate().getLocalDate() : null;
+	while ((currentDate.isBefore(to) || currentDate.isEqual(to)) && //
+		((lastDate == null) || currentDate.isBefore(lastDate) || currentDate.isEqual(lastDate))) {
+	    CalendarDay date = CalendarDay.of(currentDate);
 	    Entry entry = new Entry(entrySerie.getType(), entrySerie.getTitle(), entrySerie.getDescription(),
 		    entrySerie.getParticipants(), entrySerie.getReminder() != null ? true : false,
 		    entrySerie.getReminder(), date, entrySerie.getTimezone(), entrySerie.getStartTime(),
 		    entrySerie.getDurationAmount(), entrySerie.getDurationUnit(), entrySerie.getOccupancy());
 	    insertEntry(entry);
-	    current = current.plus(turnus.getAmout() + entrySerie.getSkipping(), turnus.getUnit());
+	    currentDate = currentDate.plus(turnus.getAmout() + entrySerie.getSkipping(), turnus.getUnit());
 	}
 	SQLUpdateClause update = queryFactory.update(QEntrySeries.entrySeries)
 		.set(QEntrySeries.entrySeries.lastEntryCreated, Date.valueOf(to))

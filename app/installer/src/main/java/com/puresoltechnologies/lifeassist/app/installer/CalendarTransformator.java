@@ -76,7 +76,7 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "reminder_amount int, " //
 			+ "reminder_unit varchar, " //
 			+ "occupancy varchar(9), " //
-			+ "turnus varchar(7), " //
+			+ "turnus varchar(9), " //
 			+ "skipping int, " //
 			+ "last_entry_created date not null, "//
 			+ "CONSTRAINT " + ENTRY_SERIES_TABLE + "_PK PRIMARY KEY (id)," //

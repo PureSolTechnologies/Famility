@@ -14,7 +14,7 @@ import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
 import com.puresoltechnologies.lifeassist.app.api.people.Person;
 import com.puresoltechnologies.lifeassist.common.utils.JsonSerializer;
 
-public class AppointmentTest {
+public class EntryTest {
 
     @Test
     public void testSerialization() throws IOException {

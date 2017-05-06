@@ -2,6 +2,7 @@ package com.puresoltechnologies.lifeassist.app.impl.calendar;
 
 import java.time.Duration;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 
@@ -17,7 +18,7 @@ import com.puresoltechnologies.lifeassist.app.api.people.Person;
  * 
  * @author Rick-Rainer Ludwig
  */
-public class Entry {
+public class Entry implements Comparable<Entry> {
 
     private final long id;
     private final String type;
@@ -33,6 +34,7 @@ public class Entry {
     private final ChronoUnit durationUnit;
     private final OccupancyStatus occupancy;
     private final ZoneId zoneId;
+    private final ZonedDateTime zonedDateTime;
 
     @JsonCreator
     public Entry(//
@@ -64,6 +66,7 @@ public class Entry {
 	this.durationUnit = durationUnit;
 	this.occupancy = occupancy;
 	zoneId = ZoneId.of(timezone);
+	zonedDateTime = ZonedDateTime.of(getDate().getLocalDate(), getTime().getLocalTime(), zoneId);
     }
 
     public Entry(//
@@ -143,6 +146,11 @@ public class Entry {
     @JsonIgnore
     public ZoneId getZoneId() {
 	return zoneId;
+    }
+
+    @JsonIgnore
+    public ZonedDateTime getZonedDateTime() {
+	return zonedDateTime;
     }
 
     @Override
@@ -231,6 +239,16 @@ public class Entry {
 	} else if (!zoneId.equals(other.zoneId))
 	    return false;
 	return true;
+    }
+
+    @Override
+    public String toString() {
+	return type + " at " + date + " " + time + ": '" + title + "'";
+    }
+
+    @Override
+    public int compareTo(Entry o) {
+	return getZonedDateTime().compareTo(o.getZonedDateTime());
     }
 
 }
