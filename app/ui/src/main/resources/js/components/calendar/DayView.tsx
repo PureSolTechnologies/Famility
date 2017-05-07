@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import { browserHistory } from 'react-router';
 
 import CalendarController from '../../controller/CalendarController';
 
-export default class DayView extends React.Component {
+export default class DayView extends React.Component<any, any> {
 
     static propTypes = {
         calendar: React.PropTypes.object.isRequired,
@@ -11,23 +11,22 @@ export default class DayView extends React.Component {
         day: React.PropTypes.number.isRequired
     };
 
-    constructor( props ) {
+    constructor( props: any ) {
         super( props );
         this.state = { month: props.month, day: props.day, calendar: props.calendar, entries: [] };
         this.createEntry = this.createEntry.bind( this );
     }
 
-    componentDidMount() {
-        var component = this;
+    private componentDidMount() {
+        let component = this;
         CalendarController.getDayEntries( this.state.calendar.year, this.state.month, this.state.day,
             function( entries ) {
                 component.setState( { entries: entries });
             },
             function( response ) { });
-
     }
 
-    componentWillReceiveProps( nextProps ) {
+    private componentWillReceiveProps( nextProps: any ) {
         if ( this.state.calendar != nextProps.calendar ) {
             this.setState( { calendar: nextProps.calendar });
         }
@@ -39,37 +38,36 @@ export default class DayView extends React.Component {
         }
     }
 
-    createEntry( hour ) {
-        var year = this.state.calendar.year;
-        var month = this.state.month;
-        if ( month < 10 ) {
-            month = '0' + month;
-        }
-        var day = this.state.day;
-        if ( day < 10 ) {
-            day = '0' + day;
-        }
-        var hour2 = hour + 1;
-        if ( hour < 10 ) {
-            hour = '0' + hour;
-        }
-        if ( hour2 < 10 ) {
-            hour2 = '0' + hour2;
-        }
-        browserHistory.push( '/dialog/calendar/create-entry/' + year + '-' + month + '-' + day + '/' + hour + ':00:00' + '/' + hour2 + ':00:00' );
+    private createEntry( hour: number ) {
+        let year: string = this.state.calendar.year;
+        let month: string = this.state.month < 10 ? '0' + this.state.month : this.state.month;
+        let day: string = this.state.day < 10 ? '0' + this.state.day : this.state.day;
+        let hourString: string = hour < 10 ? '0' + hour : String( hour );
+        let hourString2: string = hour + 1 < 10 ? '0' + ( hour + 1 ) : String( hour + 1 );
+        browserHistory.push( '/dialog/calendar/create-entry/' + year + '-' + month + '-' + day + '/' + hourString + ':00:00' + '/' + hourString2 + ':00:00' );
     }
 
-    render() {
-        var rows = [];
-        for ( var i = 0; i <= 23; i++ ) {
-            const hour = i;
+    private createTableRows(): any[] {
+        let rows: any[] = []; 1
+        for ( let i: number = 0; i <= 23; i++ ) {
+            const hour: number = i;
             rows.push(
                 <tr key={i} onClick={() => this.createEntry( hour )}>
                     <th>{hour} h</th>
-                    <td></td>
+                    {this.createTableRowEntry( hour )}
                 </tr>
             );
         }
+        return rows;
+    }
+
+    private createTableRowEntry( hour: number ): any {
+        let content: any = {};
+        return <td>{content}</td>;
+    }
+
+    render() {
+        let rows = this.createTableRows();
         return <div>
             <table className="table table-hover">
                 <thead className="thead-inverse">

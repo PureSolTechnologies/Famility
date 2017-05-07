@@ -30,6 +30,7 @@ module.exports = env => {
         {test: /\.css$/, loader: 'style-loader!css-loader'},
         {test: /(\.eot|\.woff2|\.woff|\.ttf|\.svg)$/, loader: 'file-loader'},
         {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader'},
+        {test: /\.jsx?$/, exclude: /node_modules/, loader: "source-map-loader" }
       ],
     },
     plugins: removeEmpty([
