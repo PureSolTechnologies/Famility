@@ -1,8 +1,11 @@
 package com.puresoltechnologies.lifeassist.app.impl.calendar;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.chrono.IsoChronology;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,4 +32,11 @@ public class CalendarFactory {
 	return calendarYear;
     }
 
+    public static CalendarDay findWeek(int year, int week) {
+	LocalDate desiredDate = LocalDate.now() //
+		.with(IsoFields.WEEK_BASED_YEAR, year) //
+		.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week) //
+		.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+	return CalendarDay.of(desiredDate);
+    }
 }

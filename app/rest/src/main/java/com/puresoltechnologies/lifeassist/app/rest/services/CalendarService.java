@@ -259,4 +259,12 @@ public class CalendarService {
 	return calendarManager.getDayEntries(year, month, day, type);
     }
 
+    @GET
+    @Path("/entries/year/{year}/week/{week}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<Entry> getDayEntries(@PathParam("year") int year, @PathParam("week") int week,
+	    @QueryParam("type") String type) throws SQLException {
+	return calendarManager.getWeekEntries(year, week, type);
+    }
+
 }

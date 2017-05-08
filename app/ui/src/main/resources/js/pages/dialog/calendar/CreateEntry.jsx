@@ -19,7 +19,7 @@ export default class CreateEntry extends React.Component {
             wholeDay: false,
             durationAmount: 1,
             durationUnit: 'HOURS',
-            type: '',
+            type: 'appointment',
             entryTypes: [],
             title: '',
             description: '',

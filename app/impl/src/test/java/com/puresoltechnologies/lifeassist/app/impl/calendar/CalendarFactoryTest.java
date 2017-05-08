@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarYear;
 import com.puresoltechnologies.lifeassist.common.utils.JsonSerializer;
 
@@ -21,6 +22,15 @@ public class CalendarFactoryTest {
 	System.out.println(string.length());
 	CalendarYear deserialized = JsonSerializer.fromString(string, CalendarYear.class);
 	assertEquals(calendarYear, deserialized);
+    }
+
+    @Test
+    public void testFindWeek() {
+	CalendarDay weekStart = CalendarFactory.findWeek(2017, 1);
+	assertNotNull(weekStart);
+	assertEquals(2017, weekStart.getYear());
+	assertEquals(1, weekStart.getMonth());
+	assertEquals(2, weekStart.getDayOfMonth());
     }
 
 }

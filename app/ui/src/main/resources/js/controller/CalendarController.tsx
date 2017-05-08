@@ -163,6 +163,17 @@ export default class CalendarController {
         );
     }
 
+    static getWeekEntries( year: number, week: number, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/entries/year/' + year + '/week/' + week,
+            null,
+            function( response: any ) {
+                var result = CalendarController.createEntriesResult( response.response );
+                successCallback( result );
+            },
+            errorCallback
+        );
+    }
+
     static getEntriesToday( type: string, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
         var query: string = "";
         if ( type ) {

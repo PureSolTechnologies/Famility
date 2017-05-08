@@ -181,6 +181,7 @@ public class CalendarManager {
     }
 
     private Entry convertTupleToEntry(Tuple tuple) {
+	long id = tuple.get(QEntries.entries.id);
 	String type = tuple.get(QEntries.entries.type);
 	String title = tuple.get(QEntries.entries.title);
 	String description = tuple.get(QEntries.entries.description);
@@ -194,7 +195,7 @@ public class CalendarManager {
 	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QEntries.entries.reminderUnit));
 
 	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QEntries.entries.occupancy));
-	return new Entry(type, title, description, new ArrayList<>(), reminderAmount > 0,
+	return new Entry(id, type, title, description, new ArrayList<>(), reminderAmount > 0,
 		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(occurrence), timezone,
 		CalendarTime.of(occurrence), durationAmount, durationUnit, occupancy);
     }
@@ -300,6 +301,7 @@ public class CalendarManager {
     }
 
     private EntrySerie convertTupleToEntrySerie(Tuple tuple) {
+	long id = tuple.get(QEntrySeries.entrySeries.id);
 	String type = tuple.get(QEntrySeries.entrySeries.type);
 	String title = tuple.get(QEntrySeries.entrySeries.title);
 	String description = tuple.get(QEntrySeries.entrySeries.description);
@@ -315,7 +317,7 @@ public class CalendarManager {
 	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QEntrySeries.entrySeries.occupancy));
 	Turnus turnus = Turnus.valueOf(Turnus.class, tuple.get(QEntrySeries.entrySeries.turnus));
 	int skipping = tuple.get(QEntrySeries.entrySeries.skipping);
-	return new EntrySerie(type, title, description, new ArrayList<>(), reminderAmount > 0,
+	return new EntrySerie(id, type, title, description, new ArrayList<>(), reminderAmount > 0,
 		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence),
 		CalendarDay.of(lastOccurence), timezone, CalendarTime.of(firstOccurrence), durationAmount, durationUnit,
 		occupancy, turnus, skipping);
@@ -362,6 +364,13 @@ public class CalendarManager {
 	return getEntriesBetween(type, from, to);
     }
 
+    public Collection<Entry> getWeekEntries(int year, int week, String type) throws SQLException {
+	LocalDate from = CalendarFactory.findWeek(year, week).getLocalDate();
+	LocalDate to = from.plus(6, ChronoUnit.DAYS);
+	return getEntriesBetween(type, LocalDateTime.of(from, LocalTime.of(0, 0, 0)),
+		LocalDateTime.of(to, LocalTime.of(23, 59, 59)));
+    }
+
     public Collection<Entry> getEntriesBetween(String type, LocalDateTime from, LocalDateTime to) throws SQLException {
 	checkAndCreateSerieEntries(type, to.toLocalDate());
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
@@ -393,6 +402,7 @@ public class CalendarManager {
 		    EntrySerie entrySerie = convertTupleToEntrySerie(tuple);
 		    Date lastDate = tuple.get(QEntrySeries.entrySeries.lastEntryCreated);
 		    createSerieEntries(queryFactory, entrySerie, lastDate.toLocalDate(), to);
+		    queryFactory.commit();
 		}
 	    }
 	}
