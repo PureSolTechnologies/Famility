@@ -12,13 +12,17 @@ export default class WeekCalendar extends React.Component {
 
     constructor( props ) {
         super( props );
-        var year = parseInt( this.props.params.year );
-        var week = parseInt( this.props.params.week );
-        this.state = { year: year, week: week, calendarData: null };
-        var storedCalendar = store.getState().calendar;
+        let year = parseInt( this.props.params.year );
+        let week = parseInt( this.props.params.week );
+        let storedCalendar = store.getState().calendar;
         if ( storedCalendar !== year ) {
             store.dispatch( changeYear( year ) );
         }
+        this.state = {
+            year: year,
+            week: week,
+            calendarData: null
+        };
     }
 
     componentDidMount() {
@@ -36,16 +40,11 @@ export default class WeekCalendar extends React.Component {
     }
 
     readCalendar( year ) {
-        var component = this;
+        let component = this;
         CalendarController.getCalendar( year,
             function( calendar ) {
-                var weekId = component.state.week;
-                var week = calendar.weeks[weekId];
-                if ( week ) {
-                    store.dispatch( changeMonth( week[1].month ) );
-                    store.dispatch( changeDay( week[1].dayOfMonth ) );
-                }
-                component.setState( { year: year, calendarData: calendar });
+                let week = component.state.week;
+                component.setState( { year: year, week: week, calendarData: calendar });
             },
             function( response ) {
             }
@@ -56,9 +55,8 @@ export default class WeekCalendar extends React.Component {
         if ( !this.state.calendarData ) {
             return <div></div>;
         }
-
         return <div>
-           <WeekView calendar={this.state.calendarData} week={this.state.week} />
+            <WeekView calendar={this.state.calendarData} week={this.state.week} />
         </div >;
     }
 }

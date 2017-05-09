@@ -53,12 +53,12 @@ export default class CalendarController {
     }
 
     static getCalendar( year: number, successfulCallback: ( calendar: any[] ) => void, errorCallback: ( response: any ) => void ): void {
-        var calendar = window.sessionStorage.getItem( 'calendarData.' + year );
-        if ( calendar ) {
+        var calendar: any = window.sessionStorage.getItem( 'calendarData.' + year );
+        if ( calendar && calendar.months) {
             successfulCallback( JSON.parse( calendar ) );
             return;
         }
-        restController.GET( '/calendar/year/' + year,
+        restController.GET( '/calendar/' + year,
             null,
             function( response: any ) {
                 var calendar: any = JSON.parse( response.response );

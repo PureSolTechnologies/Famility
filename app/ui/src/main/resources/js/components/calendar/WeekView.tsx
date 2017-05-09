@@ -4,8 +4,6 @@ const { ArrowLeftIcon, ArrowRightIcon } = require( 'react-octicons' );
 import AbstractEntriesView from './AbstractEntriesView';
 import CalendarController from '../../controller/CalendarController';
 
-import store from '../../flux/Store';
-
 export default class WeekView extends AbstractEntriesView<any, any> {
 
     static propTypes = {
@@ -33,23 +31,23 @@ export default class WeekView extends AbstractEntriesView<any, any> {
             function( response ) { });
     }
 
-    private componentWillUnmount() {
-        this.unsubscribeStore();
-    }
-
     private componentDidUpdate() {
         this.enableTooltip( "root" );
     }
 
     private componentWillReceiveProps( nextProps: any ) {
+        let update: boolean = false;
+        let newState: any = {};
         if ( this.state.calendar != nextProps.calendar ) {
-            this.setState( { calendar: nextProps.calendar });
+            update = true;
+            newState.calendar = nextProps.calendar;
         }
-        if ( this.state.month != nextProps.month ) {
-            this.setState( { month: nextProps.month });
+        if ( this.state.week != nextProps.week ) {
+            update = true;
+            newState.week = nextProps.week;
         }
-        if ( this.state.day != nextProps.day ) {
-            this.setState( { day: nextProps.day });
+        if ( update ) {
+            this.setState( newState );
         }
     }
 
@@ -61,28 +59,30 @@ export default class WeekView extends AbstractEntriesView<any, any> {
     }
 
     private createTableRows( week: any[] ) {
+        let weekData: any[] = this.state.calendar.weeks[this.state.week];
         var rows: any[] = [];
         for ( var hour = 0; hour <= 23; hour++ ) {
-            let moEntries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
-            let tuEntries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
-            let weEntries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
-            let thEntries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
-            let frEntries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
-            let saEntries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
-            let suEntries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
+            let moEntries: any[] = this.findEntries( this.state.entries, weekData[1].month, weekData[1].dayOfMonth, hour );
+            let tuEntries: any[] = this.findEntries( this.state.entries, weekData[2].month, weekData[2].dayOfMonth, hour );
+            let weEntries: any[] = this.findEntries( this.state.entries, weekData[3].month, weekData[3].dayOfMonth, hour );
+            let thEntries: any[] = this.findEntries( this.state.entries, weekData[4].month, weekData[4].dayOfMonth, hour );
+            let frEntries: any[] = this.findEntries( this.state.entries, weekData[5].month, weekData[5].dayOfMonth, hour );
+            let saEntries: any[] = this.findEntries( this.state.entries, weekData[6].month, weekData[6].dayOfMonth, hour );
+            let suEntries: any[] = this.findEntries( this.state.entries, weekData[7].month, weekData[7].dayOfMonth, hour );
             rows.push(
                 <tr key={hour}>
                     <th>{hour} h</th>
-                    {this.createTableRowEntry( moEntries, this.state.calendar.year, this.state.month, this.state.day, hour )}
-                    {this.createTableRowEntry( tuEntries, this.state.calendar.year, this.state.month, this.state.day, hour )}
-                    {this.createTableRowEntry( weEntries, this.state.calendar.year, this.state.month, this.state.day, hour )}
-                    {this.createTableRowEntry( thEntries, this.state.calendar.year, this.state.month, this.state.day, hour )}
-                    {this.createTableRowEntry( frEntries, this.state.calendar.year, this.state.month, this.state.day, hour )}
-                    {this.createTableRowEntry( saEntries, this.state.calendar.year, this.state.month, this.state.day, hour )}
-                    {this.createTableRowEntry( suEntries, this.state.calendar.year, this.state.month, this.state.day, hour )}
+                    {this.createTableRowEntry( moEntries, this.state.calendar.year, weekData[1].month, weekData[1].dayOfMonth, hour )}
+                    {this.createTableRowEntry( tuEntries, this.state.calendar.year, weekData[2].month, weekData[2].dayOfMonth, hour )}
+                    {this.createTableRowEntry( weEntries, this.state.calendar.year, weekData[3].month, weekData[3].dayOfMonth, hour )}
+                    {this.createTableRowEntry( thEntries, this.state.calendar.year, weekData[4].month, weekData[4].dayOfMonth, hour )}
+                    {this.createTableRowEntry( frEntries, this.state.calendar.year, weekData[5].month, weekData[5].dayOfMonth, hour )}
+                    {this.createTableRowEntry( saEntries, this.state.calendar.year, weekData[6].month, weekData[6].dayOfMonth, hour )}
+                    {this.createTableRowEntry( suEntries, this.state.calendar.year, weekData[7].month, weekData[7].dayOfMonth, hour )}
                 </tr>
             );
         }
+        return rows;
     }
 
     render() {

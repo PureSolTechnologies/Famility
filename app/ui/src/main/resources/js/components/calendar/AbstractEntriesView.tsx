@@ -13,7 +13,7 @@ export default class AbstractEntriesView<P, S> extends ApplicationComponent<P, S
 
     protected findEntries( entries: any, month: number, day: number, hour: number ): any[] {
         let foundEntries: any[] = [];
-        if ( entries.months ) {
+        if ( entries.months && entries.months[month] ) {
             let candidates: any[] = entries.months[month][day];
             if ( candidates ) {
                 for ( let candidate of candidates ) {
@@ -48,9 +48,9 @@ export default class AbstractEntriesView<P, S> extends ApplicationComponent<P, S
         let isNow: boolean = this.isNow( year, month, day, hour );
         if ( entries.length == 0 ) {
             if ( !isNow ) {
-                return <td></td>;
+                return <td onClick={() => this.createEntry( year, month, day, hour )}></td>;
             } else {
-                return <td className="alert-success"></td>;
+                return <td className="alert-success" onClick={() => this.createEntry( year, month, day, hour )}></td>;
             }
         }
         if ( isNow ) {

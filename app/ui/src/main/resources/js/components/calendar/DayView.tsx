@@ -32,14 +32,22 @@ export default class DayView extends AbstractEntriesView<any, any> {
     }
 
     private componentWillReceiveProps( nextProps: any ) {
+        let update: boolean = false;
+        let newState: any = {};
         if ( this.state.calendar != nextProps.calendar ) {
-            this.setState( { calendar: nextProps.calendar });
+            update = true;
+            newState.calendar = nextProps.calendar;
         }
         if ( this.state.month != nextProps.month ) {
-            this.setState( { month: nextProps.month });
+            update = true;
+            newState.month = nextProps.month;
         }
         if ( this.state.day != nextProps.day ) {
-            this.setState( { day: nextProps.day });
+            update = true;
+            newState.day = nextProps.day;
+        }
+        if ( update ) {
+            this.setState( newState );
         }
     }
 
@@ -49,7 +57,7 @@ export default class DayView extends AbstractEntriesView<any, any> {
             const hour: number = i;
             let entries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
             rows.push(
-                <tr key={i} onClick={() => this.createEntry( this.state.calendar.year, this.state.month, this.state.day, hour )}>
+                <tr key={i}>
                     <th>{hour} h</th>
                     {this.createTableRowEntry( entries, this.state.calendar.year, this.state.month, this.state.day, hour )}
                 </tr>

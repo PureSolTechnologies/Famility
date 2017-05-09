@@ -12,10 +12,10 @@ export default class DayCalendar extends React.Component {
 
     constructor( props ) {
         super( props );
-        var year = parseInt( this.props.params.year );
-        var month = parseInt( this.props.params.month );
-        var day = parseInt( this.props.params.day );
-        var storedCalendar = store.getState().calendar;
+        let year = parseInt( this.props.params.year );
+        let month = parseInt( this.props.params.month );
+        let day = parseInt( this.props.params.day );
+        let storedCalendar = store.getState().calendar;
         if (storedCalendar.year !== year) {
             store.dispatch( changeYear( year ) );
         }       
@@ -48,7 +48,7 @@ export default class DayCalendar extends React.Component {
     }
 
     readCalendar( year ) {
-        var component = this;
+        let component = this;
         CalendarController.getCalendar( year,
             function( calendar ) {
                 component.setState( { calendarData: calendar });
@@ -62,7 +62,6 @@ export default class DayCalendar extends React.Component {
         if ( !this.state.calendarData ) {
             return <div></div>;
         }
-
         return <div>
            <DayView calendar={this.state.calendarData} month={this.state.month} day={this.state.day} />
         </div >;
