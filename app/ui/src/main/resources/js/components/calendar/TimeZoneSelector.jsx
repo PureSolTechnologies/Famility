@@ -13,10 +13,12 @@ export default class TimeZoneSelector extends React.Component {
 
     constructor( props ) {
         super( props );
-        var parts = props.value.split( "/" );
         var area = "";
-        if ( parts[0] ) {
-            area = parts[0];
+        if ( props.value ) {
+            var parts = props.value.split( "/" );
+            if ( parts[0] ) {
+                area = parts[0];
+            }
         }
         this.state = {
             timezones: [],

@@ -54,7 +54,7 @@ export default class CalendarController {
 
     static getCalendar( year: number, successfulCallback: ( calendar: any[] ) => void, errorCallback: ( response: any ) => void ): void {
         var calendar: any = window.sessionStorage.getItem( 'calendarData.' + year );
-        if ( calendar && calendar.months) {
+        if ( calendar && calendar.months ) {
             successfulCallback( JSON.parse( calendar ) );
             return;
         }
@@ -100,6 +100,17 @@ export default class CalendarController {
             { "Content-Type": "application/json; charset=utf-8" },
             entry,
             successfulCallback,
+            errorCallback
+        );
+    }
+
+    static getEntry( id: number, successfulCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/entries/' + id,
+            { "Content-Type": "application/json; charset=utf-8" },
+            function( response: any ) {
+                var entry: any = JSON.parse( response.response );
+                successfulCallback( entry );
+            },
             errorCallback
         );
     }

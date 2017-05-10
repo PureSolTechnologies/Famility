@@ -2,6 +2,7 @@ import * as React from 'react';
 import { browserHistory } from 'react-router';
 
 import ApplicationComponent from '../ApplicationComponent';
+import CalendarEntryLabel from './CalendarEntryLabel';
 
 declare var $: any;
 
@@ -76,8 +77,7 @@ export default class AbstractEntriesView<P, S> extends ApplicationComponent<P, S
         let renderedEntries: any[] = [];
         let key: number = 0;
         for ( let entry of entries ) {
-            let tooltip: string = "<b>" + entry.title + "</b><br/><p>" + entry.description + "</p>";
-            renderedEntries.push( <span key={key} data-toggle="tooltip" data-placement="bottom" data-html="true" title={tooltip} style={{ border: "solid black 1pt" }}>{entry.title}</span > )
+            renderedEntries.push( <CalendarEntryLabel key={key} entry={entry} /> )
             key++;
         }
         return renderedEntries;
