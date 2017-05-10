@@ -31,8 +31,8 @@ import com.puresoltechnologies.lifeassist.app.impl.calendar.Reminder;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
-import com.puresoltechnologies.lifeassist.app.model.QEntries;
-import com.puresoltechnologies.lifeassist.app.model.QEntrySeries;
+import com.puresoltechnologies.lifeassist.app.model.QCalendarEntries;
+import com.puresoltechnologies.lifeassist.app.model.QCalendarSeries;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
@@ -74,11 +74,12 @@ public class EntrySeriesEntryCalculationIT extends AbstractCalendarManagerTest {
     public void calculateEntries() throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    // no entry series was created, yet
-	    SQLQuery<Tuple> select = queryFactory.select(QEntrySeries.entrySeries.all()).from(QEntrySeries.entrySeries);
+	    SQLQuery<Tuple> select = queryFactory.select(QCalendarSeries.calendarSeries.all())
+		    .from(QCalendarSeries.calendarSeries);
 	    assertTrue(select.fetchResults().isEmpty());
 	    // one entry series was created, yet, and therefore no entries are
 	    // to be expected
-	    select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries);
+	    select = queryFactory.select(QCalendarEntries.calendarEntries.all()).from(QCalendarEntries.calendarEntries);
 	    assertTrue(select.fetchResults().isEmpty());
 	}
 	// create new entry series
@@ -90,10 +91,11 @@ public class EntrySeriesEntryCalculationIT extends AbstractCalendarManagerTest {
 	// checks after series creation
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    // one entry series was created
-	    SQLQuery<Tuple> select = queryFactory.select(QEntrySeries.entrySeries.all()).from(QEntrySeries.entrySeries);
+	    SQLQuery<Tuple> select = queryFactory.select(QCalendarSeries.calendarSeries.all())
+		    .from(QCalendarSeries.calendarSeries);
 	    assertEquals(1, select.fetchResults().getTotal());
 	    // The first occurrence is created
-	    select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries);
+	    select = queryFactory.select(QCalendarEntries.calendarEntries.all()).from(QCalendarEntries.calendarEntries);
 	    assertEquals(1, select.fetchResults().getTotal());
 	}
     }

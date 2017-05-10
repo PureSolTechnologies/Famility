@@ -73,8 +73,8 @@ public abstract class AbstractLifeAssistantTest {
     protected static void cleanupDB() throws SQLException {
 	try (Connection connection = DatabaseConnector.getConnection()) {
 
-	    connection.createStatement().execute("TRUNCATE TABLE entries CASCADE");
-	    connection.createStatement().execute("TRUNCATE TABLE entry_series CASCADE");
+	    connection.createStatement().execute("TRUNCATE TABLE calendar_entries CASCADE");
+	    connection.createStatement().execute("TRUNCATE TABLE calendar_series CASCADE");
 	    connection.createStatement().execute("TRUNCATE TABLE people CASCADE");
 	    connection.commit();
 	}

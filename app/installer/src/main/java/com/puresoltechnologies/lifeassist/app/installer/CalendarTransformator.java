@@ -18,11 +18,12 @@ import com.puresoltechnologies.versioning.Version;
 
 public class CalendarTransformator implements ComponentTransformator {
 
-    private static final String ENTRY_SERIE_PARTICIPANTS_TABLE = "entry_serie_participants";
-    private static final String ENTRY_PARTICIPANTS_TABLE = "entry_articipants";
-    private static final String ENTRIES_TABLE = "entries";
-    static final String ENTRY_SERIES_TABLE = "entry_series";
-    private static final String ENTRY_TYPES_TABLE = "entry_types";
+    private static final String CALENDAR_SERIES_PARTICIPANTS_TABLE = "calendar_series_participants";
+    private static final String CALENDAR_ENTRY_PARTICIPANTS_TABLE = "calendar_entry_articipants";
+    private static final String CALENDAR_ENTRIES_TABLE = "calendar_entries";
+    static final String CALENDAR_SERIES_TABLE = "calendar_series";
+    private static final String CALENDAR_ENTRY_TYPES_TABLE = "calendar_entry_types";
+    private static final String CALENDAR_ENTRY_DEPENDENCIES_TABLE = "calendar_entry_dependencies";
 
     @Override
     public String getComponentName() {
@@ -55,14 +56,14 @@ public class CalendarTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + ENTRY_TYPES_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + CALENDAR_ENTRY_TYPES_TABLE //
 			+ " (" //
 			+ "type varchar not null unique, " //
 			+ "name varchar not null, " //
-			+ "CONSTRAINT " + ENTRY_TYPES_TABLE + "_PK PRIMARY KEY (type))",
-		"Create events table."));
+			+ "CONSTRAINT " + CALENDAR_ENTRY_TYPES_TABLE + "_PK PRIMARY KEY (type))",
+		"Create entry types table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + ENTRY_SERIES_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SERIES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "type varchar not null, " //
@@ -79,16 +80,16 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "turnus varchar(9), " //
 			+ "skipping int, " //
 			+ "last_entry_created date not null, "//
-			+ "CONSTRAINT " + ENTRY_SERIES_TABLE + "_PK PRIMARY KEY (id)," //
-			+ "CONSTRAINT " + ENTRY_SERIES_TABLE + "_" + ENTRY_TYPES_TABLE
-			+ "_FK FOREIGN KEY (type) REFERENCES " + ENTRY_TYPES_TABLE + " (type)" //
+			+ "CONSTRAINT " + CALENDAR_SERIES_TABLE + "_PK PRIMARY KEY (id)," //
+			+ "CONSTRAINT " + CALENDAR_SERIES_TABLE + "_" + CALENDAR_ENTRY_TYPES_TABLE
+			+ "_FK FOREIGN KEY (type) REFERENCES " + CALENDAR_ENTRY_TYPES_TABLE + " (type)" //
 			+ ")",
-		"Create events table."));
+		"Create entry series table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + ENTRIES_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + CALENDAR_ENTRIES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
-			+ "entry_serie_id bigint, " //
+			+ "calendar_series_id bigint, " //
 			+ "type varchar not null, " //
 			+ "title varchar(250) not null, " //
 			+ "description varchar, " //
@@ -99,72 +100,90 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ "reminder_amount int, " //
 			+ "reminder_unit varchar, " //
 			+ "occupancy varchar(9), " //
-			+ "CONSTRAINT " + ENTRIES_TABLE + "_PK PRIMARY KEY (id), "//
-			+ "CONSTRAINT " + ENTRIES_TABLE + "_" + ENTRY_SERIES_TABLE
-			+ "_FK FOREIGN KEY (entry_serie_id) REFERENCES entry_series (id), " //
-			+ "CONSTRAINT " + ENTRIES_TABLE + "_" + ENTRY_TYPES_TABLE + "_FK FOREIGN KEY (type) REFERENCES "
-			+ ENTRY_TYPES_TABLE + " (type)" //
+			+ "CONSTRAINT " + CALENDAR_ENTRIES_TABLE + "_PK PRIMARY KEY (id), "//
+			+ "CONSTRAINT " + CALENDAR_ENTRIES_TABLE + "_" + CALENDAR_SERIES_TABLE
+			+ "_FK FOREIGN KEY (calendar_series_id) REFERENCES " + CALENDAR_SERIES_TABLE + " (id), " //
+			+ "CONSTRAINT " + CALENDAR_ENTRIES_TABLE + "_" + CALENDAR_ENTRY_TYPES_TABLE
+			+ "_FK FOREIGN KEY (type) REFERENCES " + CALENDAR_ENTRY_TYPES_TABLE + " (type)" //
 			+ " )",
-		"Create events table."));
+		"Create entries table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + ENTRY_SERIE_PARTICIPANTS_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SERIES_PARTICIPANTS_TABLE //
 			+ " (" //
-			+ "entry_serie_id bigint not null, " //
+			+ "calendar_series_id bigint not null, " //
 			+ "person_id bigint not null, " //
-			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE
-			+ "_PK PRIMARY KEY (entry_serie_id, person_id), " //
-			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_" + ENTRY_SERIES_TABLE
-			+ "_FK FOREIGN KEY (entry_serie_id) REFERENCES entry_series (id), " //
-			+ "CONSTRAINT " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_people"
+			+ "CONSTRAINT " + CALENDAR_SERIES_PARTICIPANTS_TABLE
+			+ "_PK PRIMARY KEY (calendar_series_id, person_id), " //
+			+ "CONSTRAINT " + CALENDAR_SERIES_PARTICIPANTS_TABLE + "_" + CALENDAR_SERIES_TABLE
+			+ "_FK FOREIGN KEY (calendar_series_id) REFERENCES " + CALENDAR_SERIES_TABLE + " (id), " //
+			+ "CONSTRAINT " + CALENDAR_SERIES_PARTICIPANTS_TABLE + "_people"
 			+ "_FK FOREIGN KEY (person_id) REFERENCES people (id)" //
 			+ ")",
-		"Create events table."));
+		"Create entry serie participants table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE INDEX " //
-			+ ENTRY_SERIE_PARTICIPANTS_TABLE + "_person_id_idx"//
-			+ " ON " + ENTRY_SERIE_PARTICIPANTS_TABLE //
+			+ CALENDAR_SERIES_PARTICIPANTS_TABLE + "_person_id_idx"//
+			+ " ON " + CALENDAR_SERIES_PARTICIPANTS_TABLE //
 			+ " (person_id)",
 		"Creating index on person_id."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + ENTRY_PARTICIPANTS_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + CALENDAR_ENTRY_PARTICIPANTS_TABLE //
 			+ " (" //
-			+ "entry_id bigint not null, " //
+			+ "calendar_entry_id bigint not null, " //
 			+ "person_id bigint not null, " //
-			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_PK PRIMARY KEY (entry_id, person_id), " //
-			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_" + ENTRIES_TABLE
-			+ "_FK FOREIGN KEY (entry_id) REFERENCES " + ENTRIES_TABLE + " (id), " //
-			+ "CONSTRAINT " + ENTRY_PARTICIPANTS_TABLE + "_people"
+			+ "CONSTRAINT " + CALENDAR_ENTRY_PARTICIPANTS_TABLE
+			+ "_PK PRIMARY KEY (calendar_entry_id, person_id), " //
+			+ "CONSTRAINT " + CALENDAR_ENTRY_PARTICIPANTS_TABLE + "_" + CALENDAR_ENTRIES_TABLE
+			+ "_FK FOREIGN KEY (calendar_entry_id) REFERENCES " + CALENDAR_ENTRIES_TABLE + " (id), " //
+			+ "CONSTRAINT " + CALENDAR_ENTRY_PARTICIPANTS_TABLE + "_people"
 			+ "_FK FOREIGN KEY (person_id) REFERENCES people (id)" //
 			+ ")",
-		"Create events table."));
+		"Create entry participants table."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE IF NOT EXISTS " + CALENDAR_ENTRY_DEPENDENCIES_TABLE //
+			+ " (" //
+			+ "from_calendar_entry_id bigint not null, " //
+			+ "to_calendar_entry_id bigint not null, " //
+			+ "dependency_type varchar(10) not null, " //
+			+ "CONSTRAINT " + CALENDAR_ENTRY_DEPENDENCIES_TABLE
+			+ "_PK PRIMARY KEY (from_calendar_entry_id, to_calendar_entry_id), " //
+			+ "CONSTRAINT " + CALENDAR_ENTRY_DEPENDENCIES_TABLE + "_" + CALENDAR_ENTRIES_TABLE
+			+ "_TO_FK FOREIGN KEY (to_calendar_entry_id) REFERENCES " + CALENDAR_ENTRIES_TABLE + " (id), " //
+			+ "CONSTRAINT " + CALENDAR_ENTRY_DEPENDENCIES_TABLE + "_" + CALENDAR_ENTRIES_TABLE
+			+ "_FROM_FK FOREIGN KEY (from_calendar_entry_id) REFERENCES " + CALENDAR_ENTRIES_TABLE + " (id)" //
+			+ ")",
+		"Create entry dependencies table."));
+
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE INDEX " //
-			+ ENTRY_PARTICIPANTS_TABLE + "_person_id_idx"//
-			+ " ON " + ENTRY_PARTICIPANTS_TABLE //
+			+ CALENDAR_ENTRY_PARTICIPANTS_TABLE + "_person_id_idx"//
+			+ " ON " + CALENDAR_ENTRY_PARTICIPANTS_TABLE //
 			+ " (person_id)",
 		"Creating index on person_id."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SEQUENCE entry_serie_id_seq INCREMENT BY 1 OWNED BY " + ENTRY_SERIES_TABLE + ".id",
+		"CREATE SEQUENCE calendar_series_id_seq INCREMENT BY 1 OWNED BY " + CALENDAR_SERIES_TABLE + ".id",
 		"Sequence for entry serie ids."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SEQUENCE entry_id_seq INCREMENT BY 1 OWNED BY " + ENTRIES_TABLE + ".id",
+		"CREATE SEQUENCE calendar_entry_id_seq INCREMENT BY 1 OWNED BY " + CALENDAR_ENTRIES_TABLE + ".id",
 		"Sequence for entry ids."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"INSERT INTO " + ENTRY_TYPES_TABLE + " (type, name) VALUES ('appointment', 'Appointment')",
+		"INSERT INTO " + CALENDAR_ENTRY_TYPES_TABLE + " (type, name) VALUES ('appointment', 'Appointment')",
 		"Add appointment type."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"INSERT INTO " + ENTRY_TYPES_TABLE + " (type, name) VALUES ('todo', 'TODO')", "Add TODO type."));
+		"INSERT INTO " + CALENDAR_ENTRY_TYPES_TABLE + " (type, name) VALUES ('todo', 'TODO')",
+		"Add TODO type."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"INSERT INTO " + ENTRY_TYPES_TABLE + " (type, name) VALUES ('birthday', 'Birthday')",
+		"INSERT INTO " + CALENDAR_ENTRY_TYPES_TABLE + " (type, name) VALUES ('birthday', 'Birthday')",
 		"Add birthday type."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"INSERT INTO " + ENTRY_TYPES_TABLE + " (type, name) VALUES ('anniversary', 'Anniversary')",
+		"INSERT INTO " + CALENDAR_ENTRY_TYPES_TABLE + " (type, name) VALUES ('anniversary', 'Anniversary')",
 		"Add anniversary type."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"ALTER TABLE " + PeopleTransformator.PEOPLE_TABLE + " ADD CONSTRAINT "
-			+ PeopleTransformator.PEOPLE_TABLE + "_" + ENTRY_SERIES_TABLE
-			+ "_FK FOREIGN KEY (birthday_entry_serie_id) REFERENCES " + ENTRY_SERIES_TABLE + " (id)",
+			+ PeopleTransformator.PEOPLE_TABLE + "_" + CALENDAR_SERIES_TABLE
+			+ "_FK FOREIGN KEY (birthday_calendar_series_id) REFERENCES " + CALENDAR_SERIES_TABLE + " (id)",
 		"Add anniversary type."));
 
 	return sequence;
@@ -176,16 +195,17 @@ public class CalendarTransformator implements ComponentTransformator {
 	    try (Statement statement = connection.createStatement()) {
 		statement.execute(
 			"ALTER TABLE IF EXISTS " + PeopleTransformator.PEOPLE_TABLE + " DROP CONSTRAINT IF EXISTS "
-				+ PeopleTransformator.PEOPLE_TABLE + "_" + ENTRY_SERIES_TABLE + "_FK");
-		statement.execute("DROP INDEX IF EXISTS " + ENTRIES_TABLE + "_person_id_idx");
-		statement.execute("DROP INDEX IF EXISTS " + ENTRY_SERIE_PARTICIPANTS_TABLE + "_person_id_idx");
-		statement.execute("DROP TABLE IF EXISTS " + ENTRY_SERIE_PARTICIPANTS_TABLE);
-		statement.execute("DROP TABLE IF EXISTS " + ENTRY_PARTICIPANTS_TABLE);
-		statement.execute("DROP TABLE IF EXISTS " + ENTRIES_TABLE);
-		statement.execute("DROP TABLE IF EXISTS " + ENTRY_SERIES_TABLE);
-		statement.execute("DROP TABLE IF EXISTS " + ENTRY_TYPES_TABLE);
-		statement.execute("DROP SEQUENCE IF EXISTS entry_id_seq");
-		statement.execute("DROP SEQUENCE IF EXISTS entry_serie_id_seq");
+				+ PeopleTransformator.PEOPLE_TABLE + "_" + CALENDAR_SERIES_TABLE + "_FK");
+		statement.execute("DROP INDEX IF EXISTS " + CALENDAR_ENTRIES_TABLE + "_person_id_idx");
+		statement.execute("DROP INDEX IF EXISTS " + CALENDAR_SERIES_PARTICIPANTS_TABLE + "_person_id_idx");
+		statement.execute("DROP TABLE IF EXISTS " + CALENDAR_ENTRY_DEPENDENCIES_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + CALENDAR_SERIES_PARTICIPANTS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + CALENDAR_ENTRY_PARTICIPANTS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + CALENDAR_ENTRIES_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + CALENDAR_SERIES_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + CALENDAR_ENTRY_TYPES_TABLE);
+		statement.execute("DROP SEQUENCE IF EXISTS calendar_entry_id_seq");
+		statement.execute("DROP SEQUENCE IF EXISTS calendar__series_id_seq");
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

@@ -74,7 +74,7 @@ public class PeopleManager {
 		    .set(QPeople.people.id, id) //
 		    .set(QPeople.people.name, person.getName()) //
 		    .set(QPeople.people.birthday, birthday) //
-		    .set(QPeople.people.birthdayEntrySerieId, serieId) //
+		    .set(QPeople.people.birthdayCalendarSeriesId, serieId) //
 	    ;
 	    insert.execute();
 	    personIdField.set(person, id);
@@ -107,14 +107,14 @@ public class PeopleManager {
     public boolean updatePerson(long id, Person person) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> oldSelect = queryFactory //
-		    .select(QPeople.people.birthdayEntrySerieId, QPeople.people.birthday) //
+		    .select(QPeople.people.birthdayCalendarSeriesId, QPeople.people.birthday) //
 		    .from(QPeople.people) //
 		    .where(QPeople.people.id.eq(id));
 	    Tuple oldEntry = oldSelect.fetchOne();
 	    if (oldEntry == null) {
 		return false;
 	    }
-	    Long entrySerieId = oldEntry.get(QPeople.people.birthdayEntrySerieId);
+	    Long entrySerieId = oldEntry.get(QPeople.people.birthdayCalendarSeriesId);
 	    CalendarDay oldBirthday = null;
 	    Date date = oldEntry.get(QPeople.people.birthday);
 	    if (date != null) {
@@ -145,7 +145,7 @@ public class PeopleManager {
 		    .set(QPeople.people.id, id) //
 		    .set(QPeople.people.name, person.getName()) //
 		    .set(QPeople.people.birthday, birthday) //
-		    .set(QPeople.people.birthdayEntrySerieId, delete ? null : entrySerieId) //
+		    .set(QPeople.people.birthdayCalendarSeriesId, delete ? null : entrySerieId) //
 		    .where(QPeople.people.id.eq(id));
 	    long updated = update.execute();
 	    queryFactory.commit();
@@ -182,7 +182,7 @@ public class PeopleManager {
     public boolean deletePerson(long id) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Long> selectEntrySerie = queryFactory//
-		    .select(QPeople.people.birthdayEntrySerieId) //
+		    .select(QPeople.people.birthdayCalendarSeriesId) //
 		    .from(QPeople.people) //
 		    .where(QPeople.people.id.eq(id));
 	    Long entrySerieId = selectEntrySerie.fetchOne();

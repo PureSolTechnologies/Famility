@@ -55,7 +55,7 @@ public class PeopleTransformator implements ComponentTransformator {
 			+ "id bigint not null, " //
 			+ "name varchar not null, " //
 			+ "birthday date, " //
-			+ "birthday_entry_serie_id bigint, " //
+			+ "birthday_calendar_series_id bigint, " //
 			+ "CONSTRAINT " + PEOPLE_TABLE + "_PK PRIMARY KEY (id)" //
 			+ ")",
 		"Create people table."));
