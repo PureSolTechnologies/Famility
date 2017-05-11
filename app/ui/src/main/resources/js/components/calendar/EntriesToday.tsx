@@ -1,16 +1,18 @@
-import React from 'react';
+import * as React from 'react';
 
+import ApplicationComponent from '../ApplicationComponent';
 import CalendarController from '../../controller/CalendarController';
 import CalendarTime from '../../models/calendar/CalendarTime';
+import CalendarEntryLabel from './CalendarEntryLabel';
 
-export default class EntriesToday extends React.Component {
+export default class EntriesToday extends ApplicationComponent<any, any> {
 
-    constructor( props ) {
+    constructor( props: any ) {
         super( props );
         this.state = { entries: [] };
     }
 
-    componentDidMount() {
+    private componentDidMount(): void {
         var component = this;
         CalendarController.getEntriesToday(
             this.props.type,
@@ -21,24 +23,23 @@ export default class EntriesToday extends React.Component {
         );
     }
 
-    render() {
+    private componentDidUpdate(): void {
+        this.enableTooltip( "root" );
+    }
+
+    public render(): any {
         var rows = [];
         var i = 0;
         for ( var entry of this.state.entries ) {
             var date = entry.date;
             var time = CalendarTime.fromEntry( entry );
-            rows.push( <tr key={i}>
-                <th data-toggle="tooltip" data-delay="0" data-placement="bottom" title={entry.durationAmount + ' ' + entry.durationUnit}>{time.toString( false )} Uhr</th>
-                <td>{entry.title} : {entry.description}</td>
-            </tr> );
+            rows.push(<li key={i} className="list-group-item"><CalendarEntryLabel entry={entry} showTime={true} /></li>);
             i++;
-        }
+        }           
         return (
-            <table>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
+            <ul ref="root" className="list-group">
+                {rows}                
+            </ul>
         );
     }
 }

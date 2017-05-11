@@ -45,19 +45,11 @@ export default class AbstractEntriesView<P, S> extends ApplicationComponent<P, S
     }
 
     protected createTableRowEntry( entries: any[], year: number, month: number, day: number, hour: number ): any {
-        let content: any = {};
-        let isNow: boolean = this.isNow( year, month, day, hour );
+        let style: any = this.isNow( year, month, day, hour ) ? { border: "solid red 2pt" } : {};
         if ( entries.length == 0 ) {
-            if ( !isNow ) {
-                return <td onClick={() => this.createEntry( year, month, day, hour )}></td>;
-            } else {
-                return <td className="alert-success" onClick={() => this.createEntry( year, month, day, hour )}></td>;
-            }
-        }
-        if ( isNow ) {
-            return <td className="alert-danger">{this.renderEntries( entries )}</td>;
+            return <td style={style} onClick={() => this.createEntry( year, month, day, hour )}></td>;
         } else {
-            return <td className="alert-warning">{this.renderEntries( entries )}</td>;
+            return <td style={style}>{this.renderEntries( entries )}</td>;
         }
     }
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-const { ArrowLeftIcon, ArrowRightIcon } = require( 'react-octicons' );
 
 import AbstractEntriesView from './AbstractEntriesView';
 import CalendarController from '../../controller/CalendarController';

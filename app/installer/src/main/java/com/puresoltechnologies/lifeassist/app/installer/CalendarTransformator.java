@@ -181,6 +181,9 @@ public class CalendarTransformator implements ComponentTransformator {
 		"INSERT INTO " + CALENDAR_ENTRY_TYPES_TABLE + " (type, name) VALUES ('anniversary', 'Anniversary')",
 		"Add anniversary type."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"INSERT INTO " + CALENDAR_ENTRY_TYPES_TABLE + " (type, name) VALUES ('reminder', 'Reminder')",
+		"Add reminder type."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"ALTER TABLE " + PeopleTransformator.PEOPLE_TABLE + " ADD CONSTRAINT "
 			+ PeopleTransformator.PEOPLE_TABLE + "_" + CALENDAR_SERIES_TABLE
 			+ "_FK FOREIGN KEY (birthday_calendar_series_id) REFERENCES " + CALENDAR_SERIES_TABLE + " (id)",
