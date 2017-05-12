@@ -25,7 +25,7 @@ export default class CalendarDay {
     }
 
     toString() {
-        var day = this.day;
+        var day = this.dayOfMonth;
         if ( day < 10 ) {
             day = "0" + day;
         }

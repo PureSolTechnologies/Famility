@@ -3,6 +3,7 @@ import { browserHistory } from 'react-router';
 const { BellIcon, GiftIcon, TasklistIcon, SyncIcon, ClockIcon  } = require( 'react-octicons' );
 
 import ApplicationComponent from '../ApplicationComponent';
+import EntryIcon from './EntryIcon';
 import CalendarTime from '../../models/calendar/CalendarTime';
 
 /**
@@ -49,25 +50,7 @@ export default class CalendarEntryLabel extends ApplicationComponent<any, undefi
         let entry: any = this.props.entry;
         let tooltip: string = "<h3>" + entry.title + "</h3>";
         let date: any = entry.date;
-        let time: CalendarTime = CalendarTime.fromEntry( entry );
-        let icon: any = undefined;
-        switch ( entry.type ) {
-            case "reminder":
-                icon = <BellIcon />;
-                break;
-            case "birthday":
-                icon = <GiftIcon />;
-                break;
-            case "todo":
-                icon = <TasklistIcon />;
-                break;
-            case "appointment":
-                icon = <ClockIcon />;
-                break;
-            case "anniversary":
-                icon = <SyncIcon />;
-                break;
-        }
+        let time: CalendarTime = CalendarTime.fromEntry( entry );       
         tooltip += "(" + entry.type + ")";
         tooltip += "<br/><i>" + date.year + "-" + date.month + "-" + date.dayOfMonth + " " + time.toString( false ) + " (" + entry.durationAmount + ' ' + entry.durationUnit + ")</i>";
         tooltip += "<br/><p>" + entry.description + "</p>";
@@ -77,7 +60,7 @@ export default class CalendarEntryLabel extends ApplicationComponent<any, undefi
         }
         return (
             <span ref="span" className={className} data-toggle="tooltip" data-placement="bottom" data-html="true" title={tooltip} onClick={this.showEntry}>
-                {icon} {this.props.showTime ? time.toString( false ) : null} {entry.title}
+                <EntryIcon type={entry.type} /> {this.props.showTime ? time.toString( false ) : null} {entry.title}
             </span >
         );
     }
