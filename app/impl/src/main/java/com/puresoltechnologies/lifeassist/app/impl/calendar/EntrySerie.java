@@ -27,7 +27,7 @@ public class EntrySerie {
     private final boolean reminding;
     private final Reminder reminder;
     private final CalendarDay startDate;
-    private final CalendarDay lastDate;
+    private final CalendarDay lastOccurence;
     private final String timezone;
     private final CalendarTime startTime;
     private final int durationAmount;
@@ -47,7 +47,7 @@ public class EntrySerie {
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("reminder") Reminder reminder, //
 	    @JsonProperty("startDate") CalendarDay startDate, //
-	    @JsonProperty("lastDate") CalendarDay lastDate, //
+	    @JsonProperty("lastOccurence") CalendarDay lastOccurence, //
 	    @JsonProperty("timezone") String timezone, //
 	    @JsonProperty("startTime") CalendarTime startTime, //
 	    @JsonProperty("durationAmount") int durationAmount, //
@@ -65,7 +65,7 @@ public class EntrySerie {
 	this.reminding = reminding;
 	this.reminder = reminder;
 	this.startDate = startDate;
-	this.lastDate = lastDate;
+	this.lastOccurence = lastOccurence;
 	this.timezone = timezone;
 	this.startTime = startTime;
 	this.durationAmount = durationAmount;
@@ -84,7 +84,7 @@ public class EntrySerie {
 	    boolean reminding, //
 	    Reminder reminder, //
 	    CalendarDay startDate, //
-	    CalendarDay lastDate, //
+	    CalendarDay lastOccurence, //
 	    String timezone, //
 	    CalendarTime startTime, //
 	    int durationAmount, //
@@ -93,7 +93,7 @@ public class EntrySerie {
 	    Turnus turnus, //
 	    int skipping //
     ) {
-	this(-1l, type, title, description, participants, reminding, reminder, startDate, lastDate, timezone, startTime,
+	this(-1l, type, title, description, participants, reminding, reminder, startDate, lastOccurence, timezone, startTime,
 		durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
@@ -129,8 +129,8 @@ public class EntrySerie {
 	return startDate;
     }
 
-    public CalendarDay getLastDate() {
-	return lastDate;
+    public CalendarDay getLastOccurence() {
+	return lastOccurence;
     }
 
     public String getTimezone() {
@@ -179,7 +179,7 @@ public class EntrySerie {
 	result = prime * result + durationAmount;
 	result = prime * result + ((durationUnit == null) ? 0 : durationUnit.hashCode());
 	result = prime * result + (int) (id ^ (id >>> 32));
-	result = prime * result + ((lastDate == null) ? 0 : lastDate.hashCode());
+	result = prime * result + ((lastOccurence == null) ? 0 : lastOccurence.hashCode());
 	result = prime * result + ((occupancy == null) ? 0 : occupancy.hashCode());
 	result = prime * result + ((participants == null) ? 0 : participants.hashCode());
 	result = prime * result + ((reminder == null) ? 0 : reminder.hashCode());
@@ -215,10 +215,10 @@ public class EntrySerie {
 	    return false;
 	if (id != other.id)
 	    return false;
-	if (lastDate == null) {
-	    if (other.lastDate != null)
+	if (lastOccurence == null) {
+	    if (other.lastOccurence != null)
 		return false;
-	} else if (!lastDate.equals(other.lastDate))
+	} else if (!lastOccurence.equals(other.lastOccurence))
 	    return false;
 	if (occupancy != other.occupancy)
 	    return false;

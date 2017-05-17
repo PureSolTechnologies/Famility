@@ -227,8 +227,8 @@ public class CalendarManager {
 		    .set(QCalendarSeries.calendarSeries.description, entrySerie.getDescription()) //
 		    .set(QCalendarSeries.calendarSeries.firstOccurrence, Timestamp.from(occurrence.toInstant())) //
 		    .set(QCalendarSeries.calendarSeries.lastOccurrence,
-			    entrySerie.getLastDate() != null ? Date.valueOf(entrySerie.getLastDate().getLocalDate())
-				    : null) //
+			    entrySerie.getLastOccurence() != null
+				    ? Date.valueOf(entrySerie.getLastOccurence().getLocalDate()) : null) //
 		    .set(QCalendarSeries.calendarSeries.timezone, entrySerie.getTimezone()) //
 		    .set(QCalendarSeries.calendarSeries.durationAmount, entrySerie.getDurationAmount()) //
 		    .set(QCalendarSeries.calendarSeries.durationUnit, entrySerie.getDurationUnit().name()) //
@@ -307,7 +307,8 @@ public class CalendarManager {
 	String title = tuple.get(QCalendarSeries.calendarSeries.title);
 	String description = tuple.get(QCalendarSeries.calendarSeries.description);
 	LocalDateTime firstOccurrence = tuple.get(QCalendarSeries.calendarSeries.firstOccurrence).toLocalDateTime();
-	LocalDate lastOccurence = tuple.get(QCalendarSeries.calendarSeries.lastOccurrence).toLocalDate();
+	Date lastOccuranceDate = tuple.get(QCalendarSeries.calendarSeries.lastOccurrence);
+	LocalDate lastOccurence = lastOccuranceDate != null ? lastOccuranceDate.toLocalDate() : null;
 	String timezone = tuple.get(QCalendarSeries.calendarSeries.timezone);
 
 	int durationAmount = tuple.get(QCalendarSeries.calendarSeries.durationAmount);
@@ -320,8 +321,8 @@ public class CalendarManager {
 	int skipping = tuple.get(QCalendarSeries.calendarSeries.skipping);
 	return new EntrySerie(id, type, title, description, new ArrayList<>(), reminderAmount > 0,
 		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence),
-		CalendarDay.of(lastOccurence), timezone, CalendarTime.of(firstOccurrence), durationAmount, durationUnit,
-		occupancy, turnus, skipping);
+		lastOccurence != null ? CalendarDay.of(lastOccurence) : null, timezone,
+		CalendarTime.of(firstOccurrence), durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
     public boolean removeEntrySerie(long id) throws SQLException {
@@ -415,20 +416,26 @@ public class CalendarManager {
 	    throws SQLException {
 	Turnus turnus = entrySerie.getTurnus();
 	LocalDate currentDate = from.plus(turnus.getAmout(), turnus.getUnit());
-	LocalDate lastDate = entrySerie.getLastDate() != null ? entrySerie.getLastDate().getLocalDate() : null;
+	LocalDate lastInsertedDate = null;
+	LocalDate lastOccurence = entrySerie.getLastOccurence() != null ? entrySerie.getLastOccurence().getLocalDate()
+		: null;
 	while ((currentDate.isBefore(to) || currentDate.isEqual(to)) && //
-		((lastDate == null) || currentDate.isBefore(lastDate) || currentDate.isEqual(lastDate))) {
+		((lastOccurence == null) || currentDate.isBefore(lastOccurence)
+			|| currentDate.isEqual(lastOccurence))) {
 	    CalendarDay date = CalendarDay.of(currentDate);
 	    Entry entry = new Entry(entrySerie.getType(), entrySerie.getTitle(), entrySerie.getDescription(),
 		    entrySerie.getParticipants(), entrySerie.getReminder() != null ? true : false,
 		    entrySerie.getReminder(), date, entrySerie.getTimezone(), entrySerie.getStartTime(),
 		    entrySerie.getDurationAmount(), entrySerie.getDurationUnit(), entrySerie.getOccupancy());
 	    insertEntry(entry);
+	    lastInsertedDate = currentDate;
 	    currentDate = currentDate.plus(turnus.getAmout() + entrySerie.getSkipping(), turnus.getUnit());
 	}
-	SQLUpdateClause update = queryFactory.update(QCalendarSeries.calendarSeries)
-		.set(QCalendarSeries.calendarSeries.lastEntryCreated, Date.valueOf(to))
-		.where(QCalendarSeries.calendarSeries.id.eq(entrySerie.getId()));
-	update.execute();
+	if (lastInsertedDate != null) {
+	    SQLUpdateClause update = queryFactory.update(QCalendarSeries.calendarSeries)
+		    .set(QCalendarSeries.calendarSeries.lastEntryCreated, Date.valueOf(lastInsertedDate))
+		    .where(QCalendarSeries.calendarSeries.id.eq(entrySerie.getId()));
+	    update.execute();
+	}
     }
 }

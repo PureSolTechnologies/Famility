@@ -18,14 +18,11 @@ export default class CalendarEntryLabel extends ApplicationComponent<any, undefi
 
     constructor( props: any ) {
         super( props );
+        this.enableTooltips("span");
         this.showEntry = this.showEntry.bind( this );
     }
 
-    private componentDidUpdate() {
-        this.enableTooltip( "span" );
-    }
-
-    private showEntry() {
+    private showEntry(): void {
         browserHistory.push( '/dialog/calendar/show-entry/' + this.props.entry.id + "?origin=" + window.location.pathname );
     }
     
@@ -55,9 +52,9 @@ export default class CalendarEntryLabel extends ApplicationComponent<any, undefi
         tooltip += "<br/><i>" + date.year + "-" + date.month + "-" + date.dayOfMonth + " " + time.toString( false ) + " (" + entry.durationAmount + ' ' + entry.durationUnit + ")</i>";
         tooltip += "<br/><p>" + entry.description + "</p>";
         let className: string = "alert-warning";
-        if (this.isNow()) {
-            className = "alert-danger";
-        }
+         if (this.isNow()) {
+            className = "alert-d anger";
+         }
         return (
             <span ref="span" className={className} data-toggle="tooltip" data-placement="bottom" data-html="true" title={tooltip} onClick={this.showEntry}>
                 <EntryIcon type={entry.type} /> {this.props.showTime ? time.toString( false ) : null} {entry.title}

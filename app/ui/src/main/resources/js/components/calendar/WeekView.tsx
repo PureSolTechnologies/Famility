@@ -14,6 +14,7 @@ export default class WeekView extends AbstractEntriesView<any, any> {
 
     constructor( props: any ) {
         super( props );
+        this.enableTooltips("root");
         this.state = {
             week: props.week,
             calendar: props.calendar,
@@ -28,10 +29,6 @@ export default class WeekView extends AbstractEntriesView<any, any> {
                 component.setState( { entries: entries });
             },
             function( response ) { });
-    }
-
-    private componentDidUpdate() {
-        this.enableTooltip( "root" );
     }
 
     private componentWillReceiveProps( nextProps: any ) {

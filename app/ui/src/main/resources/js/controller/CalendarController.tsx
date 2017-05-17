@@ -1,5 +1,7 @@
 import restController from './RESTController';
 
+import CalendarEntry from '../models/calendar/CalendarEntry';
+
 export default class CalendarController {
 
     static namesOfMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -95,7 +97,7 @@ export default class CalendarController {
         );
     }
 
-    static createEntry( entry: any, successfulCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): void {
+    static createEntry( entry: CalendarEntry, successfulCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): void {
         restController.PUT( '/calendar/entries',
             { "Content-Type": "application/json; charset=utf-8" },
             entry,

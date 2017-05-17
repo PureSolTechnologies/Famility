@@ -51,8 +51,8 @@ export default class YearView extends React.Component {
                     var month = ( quartal - 1 ) * 3 + monthInQuartal;
                     columns.push( <div className="col-md-4" key={monthInQuartal}>
                         <div className="card">
-                            <div className="card-header" style={{ margin: "0pt", padding: "5pt" }}>
-                                <h3><Link to={'/calendar/month/' + this.state.calendarData.year + '/' + month} >{this.state.calendarData.months[month].name}</Link></h3>
+                            <div className="card-header" style={{ margin: "0pt", padding: "5pt", textAlign: "center" }}>
+                                <h3><Link to={'/calendar/month/' + this.state.calendarData.year + '/' + month} ><b>{this.state.calendarData.months[month].name}</b></Link></h3>
                             </div>
                             <div className="card-block" style={{ margin: "0pt", padding: "0pt" }}>
                                 <SingleMonth month={month} data={this.state.calendarData ? this.state.calendarData.months[month] : []} entries={this.state.entries && this.state.entries.months ? this.state.entries.months[month] : []} />

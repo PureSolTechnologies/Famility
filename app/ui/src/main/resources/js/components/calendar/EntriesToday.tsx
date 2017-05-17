@@ -9,6 +9,7 @@ export default class EntriesToday extends ApplicationComponent<any, any> {
 
     constructor( props: any ) {
         super( props );
+        this.enableTooltips("root");
         this.state = { entries: [] };
     }
 
@@ -22,11 +23,7 @@ export default class EntriesToday extends ApplicationComponent<any, any> {
             function( response ) { }
         );
     }
-
-    private componentDidUpdate(): void {
-        this.enableTooltip( "root" );
-    }
-
+    
     public render(): any {
         var rows = [];
         var i = 0;

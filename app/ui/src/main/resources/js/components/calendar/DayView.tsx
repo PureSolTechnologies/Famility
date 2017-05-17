@@ -15,6 +15,7 @@ export default class DayView extends AbstractEntriesView<any, any> {
 
     constructor( props: any ) {
         super( props );
+        this.enableTooltips("root");
         this.state = { month: props.month, day: props.day, calendar: props.calendar, entries: [] };
     }
 
@@ -25,10 +26,6 @@ export default class DayView extends AbstractEntriesView<any, any> {
                 component.setState( { entries: entries });
             },
             function( response ) { });
-    }
-
-    private componentDidUpdate() {
-        this.enableTooltip( "root" );
     }
 
     private componentWillReceiveProps( nextProps: any ) {

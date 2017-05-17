@@ -1,19 +1,19 @@
-import React from 'react';
+import * as React from 'react';
 
 import CalendarController from '../../controller/CalendarController';
 
-export default class TimeZoneSelector extends React.Component {
+export default class TimeZoneSelector extends React.Component<any, any> {
 
     static propTypes = {
         value: React.PropTypes.string,
         onChange: React.PropTypes.func
     };
 
-    areaOptions = [];
+    private areaOptions: any[] = [];
 
-    constructor( props ) {
+    constructor( props: any ) {
         super( props );
-        var area = "";
+        let area = "";
         if ( props.value ) {
             var parts = props.value.split( "/" );
             if ( parts[0] ) {
@@ -30,8 +30,8 @@ export default class TimeZoneSelector extends React.Component {
         this.changeTimezone = this.changeTimezone.bind( this );
     }
 
-    componentDidMount() {
-        var component = this;
+    private componentDidMount(): void {
+        let component = this;
         CalendarController.getTimezones(
             function( timezones ) {
                 var areas = [];
@@ -54,7 +54,7 @@ export default class TimeZoneSelector extends React.Component {
         );
     }
 
-    changeArea( event ) {
+    private changeArea( event: any ): void {
         var area = event.target.value;
         if ( this.props.onChange ) {
             this.props.onChange( '' );
@@ -65,7 +65,7 @@ export default class TimeZoneSelector extends React.Component {
         });
     }
 
-    changeTimezone( event ) {
+    private changeTimezone( event: any ): void {
         var timezone = event.target.value;
         if ( this.props.onChange ) {
             this.props.onChange( timezone );
@@ -75,7 +75,7 @@ export default class TimeZoneSelector extends React.Component {
         });
     }
 
-    render() {
+    public render(): any {
         var options = [];
         if ( this.state.area ) {
             for ( var timezone of this.state.timezones ) {
@@ -90,13 +90,13 @@ export default class TimeZoneSelector extends React.Component {
         return ( <div className="row">
             <div className="form-group col-md-6">
                 <label htmlFor="area">Area</label>
-                <select className="form-control" id="area" name="area" required="true" value={this.state.area} onChange={this.changeArea}>
+                <select className="form-control" id="area" name="area" required={true} value={this.state.area} onChange={this.changeArea}>
                     {this.areaOptions}
                 </select>
             </div>
             <div className="form-group col-md-6">
                 <label htmlFor="timezone">Timezone</label>
-                <select className="form-control" id="timezone" name="timezone" required="true" value={this.state.timezone} onChange={this.changeTimezone}>
+                <select className="form-control" id="timezone" name="timezone" required={true} value={this.state.timezone} onChange={this.changeTimezone}>
                     {options}
                 </select>
             </div></div>

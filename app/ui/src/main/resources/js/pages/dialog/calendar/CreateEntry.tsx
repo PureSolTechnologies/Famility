@@ -1,16 +1,16 @@
-import React from 'react';
+import * as React from 'react';
 import { browserHistory } from 'react-router';
 
 import CalendarController from '../../../controller/CalendarController';
 import Dialog from '../../../components/dialog/Dialog';
-import Entry from '../../../models/calendar/Entry';
+import CalendarEntry from '../../../models/calendar/CalendarEntry';
 import CalendarDay from '../../../models/calendar/CalendarDay';
 import CalendarTime from '../../../models/calendar/CalendarTime';
 import TimeZoneSelector from '../../../components/calendar/TimeZoneSelector';
 
-export default class CreateEntry extends React.Component {
+export default class CreateEntry extends React.Component<any, any> {
 
-    constructor( props ) {
+    constructor( props: any ) {
         super( props );
         this.state = {
             date: '',
@@ -71,135 +71,135 @@ export default class CreateEntry extends React.Component {
             },
             function( response ) { });
         CalendarController.getReminderDurationUnits(
-                function( units ) {
-                    component.setState( {
-                        reminderDurationUnits: units,
-                        reminderDurationAmount: 15,
-                        reminderDurationUnit: 'MINUTES'
-                    });
-                },
-                function( response ) { });
+            function( units ) {
+                component.setState( {
+                    reminderDurationUnits: units,
+                    reminderDurationAmount: 15,
+                    reminderDurationUnit: 'MINUTES'
+                });
+            },
+            function( response ) { });
         CalendarController.getTurnusUnits(
-                function( units ) {
-                    component.setState( {
-                        turnusUnits: units
-                    });
-                },
-                function( response ) { });
+            function( units ) {
+                component.setState( {
+                    turnusUnits: units
+                });
+            },
+            function( response ) { });
         CalendarController.getEntryTypes(
-                function( entryTypes ) {
-                    component.setState( {
-                        entryTypes: entryTypes
-                    });
-                },
-                function( response ) { });
+            function( entryTypes ) {
+                component.setState( {
+                    entryTypes: entryTypes
+                });
+            },
+            function( response ) { });
     }
 
-    changeDate( event ) {
+    changeDate( event: any ): void {
         var date = event.target.value;
         this.setState( {
             date: date
         });
     }
 
-    changeTimezone( timezone ) {
+    changeTimezone( timezone: any ): void {
         this.setState( { timezone: timezone });
     }
 
-    changeWholeDay( event ) {
+    changeWholeDay( event: any ): void {
         var wholeDay = event.target.checked;
         this.setState( {
             wholeDay: wholeDay
         });
     }
 
-    changeBeginTime( event ) {
+    changeBeginTime( event: any ): void {
         var beginTime = event.target.value;
         this.setState( {
             beginTime: beginTime
         });
     }
 
-    changeDurationAmount( event ) {
+    changeDurationAmount( event: any ): void {
         var durationAmount = event.target.value;
         this.setState( {
             durationAmount: durationAmount
         });
     }
 
-    changeDurationUnit( event ) {
+    changeDurationUnit( event: any ): void {
         var durationUnit = event.target.value;
         this.setState( {
             durationUnit: durationUnit
         });
     }
 
-    changeType( event ) {
+    changeType( event: any ): void {
         var type = event.target.value;
         this.setState( {
             type: type
         });
     }
 
-    changeTitle( event ) {
+    changeTitle( event: any ): void {
         var title = event.target.value;
         this.setState( {
             title: title
         });
     }
 
-    changeDescription( event ) {
+    changeDescription( event: any ): void {
         var description = event.target.value;
         this.setState( {
             description: description
         });
     }
 
-    changeReminding( event ) {
+    changeReminding( event: any ): void {
         var reminding = event.target.checked;
         this.setState( {
             reminding: reminding
         });
     }
 
-    changeReminderDurationAmount( event ) {
+    changeReminderDurationAmount( event: any ): void {
         var amount = event.target.value;
         this.setState( {
             reminderDurationAmount: amount
         });
     }
 
-    changeReminderDurationUnit( event ) {
+    changeReminderDurationUnit( event: any ): void {
         var unit = event.target.value;
         this.setState( {
             reminderDurationUnit: unit
         });
     }
 
-    changeRecurring(event) {
+    changeRecurring( event: any ): void {
         var recurring = event.target.checked;
         this.setState( {
             recurring: recurring
-        });        
+        });
     }
-    
-    changeTurnus(event) {
+
+    changeTurnus( event: any ): void {
         var turnus = event.target.value;
         this.setState( {
             turnus: turnus
-        });                
+        });
     }
-    
-    changeTurnusSkips(event) {
+
+    changeTurnusSkips( event: any ): void {
         var turnusSkips = event.target.value;
         this.setState( {
             turnusSkips: turnusSkips
-        });                        
+        });
     }
 
     create() {
         var component = this;
-        var entry = new Entry;
+        var entry = new CalendarEntry();
         entry.id = -1;
         entry.type = this.state.type;
         entry.title = this.state.title;
@@ -225,19 +225,19 @@ export default class CreateEntry extends React.Component {
     }
 
     render() {
-        var entryTypes = [];
+        var entryTypes: any[] = [];
         for ( var entryType of this.state.entryTypes ) {
             entryTypes.push( <option key={entryType.type} value={entryType.type}>{entryType.name}</option> );
         }
-        var durationUnits = [];
+        var durationUnits: any[] = [];
         for ( var durationUnit of this.state.durationUnits ) {
             durationUnits.push( <option key={durationUnit.unit} value={durationUnit.unit}>{durationUnit.name}</option> );
         }
-        var reminderDurationUnits = [];
+        var reminderDurationUnits: any[] = [];
         for ( var reminderDurationUnit of this.state.reminderDurationUnits ) {
             reminderDurationUnits.push( <option key={reminderDurationUnit.unit} value={reminderDurationUnit.unit}>{reminderDurationUnit.name}</option> );
         }
-        var turnusUnits = [];
+        var turnusUnits: any[] = [];
         for ( var turnusUnit of this.state.turnusUnits ) {
             turnusUnits.push( <option key={turnusUnit.unit} value={turnusUnit.unit}>{turnusUnit.name}</option> );
         }
@@ -291,14 +291,14 @@ export default class CreateEntry extends React.Component {
                 </div>
                 <div className="form-group">
                     <label htmlFor="description">Description</label>
-                    <textarea className="form-control" id="description" rows="5" value={this.state.description} onChange={this.changeDescription}></textarea>
+                    <textarea className="form-control" id="description" rows={5} value={this.state.description} onChange={this.changeDescription}></textarea>
                 </div>
                 <hr />
                 <h3>Sharing and Reminding</h3>
                 <div className="row">
                     <div className="col-md-6">
                         <label htmlFor="participans">Participans</label>
-                        <textarea className="form-control" id="participans" rows="5"></textarea>
+                        <textarea className="form-control" id="participans" rows={5}></textarea>
                     </div>
                     <div className="col-md-6">
                         <div className="form-check">
@@ -310,7 +310,7 @@ export default class CreateEntry extends React.Component {
                             <label htmlFor="period">Period</label>
                             <div className="input-group">
                                 <input type="number" className="form-control" id="period" placeholder="" disabled={!this.state.reminding} value={this.state.reminderDurationAmount} onChange={this.changeReminderDurationAmount} />
-                                <select className="form-control" disabled={!this.state.reminding} value={this.state.reminderDurationUnit} onChange={this.reminderDurationUnit}>
+                                <select className="form-control" disabled={!this.state.reminding} value={this.state.reminderDurationUnit} onChange={this.state.reminderDurationUnit}>
                                     {reminderDurationUnits}
                                 </select>
                             </div>

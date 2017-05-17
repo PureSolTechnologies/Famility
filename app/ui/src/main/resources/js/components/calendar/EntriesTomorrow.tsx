@@ -9,6 +9,7 @@ export default class EntriesTomorrow extends ApplicationComponent<any, any>  {
 
     constructor( props: any ) {
         super( props );
+        this.enableTooltips("root");
         this.state = { entries: [] };
     }
 
@@ -23,12 +24,8 @@ export default class EntriesTomorrow extends ApplicationComponent<any, any>  {
         );
     }
     
-    private componentDidUpdate(): void {
-        this.enableTooltip( "root" );
-    }
-
     public render(): any {
-        var rows = [];
+        var rows: any[] = [];
         var i = 0;
         for ( var entry of this.state.entries ) {
             var date = entry.date;

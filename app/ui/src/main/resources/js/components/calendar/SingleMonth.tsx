@@ -74,22 +74,22 @@ export default class SingleMonth extends React.Component<any, any> {
             }
             weeks.push(
                 <tr key={week}>
-                    <th style={{ borderRight: '1pt solid #000000' }}><Link to={'/calendar/week/' + this.state.data.year + '/' + week}>{week > 0 ? week : ''}</Link></th>
+                    <th><Link to={'/calendar/week/' + this.state.data.year + '/' + week}>{week > 0 ? week : ''}</Link></th>
                     {daysRow}
                 </tr>
             );
         }
-        return <table width="100%" style={{ margin: "0pt", spacing: "0pt", border: "1pt solid  gray" }}>
-            <thead style={{ border: "1pt solid  gray" }}>
+        return <table className="single-month-view" width="100%" style={{ margin: "0pt", spacing: "0pt" }}>
+            <thead>
                 <tr>
-                    <th></th>
+                    <th>cw</th>
                     <th>Mo</th>
                     <th>Tu</th>
                     <th>We</th>
                     <th>Th</th>
                     <th>Fr</th>
                     <th>Sa</th>
-                    <th>Su</th>
+                    <th style={{color: "red"}}>Su</th>
                 </tr>
             </thead>
             <tbody>
