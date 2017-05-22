@@ -1,10 +1,8 @@
 package com.puresoltechnologies.lifeassist.app.api.people;
 
+import java.time.Duration;
 import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
+import java.time.temporal.ChronoUnit;
 
 /**
  * A single birthday information with additional information to be shown in UI.
@@ -19,33 +17,28 @@ public class Birthday implements Comparable<Birthday> {
 
     private final long id;
     private final String name;
-    private final CalendarDay birthday;
+    private final LocalDate birthday;
     private final boolean stillThisYear;
-    private final CalendarDay nextAnniversary;
+    private final LocalDate nextAnniversary;
     private final int nextAge;
 
-    @JsonCreator
-    public Birthday(@JsonProperty("id") long id, @JsonProperty("name") String name,
-	    @JsonProperty("birthday") CalendarDay birthday) {
+    public Birthday(long id, String name, LocalDate birthday) {
 	super();
 	this.id = id;
 	this.name = name;
 	this.birthday = birthday;
 	LocalDate today = LocalDate.now();
-	if (birthday.getMonth() < today.getMonthValue()) {
-	    stillThisYear = false;
-	} else if ((birthday.getMonth() == today.getDayOfMonth())
-		&& (birthday.getDayOfMonth() < today.getDayOfMonth())) {
+	LocalDate nextAnniversary = today;
+	nextAnniversary.withMonth(birthday.getMonth().getValue());
+	nextAnniversary.withDayOfMonth(birthday.getDayOfMonth());
+	if (nextAnniversary.isBefore(today)) {
+	    nextAnniversary.plus(1, ChronoUnit.YEARS);
 	    stillThisYear = false;
 	} else {
 	    stillThisYear = true;
 	}
-	if (isStillThisYear()) {
-	    nextAnniversary = new CalendarDay(today.getYear(), birthday.getMonth(), birthday.getDayOfMonth());
-	} else {
-	    nextAnniversary = new CalendarDay(today.getYear() + 1, birthday.getMonth(), birthday.getDayOfMonth());
-	}
-	nextAge = today.getYear() - birthday.getYear() + (stillThisYear ? 0 : 1);
+	this.nextAnniversary = nextAnniversary;
+	this.nextAge = (int) Duration.between(birthday, nextAnniversary).get(ChronoUnit.YEARS);
     }
 
     public long getId() {
@@ -56,7 +49,7 @@ public class Birthday implements Comparable<Birthday> {
 	return name;
     }
 
-    public CalendarDay getBirthday() {
+    public LocalDate getBirthday() {
 	return birthday;
     }
 
@@ -64,7 +57,7 @@ public class Birthday implements Comparable<Birthday> {
 	return stillThisYear;
     }
 
-    public CalendarDay getNextAnniversary() {
+    public LocalDate getNextAnniversary() {
 	return nextAnniversary;
     }
 

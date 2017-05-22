@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +15,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,15 +24,19 @@ import java.util.List;
 import java.util.Locale;
 
 import com.mysema.commons.lang.CloseableIterator;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
+import com.puresoltechnologies.lifeassist.app.api.calendar.DurationUnit;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Entry;
 import com.puresoltechnologies.lifeassist.app.api.calendar.EntryType;
+import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
 import com.puresoltechnologies.lifeassist.app.api.calendar.TimeZoneInformation;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
-import com.puresoltechnologies.lifeassist.app.model.QCalendarEntries;
-import com.puresoltechnologies.lifeassist.app.model.QCalendarEntryTypes;
-import com.puresoltechnologies.lifeassist.app.model.QCalendarSeries;
+import com.puresoltechnologies.lifeassist.app.model.calendar.QEntries;
+import com.puresoltechnologies.lifeassist.app.model.calendar.QEntryTypes;
+import com.puresoltechnologies.lifeassist.app.model.calendar.QSeries;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
@@ -44,7 +51,7 @@ public class CalendarManager {
 	try {
 	    entryIdField = Entry.class.getDeclaredField("id");
 	    entryIdField.setAccessible(true);
-	    entrySerieIdField = EntrySerie.class.getDeclaredField("id");
+	    entrySerieIdField = Series.class.getDeclaredField("id");
 	    entrySerieIdField.setAccessible(true);
 	} catch (NoSuchFieldException | SecurityException e) {
 	    throw new RuntimeException(e);
@@ -77,13 +84,12 @@ public class CalendarManager {
 
     public List<EntryType> getEntryTypes() throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Tuple> query = queryFactory
-		    .select(QCalendarEntryTypes.calendarEntryTypes.type, QCalendarEntryTypes.calendarEntryTypes.name)
-		    .from(QCalendarEntryTypes.calendarEntryTypes);
+	    SQLQuery<Tuple> query = queryFactory.select(QEntryTypes.entryTypes.type, QEntryTypes.entryTypes.name)
+		    .from(QEntryTypes.entryTypes);
 	    List<EntryType> entryTypes = new ArrayList<>();
 	    for (Tuple tuple : query.fetch()) {
-		String type = tuple.get(QCalendarEntryTypes.calendarEntryTypes.type);
-		String name = tuple.get(QCalendarEntryTypes.calendarEntryTypes.name);
+		String type = tuple.get(QEntryTypes.entryTypes.type);
+		String name = tuple.get(QEntryTypes.entryTypes.name);
 		entryTypes.add(new EntryType(type, name));
 	    }
 	    return entryTypes;
@@ -112,24 +118,23 @@ public class CalendarManager {
 
     public long insertEntry(Entry entry) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    LocalDate date = CalendarDay.toLocalDate(entry.getDate());
-	    LocalTime time = CalendarTime.toLocalTime(entry.getTime());
-	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, entry.getZoneId());
-	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("calendar_entry_id_seq"));
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("calendar.entry_id_seq"));
 	    long id = query.fetchOne();
+	    ZonedDateTime begin = entry.getBegin();
+	    ZonedDateTime end = entry.getEnd();
 	    queryFactory//
-		    .insert(QCalendarEntries.calendarEntries) //
-		    .set(QCalendarEntries.calendarEntries.id, id) //
-		    .set(QCalendarEntries.calendarEntries.type, entry.getType()) //
-		    .set(QCalendarEntries.calendarEntries.title, entry.getTitle()) //
-		    .set(QCalendarEntries.calendarEntries.description, entry.getDescription()) //
-		    .set(QCalendarEntries.calendarEntries.occurrence, Timestamp.from(occurrence.toInstant())) //
-		    .set(QCalendarEntries.calendarEntries.timezone, entry.getTimezone()) //
-		    .set(QCalendarEntries.calendarEntries.durationAmount, entry.getDurationAmount()) //
-		    .set(QCalendarEntries.calendarEntries.durationUnit, entry.getDurationUnit().name()) //
-		    .set(QCalendarEntries.calendarEntries.reminderAmount, entry.getReminder().getAmount()) //
-		    .set(QCalendarEntries.calendarEntries.reminderUnit, entry.getReminder().getUnit().name()) //
-		    .set(QCalendarEntries.calendarEntries.occupancy, entry.getOccupancy().name()) //
+		    .insert(QEntries.entries) //
+		    .set(QEntries.entries.id, id) //
+		    .set(QEntries.entries.type, entry.getType()) //
+		    .set(QEntries.entries.title, entry.getTitle()) //
+		    .set(QEntries.entries.description, entry.getDescription()) //
+		    .set(QEntries.entries.beginTime, Timestamp.from(begin.toInstant())) //
+		    .set(QEntries.entries.beginTimezone, begin.getZone().getId()) //
+		    .set(QEntries.entries.endTime, Timestamp.from(end.toInstant())) //
+		    .set(QEntries.entries.endTimezone, end.getZone().getId()) //
+		    .set(QEntries.entries.reminderAmount, entry.getReminder().getAmount()) //
+		    .set(QEntries.entries.reminderUnit, entry.getReminder().getUnit().name()) //
+		    .set(QEntries.entries.occupancy, entry.getOccupancy().name())//
 		    .execute();
 	    queryFactory.commit();
 	    entryIdField.set(entry, id);
@@ -145,34 +150,36 @@ public class CalendarManager {
 
     public boolean updateEntry(long id, Entry entry) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    LocalDate date = CalendarDay.toLocalDate(entry.getDate());
-	    LocalTime time = CalendarTime.toLocalTime(entry.getTime());
-	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, entry.getZoneId());
+	    ZonedDateTime begin = entry.getBegin();
+	    ZonedDateTime end = entry.getEnd();
 	    long updated = queryFactory//
-		    .update(QCalendarEntries.calendarEntries)//
-		    .set(QCalendarEntries.calendarEntries.type, entry.getType()) //
-		    .set(QCalendarEntries.calendarEntries.title, entry.getTitle()) //
-		    .set(QCalendarEntries.calendarEntries.description, entry.getDescription()) //
-		    .set(QCalendarEntries.calendarEntries.occurrence, Timestamp.from(occurrence.toInstant())) //
-		    .set(QCalendarEntries.calendarEntries.timezone, entry.getTimezone()) //
-		    .set(QCalendarEntries.calendarEntries.durationAmount, entry.getDurationAmount()) //
-		    .set(QCalendarEntries.calendarEntries.durationUnit, entry.getDurationUnit().name()) //
-		    .set(QCalendarEntries.calendarEntries.reminderAmount, entry.getReminder().getAmount()) //
-		    .set(QCalendarEntries.calendarEntries.reminderUnit, entry.getReminder().getUnit().name()) //
-		    .set(QCalendarEntries.calendarEntries.occupancy, entry.getOccupancy().name()) //
-		    .where(QCalendarEntries.calendarEntries.id.eq(id)) //
+		    .update(QEntries.entries)//
+		    .set(QEntries.entries.type, entry.getType()) //
+		    .set(QEntries.entries.title, entry.getTitle()) //
+		    .set(QEntries.entries.description, entry.getDescription()) //
+		    .set(QEntries.entries.beginTime, Timestamp.from(begin.toInstant())) //
+		    .set(QEntries.entries.beginTimezone, begin.getZone().getId()) //
+		    .set(QEntries.entries.endTime, Timestamp.from(end.toInstant())) //
+		    .set(QEntries.entries.endTimezone, end.getZone().getId()) //
+		    .set(QEntries.entries.reminderAmount, entry.getReminder().getAmount()) //
+		    .set(QEntries.entries.reminderUnit, entry.getReminder().getUnit().name()) //
+		    .set(QEntries.entries.occupancy, entry.getOccupancy().name()) //
+		    .where(QEntries.entries.id.eq(id)) //
 		    .execute();
 	    queryFactory.commit();
+	    entryIdField.set(entry, id);
 	    return updated > 0;
+	} catch (IllegalArgumentException | IllegalAccessException e) {
+	    throw new RuntimeException(e);
 	}
     }
 
     public Entry getEntry(long id) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> query = queryFactory//
-		    .select(QCalendarEntries.calendarEntries.all()) //
-		    .from(QCalendarEntries.calendarEntries) //
-		    .where(QCalendarEntries.calendarEntries.id.eq(id));
+		    .select(QEntries.entries.all()) //
+		    .from(QEntries.entries) //
+		    .where(QEntries.entries.id.eq(id));
 	    Tuple tuple = query.fetchOne();
 	    if (tuple == null) {
 		return null;
@@ -182,74 +189,70 @@ public class CalendarManager {
     }
 
     private Entry convertTupleToEntry(Tuple tuple) {
-	long id = tuple.get(QCalendarEntries.calendarEntries.id);
-	String type = tuple.get(QCalendarEntries.calendarEntries.type);
-	String title = tuple.get(QCalendarEntries.calendarEntries.title);
-	String description = tuple.get(QCalendarEntries.calendarEntries.description);
-	LocalDateTime occurrence = tuple.get(QCalendarEntries.calendarEntries.occurrence).toLocalDateTime();
-	String timezone = tuple.get(QCalendarEntries.calendarEntries.timezone);
+	long id = tuple.get(QEntries.entries.id);
+	String type = tuple.get(QEntries.entries.type);
+	String title = tuple.get(QEntries.entries.title);
+	String description = tuple.get(QEntries.entries.description);
+	LocalDateTime beginTime = tuple.get(QEntries.entries.beginTime).toLocalDateTime();
+	String beginTimezone = tuple.get(QEntries.entries.beginTimezone);
+	ZonedDateTime begin = ZonedDateTime.of(beginTime, ZoneId.of(beginTimezone));
 
-	int durationAmount = tuple.get(QCalendarEntries.calendarEntries.durationAmount);
-	ChronoUnit durationUnit = ChronoUnit.valueOf(tuple.get(QCalendarEntries.calendarEntries.durationUnit));
+	LocalDateTime endTime = tuple.get(QEntries.entries.endTime).toLocalDateTime();
+	String endTimezone = tuple.get(QEntries.entries.endTimezone);
+	ZonedDateTime end = ZonedDateTime.of(endTime, ZoneId.of(endTimezone));
 
-	int reminderAmount = tuple.get(QCalendarEntries.calendarEntries.reminderAmount);
-	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QCalendarEntries.calendarEntries.reminderUnit));
+	int reminderAmount = tuple.get(QEntries.entries.reminderAmount);
+	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QEntries.entries.reminderUnit));
 
-	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QCalendarEntries.calendarEntries.occupancy));
-	return new Entry(id, type, title, description, new ArrayList<>(), reminderAmount > 0,
-		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(occurrence), timezone,
-		CalendarTime.of(occurrence), durationAmount, durationUnit, occupancy);
+	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QEntries.entries.occupancy));
+	return new Entry(id, type, title, description, new ArrayList<>(),
+		reminderAmount >= 0 ? new Reminder(reminderAmount, reminderUnit) : null, begin, end, occupancy);
     }
 
     public boolean removeEntry(long id) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    long deleted = queryFactory//
-		    .delete(QCalendarEntries.calendarEntries) //
-		    .where(QCalendarEntries.calendarEntries.id.eq(id)) //
+		    .delete(QEntries.entries) //
+		    .where(QEntries.entries.id.eq(id)) //
 		    .execute();
 	    queryFactory.commit();
 	    return deleted > 0;
 	}
     }
 
-    public long insertEntrySerie(EntrySerie entrySerie) throws SQLException {
+    public long insertSeries(Series series) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    LocalDate date = CalendarDay.toLocalDate(entrySerie.getStartDate());
-	    LocalTime time = CalendarTime.toLocalTime(entrySerie.getStartTime());
-	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, entrySerie.getZoneId());
-	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("calendar_series_id_seq"));
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("calendar.series_id_seq"));
 	    long id = query.fetchOne();
+	    ZonedDateTime firstOccurence = series.getFirstOccurence();
 	    queryFactory//
-		    .insert(QCalendarSeries.calendarSeries)//
-		    .set(QCalendarSeries.calendarSeries.id, id) //
-		    .set(QCalendarSeries.calendarSeries.type, entrySerie.getType()) //
-		    .set(QCalendarSeries.calendarSeries.title, entrySerie.getTitle()) //
-		    .set(QCalendarSeries.calendarSeries.description, entrySerie.getDescription()) //
-		    .set(QCalendarSeries.calendarSeries.firstOccurrence, Timestamp.from(occurrence.toInstant())) //
-		    .set(QCalendarSeries.calendarSeries.lastOccurrence,
-			    entrySerie.getLastOccurence() != null
-				    ? Date.valueOf(entrySerie.getLastOccurence().getLocalDate()) : null) //
-		    .set(QCalendarSeries.calendarSeries.timezone, entrySerie.getTimezone()) //
-		    .set(QCalendarSeries.calendarSeries.durationAmount, entrySerie.getDurationAmount()) //
-		    .set(QCalendarSeries.calendarSeries.durationUnit, entrySerie.getDurationUnit().name()) //
-		    .set(QCalendarSeries.calendarSeries.reminderAmount, entrySerie.getReminder().getAmount()) //
-		    .set(QCalendarSeries.calendarSeries.reminderUnit, entrySerie.getReminder().getUnit().name()) //
-		    .set(QCalendarSeries.calendarSeries.occupancy, entrySerie.getOccupancy().name()) //
-		    .set(QCalendarSeries.calendarSeries.turnus, entrySerie.getTurnus().name()) //
-		    .set(QCalendarSeries.calendarSeries.skipping, entrySerie.getSkipping()) //
-		    .set(QCalendarSeries.calendarSeries.lastEntryCreated,
-			    Date.valueOf(CalendarDay.toLocalDate(entrySerie.getStartDate()).minus(1, ChronoUnit.DAYS))) //
+		    .insert(QSeries.series)//
+		    .set(QSeries.series.id, id) //
+		    .set(QSeries.series.type, series.getType()) //
+		    .set(QSeries.series.title, series.getTitle()) //
+		    .set(QSeries.series.description, series.getDescription()) //
+		    .set(QSeries.series.firstOccurrence, Timestamp.from(firstOccurence.toInstant())) //
+		    .set(QSeries.series.lastOccurrence,
+			    series.getLastOccurence() != null ? Date.valueOf(series.getLastOccurence()) : null) //
+		    .set(QSeries.series.timezone, firstOccurence.getZone().getId()) //
+		    .set(QSeries.series.durationAmount, series.getDurationAmount()) //
+		    .set(QSeries.series.durationUnit, series.getDurationUnit().name()) //
+		    .set(QSeries.series.reminderAmount, series.getReminder().getAmount()) //
+		    .set(QSeries.series.reminderUnit, series.getReminder().getUnit().name()) //
+		    .set(QSeries.series.occupancy, series.getOccupancy().name()) //
+		    .set(QSeries.series.turnus, series.getTurnus().name()) //
+		    .set(QSeries.series.skipping, series.getSkipping()) //
+		    .set(QSeries.series.lastEntryCreated,
+			    Date.valueOf(series.getFirstOccurence().toLocalDate().minus(1, ChronoUnit.DAYS))) //
 		    .execute();
 
-	    Entry entry = new Entry(entrySerie.getType(), entrySerie.getTitle(), entrySerie.getDescription(),
-		    entrySerie.getParticipants(), entrySerie.getReminder() != null ? true : false,
-		    entrySerie.getReminder(), entrySerie.getStartDate(), entrySerie.getTimezone(),
-		    entrySerie.getStartTime(), entrySerie.getDurationAmount(), entrySerie.getDurationUnit(),
-		    entrySerie.getOccupancy());
+	    Entry entry = new Entry(series.getType(), series.getTitle(), series.getDescription(),
+		    series.getParticipants(), series.getReminder(), series.getFirstOccurence(),
+		    series.getFirstOccurence(), series.getOccupancy());
 	    insertEntry(entry);
 
 	    queryFactory.commit();
-	    entrySerieIdField.set(entrySerie, id);
+	    entrySerieIdField.set(series, id);
 
 	    return id;
 	} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -257,79 +260,80 @@ public class CalendarManager {
 	}
     }
 
-    public boolean updateEntrySerie(EntrySerie entrySerie) throws SQLException {
-	return updateEntrySerie(entrySerie.getId(), entrySerie);
+    public boolean updateSeries(Series series) throws SQLException {
+	return updateSeries(series.getId(), series);
     }
 
-    public boolean updateEntrySerie(long id, EntrySerie entrySerie) throws SQLException {
+    public boolean updateSeries(long id, Series series) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    LocalDate date = CalendarDay.toLocalDate(entrySerie.getStartDate());
-	    LocalTime time = CalendarTime.toLocalTime(entrySerie.getStartTime());
-	    ZonedDateTime occurrence = ZonedDateTime.of(date, time, entrySerie.getZoneId());
+	    ZonedDateTime firstOccurence = series.getFirstOccurence();
 	    long updated = queryFactory//
-		    .update(QCalendarSeries.calendarSeries)//
-		    .set(QCalendarSeries.calendarSeries.type, entrySerie.getType()) //
-		    .set(QCalendarSeries.calendarSeries.title, entrySerie.getTitle()) //
-		    .set(QCalendarSeries.calendarSeries.description, entrySerie.getDescription()) //
-		    .set(QCalendarSeries.calendarSeries.firstOccurrence, Timestamp.from(occurrence.toInstant())) //
-		    .set(QCalendarSeries.calendarSeries.timezone, entrySerie.getTimezone()) //
-		    .set(QCalendarSeries.calendarSeries.durationAmount, entrySerie.getDurationAmount()) //
-		    .set(QCalendarSeries.calendarSeries.durationUnit, entrySerie.getDurationUnit().name()) //
-		    .set(QCalendarSeries.calendarSeries.reminderAmount, entrySerie.getReminder().getAmount()) //
-		    .set(QCalendarSeries.calendarSeries.reminderUnit, entrySerie.getReminder().getUnit().name()) //
-		    .set(QCalendarSeries.calendarSeries.occupancy, entrySerie.getOccupancy().name()) //
-		    .set(QCalendarSeries.calendarSeries.turnus, entrySerie.getTurnus().name()) //
-		    .set(QCalendarSeries.calendarSeries.skipping, entrySerie.getSkipping()) //
-		    .where(QCalendarSeries.calendarSeries.id.eq(id)) //
+		    .update(QSeries.series)//
+		    .set(QSeries.series.type, series.getType()) //
+		    .set(QSeries.series.title, series.getTitle()) //
+		    .set(QSeries.series.description, series.getDescription()) //
+		    .set(QSeries.series.firstOccurrence, Timestamp.from(firstOccurence.toInstant())) //
+		    .set(QSeries.series.timezone, firstOccurence.getZone().getId()) //
+		    .set(QSeries.series.durationAmount, series.getDurationAmount()) //
+		    .set(QSeries.series.durationUnit, series.getDurationUnit().name()) //
+		    .set(QSeries.series.reminderAmount, series.getReminder().getAmount()) //
+		    .set(QSeries.series.reminderUnit, series.getReminder().getUnit().name()) //
+		    .set(QSeries.series.occupancy, series.getOccupancy().name()) //
+		    .set(QSeries.series.turnus, series.getTurnus().name()) //
+		    .set(QSeries.series.skipping, series.getSkipping()) //
+		    .where(QSeries.series.id.eq(id)) //
 		    .execute();
 	    queryFactory.commit();
+	    entrySerieIdField.set(series, id);
 	    return updated > 0;
+	} catch (IllegalArgumentException | IllegalAccessException e) {
+	    throw new RuntimeException(e);
 	}
     }
 
-    public EntrySerie getEntrySerie(long id) throws SQLException {
+    public Series getSeries(long id) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> query = queryFactory//
-		    .select(QCalendarSeries.calendarSeries.all()) //
-		    .from(QCalendarSeries.calendarSeries) //
-		    .where(QCalendarSeries.calendarSeries.id.eq(id));
+		    .select(QSeries.series.all()) //
+		    .from(QSeries.series) //
+		    .where(QSeries.series.id.eq(id));
 	    Tuple tuple = query.fetchOne();
 	    if (tuple == null) {
 		return null;
 	    }
-	    return convertTupleToEntrySerie(tuple);
+	    return convertTupleToSeries(tuple);
 	}
     }
 
-    private EntrySerie convertTupleToEntrySerie(Tuple tuple) {
-	long id = tuple.get(QCalendarSeries.calendarSeries.id);
-	String type = tuple.get(QCalendarSeries.calendarSeries.type);
-	String title = tuple.get(QCalendarSeries.calendarSeries.title);
-	String description = tuple.get(QCalendarSeries.calendarSeries.description);
-	LocalDateTime firstOccurrence = tuple.get(QCalendarSeries.calendarSeries.firstOccurrence).toLocalDateTime();
-	Date lastOccuranceDate = tuple.get(QCalendarSeries.calendarSeries.lastOccurrence);
+    private Series convertTupleToSeries(Tuple tuple) {
+	long id = tuple.get(QSeries.series.id);
+	String type = tuple.get(QSeries.series.type);
+	String title = tuple.get(QSeries.series.title);
+	String description = tuple.get(QSeries.series.description);
+	LocalDateTime localFirstOccurrence = tuple.get(QSeries.series.firstOccurrence).toLocalDateTime();
+	Date lastOccuranceDate = tuple.get(QSeries.series.lastOccurrence);
 	LocalDate lastOccurence = lastOccuranceDate != null ? lastOccuranceDate.toLocalDate() : null;
-	String timezone = tuple.get(QCalendarSeries.calendarSeries.timezone);
+	String timezone = tuple.get(QSeries.series.timezone);
 
-	int durationAmount = tuple.get(QCalendarSeries.calendarSeries.durationAmount);
-	ChronoUnit durationUnit = ChronoUnit.valueOf(tuple.get(QCalendarSeries.calendarSeries.durationUnit));
+	ZonedDateTime firstOccurrence = ZonedDateTime.of(localFirstOccurrence, ZoneId.of(timezone));
 
-	int reminderAmount = tuple.get(QCalendarSeries.calendarSeries.reminderAmount);
-	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QCalendarSeries.calendarSeries.reminderUnit));
-	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QCalendarSeries.calendarSeries.occupancy));
-	Turnus turnus = Turnus.valueOf(Turnus.class, tuple.get(QCalendarSeries.calendarSeries.turnus));
-	int skipping = tuple.get(QCalendarSeries.calendarSeries.skipping);
-	return new EntrySerie(id, type, title, description, new ArrayList<>(), reminderAmount > 0,
-		new Reminder(reminderAmount, reminderUnit), CalendarDay.of(firstOccurrence),
-		lastOccurence != null ? CalendarDay.of(lastOccurence) : null, timezone,
-		CalendarTime.of(firstOccurrence), durationAmount, durationUnit, occupancy, turnus, skipping);
+	int durationAmount = tuple.get(QSeries.series.durationAmount);
+	ChronoUnit durationUnit = ChronoUnit.valueOf(tuple.get(QSeries.series.durationUnit));
+
+	int reminderAmount = tuple.get(QSeries.series.reminderAmount);
+	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QSeries.series.reminderUnit));
+	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QSeries.series.occupancy));
+	Turnus turnus = Turnus.valueOf(Turnus.class, tuple.get(QSeries.series.turnus));
+	int skipping = tuple.get(QSeries.series.skipping);
+	return new Series(id, type, title, description, new ArrayList<>(), new Reminder(reminderAmount, reminderUnit),
+		firstOccurrence, lastOccurence, durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
-    public boolean removeEntrySerie(long id) throws SQLException {
+    public boolean removeSeries(long id) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    long deleted = queryFactory//
-		    .delete(QCalendarSeries.calendarSeries) //
-		    .where(QCalendarSeries.calendarSeries.id.eq(id)) //
+		    .delete(QSeries.series) //
+		    .where(QSeries.series.id.eq(id)) //
 		    .execute();
 	    queryFactory.commit();
 	    return deleted > 0;
@@ -367,7 +371,10 @@ public class CalendarManager {
     }
 
     public Collection<Entry> getWeekEntries(int year, int week, String type) throws SQLException {
-	LocalDate from = CalendarFactory.findWeek(year, week).getLocalDate();
+	LocalDate from = LocalDate.now() //
+		.with(IsoFields.WEEK_BASED_YEAR, year) //
+		.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week) //
+		.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 	LocalDate to = from.plus(6, ChronoUnit.DAYS);
 	return getEntriesBetween(type, LocalDateTime.of(from, LocalTime.of(0, 0, 0)),
 		LocalDateTime.of(to, LocalTime.of(23, 59, 59)));
@@ -376,12 +383,10 @@ public class CalendarManager {
     public Collection<Entry> getEntriesBetween(String type, LocalDateTime from, LocalDateTime to) throws SQLException {
 	checkAndCreateSerieEntries(type, to.toLocalDate());
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Tuple> select = queryFactory.select(QCalendarEntries.calendarEntries.all())
-		    .from(QCalendarEntries.calendarEntries) //
-		    .where(QCalendarEntries.calendarEntries.occurrence.between(Timestamp.valueOf(from),
-			    Timestamp.valueOf(to)));
+	    SQLQuery<Tuple> select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries) //
+		    .where(QEntries.entries.beginTime.between(Timestamp.valueOf(from), Timestamp.valueOf(to)));
 	    if (type != null) {
-		select.where(QCalendarEntries.calendarEntries.type.eq(type));
+		select.where(QEntries.entries.type.eq(type));
 	    }
 	    List<Entry> entries = new ArrayList<>();
 	    for (Tuple tuple : select.fetch()) {
@@ -394,48 +399,50 @@ public class CalendarManager {
     private void checkAndCreateSerieEntries(String type, LocalDate to) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    SQLQuery<Tuple> seriesNeedingUpdate = queryFactory //
-		    .select(QCalendarSeries.calendarSeries.all()) //
-		    .from(QCalendarSeries.calendarSeries) //
-		    .where(QCalendarSeries.calendarSeries.lastEntryCreated.before(Date.valueOf(to)));
+		    .select(QSeries.series.all()) //
+		    .from(QSeries.series) //
+		    .where(QSeries.series.lastEntryCreated.before(Date.valueOf(to)));
 	    if (type != null) {
-		seriesNeedingUpdate.where(QCalendarSeries.calendarSeries.type.eq(type));
+		seriesNeedingUpdate.where(QSeries.series.type.eq(type));
 	    }
 	    try (CloseableIterator<Tuple> iterator = seriesNeedingUpdate.iterate()) {
 		while (iterator.hasNext()) {
 		    Tuple tuple = iterator.next();
-		    EntrySerie entrySerie = convertTupleToEntrySerie(tuple);
-		    Date lastDate = tuple.get(QCalendarSeries.calendarSeries.lastEntryCreated);
-		    createSerieEntries(queryFactory, entrySerie, lastDate.toLocalDate(), to);
+		    Series entrySerie = convertTupleToSeries(tuple);
+		    Date lastDate = tuple.get(QSeries.series.lastEntryCreated);
+		    createSeriesEntries(queryFactory, entrySerie, lastDate.toLocalDate(), to);
 		    queryFactory.commit();
 		}
 	    }
 	}
     }
 
-    private void createSerieEntries(SQLQueryFactory queryFactory, EntrySerie entrySerie, LocalDate from, LocalDate to)
+    private void createSeriesEntries(SQLQueryFactory queryFactory, Series series, LocalDate from, LocalDate to)
 	    throws SQLException {
-	Turnus turnus = entrySerie.getTurnus();
+	Turnus turnus = series.getTurnus();
 	LocalDate currentDate = from.plus(turnus.getAmout(), turnus.getUnit());
+	ZonedDateTime firstOccurence = series.getFirstOccurence();
+	LocalTime time = firstOccurence.toLocalTime();
+	ZoneId zone = firstOccurence.getZone();
 	LocalDate lastInsertedDate = null;
-	LocalDate lastOccurence = entrySerie.getLastOccurence() != null ? entrySerie.getLastOccurence().getLocalDate()
-		: null;
+	LocalDate lastOccurence = series.getLastOccurence();
 	while ((currentDate.isBefore(to) || currentDate.isEqual(to)) && //
 		((lastOccurence == null) || currentDate.isBefore(lastOccurence)
 			|| currentDate.isEqual(lastOccurence))) {
-	    CalendarDay date = CalendarDay.of(currentDate);
-	    Entry entry = new Entry(entrySerie.getType(), entrySerie.getTitle(), entrySerie.getDescription(),
-		    entrySerie.getParticipants(), entrySerie.getReminder() != null ? true : false,
-		    entrySerie.getReminder(), date, entrySerie.getTimezone(), entrySerie.getStartTime(),
-		    entrySerie.getDurationAmount(), entrySerie.getDurationUnit(), entrySerie.getOccupancy());
+	    ZonedDateTime begin = ZonedDateTime.of(currentDate, time, zone);
+	    ZonedDateTime end = begin.plus(series.getDurationAmount(), series.getDurationUnit());
+	    Entry entry = new Entry(series.getType(), series.getTitle(), series.getDescription(),
+		    series.getParticipants(), series.getReminder(), begin, end, series.getOccupancy());
 	    insertEntry(entry);
 	    lastInsertedDate = currentDate;
-	    currentDate = currentDate.plus(turnus.getAmout() + entrySerie.getSkipping(), turnus.getUnit());
+	    currentDate = currentDate.plus(turnus.getAmout() + series.getSkipping(), turnus.getUnit());
 	}
 	if (lastInsertedDate != null) {
-	    SQLUpdateClause update = queryFactory.update(QCalendarSeries.calendarSeries)
-		    .set(QCalendarSeries.calendarSeries.lastEntryCreated, Date.valueOf(lastInsertedDate))
-		    .where(QCalendarSeries.calendarSeries.id.eq(entrySerie.getId()));
+	    SQLUpdateClause update = queryFactory.update(QSeries.series)
+		    .set(QSeries.series.lastEntryCreated, Date.valueOf(lastInsertedDate))
+		    .where(QSeries.series.id.eq(series.getId()));
 	    update.execute();
 	}
     }
+
 }

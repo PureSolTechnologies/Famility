@@ -18,8 +18,8 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MappingIterator;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
-import com.puresoltechnologies.lifeassist.app.api.people.Person;
+import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
+import com.puresoltechnologies.lifeassist.app.rest.api.people.Person;
 
 public class PeopleServiceIT extends AbstractPeopleServiceTest {
 

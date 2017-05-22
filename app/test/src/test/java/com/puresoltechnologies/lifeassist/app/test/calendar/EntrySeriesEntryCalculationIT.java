@@ -21,18 +21,18 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Entry;
+import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Entry;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.EntrySerie;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.OccupancyStatus;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Reminder;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
-import com.puresoltechnologies.lifeassist.app.model.QCalendarEntries;
-import com.puresoltechnologies.lifeassist.app.model.QCalendarSeries;
+import com.puresoltechnologies.lifeassist.app.model.calendar.QEntries;
+import com.puresoltechnologies.lifeassist.app.model.calendar.QSeries;
+import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
+import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarTime;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLQuery;
 
@@ -74,28 +74,28 @@ public class EntrySeriesEntryCalculationIT extends AbstractCalendarManagerTest {
     public void calculateEntries() throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    // no entry series was created, yet
-	    SQLQuery<Tuple> select = queryFactory.select(QCalendarSeries.calendarSeries.all())
-		    .from(QCalendarSeries.calendarSeries);
+	    SQLQuery<Tuple> select = queryFactory.select(QSeries.series.all()).from(QSeries.series);
 	    assertTrue(select.fetchResults().isEmpty());
 	    // one entry series was created, yet, and therefore no entries are
 	    // to be expected
-	    select = queryFactory.select(QCalendarEntries.calendarEntries.all()).from(QCalendarEntries.calendarEntries);
+	    select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries);
 	    assertTrue(select.fetchResults().isEmpty());
 	}
 	// create new entry series
 	CalendarManager calendarManager = getCalendarManager();
-	EntrySerie entrySerie = new EntrySerie("appointment", "Title: " + turnus + " skipping " + skipping,
-		"Test entry series.", new ArrayList<>(), true, new Reminder(1, ChronoUnit.HOURS), startDate, endDate,
-		"Europe/Berlin", time, 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, turnus, skipping);
-	calendarManager.insertEntrySerie(entrySerie);
+	ZonedDateTime firstOccurence = ZonedDateTime.of(CalendarDay.toLocalDate(startDate),
+		CalendarTime.toLocalTime(time), ZoneId.of("Europe/Berlin"));
+	Series entrySerie = new Series("appointment", "Title: " + turnus + " skipping " + skipping,
+		"Test entry series.", new ArrayList<>(), new Reminder(1, ChronoUnit.HOURS), firstOccurence,
+		CalendarDay.toLocalDate(endDate), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, turnus, skipping);
+	calendarManager.insertSeries(entrySerie);
 	// checks after series creation
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    // one entry series was created
-	    SQLQuery<Tuple> select = queryFactory.select(QCalendarSeries.calendarSeries.all())
-		    .from(QCalendarSeries.calendarSeries);
+	    SQLQuery<Tuple> select = queryFactory.select(QSeries.series.all()).from(QSeries.series);
 	    assertEquals(1, select.fetchResults().getTotal());
 	    // The first occurrence is created
-	    select = queryFactory.select(QCalendarEntries.calendarEntries.all()).from(QCalendarEntries.calendarEntries);
+	    select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries);
 	    assertEquals(1, select.fetchResults().getTotal());
 	}
     }
@@ -109,13 +109,13 @@ public class EntrySeriesEntryCalculationIT extends AbstractCalendarManagerTest {
 	Collections.sort(entries);
 	for (Entry entry : entries) {
 	    ZonedDateTime startZonedDateTime = ZonedDateTime.of(startDate.getLocalDate(), time.getLocalTime(),
-		    ZoneId.of(entry.getTimezone()));
+		    entry.getBegin().getZone());
 	    ZonedDateTime endZonedDateTime = ZonedDateTime.of(endDate.getLocalDate(), time.getLocalTime(),
-		    ZoneId.of(entry.getTimezone()));
-	    assertTrue(entry.getZonedDateTime() + " not after or at " + startZonedDateTime,
-		    entry.getZonedDateTime().compareTo(startZonedDateTime) >= 0);
-	    assertTrue(entry.getZonedDateTime() + " not before or at " + endZonedDateTime,
-		    entry.getZonedDateTime().compareTo(endZonedDateTime) <= 0);
+		    entry.getBegin().getZone());
+	    assertTrue(entry.getBegin() + " not after or at " + startZonedDateTime,
+		    entry.getBegin().compareTo(startZonedDateTime) >= 0);
+	    assertTrue(entry.getBegin() + " not before or at " + endZonedDateTime,
+		    entry.getBegin().compareTo(endZonedDateTime) <= 0);
 	}
 
     }

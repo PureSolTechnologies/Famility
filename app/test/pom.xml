@@ -15,7 +15,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.puresoltechnologies.lifeassist</groupId>
-			<artifactId>app.rest</artifactId>
+			<artifactId>common.rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.lifeassist</groupId>
+			<artifactId>app.rest.server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard</groupId>

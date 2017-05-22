@@ -1,6 +1,7 @@
 package com.puresoltechnologies.lifeassist.app.test.people;
 
-import com.puresoltechnologies.lifeassist.app.rest.services.PeopleService;
+import com.puresoltechnologies.lifeassist.app.rest.api.people.PeopleService;
+import com.puresoltechnologies.lifeassist.app.rest.server.services.PeopleServiceImpl;
 import com.puresoltechnologies.lifeassist.app.test.AbstractRestTest;
 
 /**
@@ -11,7 +12,7 @@ import com.puresoltechnologies.lifeassist.app.test.AbstractRestTest;
 public abstract class AbstractPeopleServiceTest extends AbstractRestTest {
 
     public AbstractPeopleServiceTest() {
-	super(PeopleService.class);
+	super(PeopleServiceImpl.class);
     }
 
 }

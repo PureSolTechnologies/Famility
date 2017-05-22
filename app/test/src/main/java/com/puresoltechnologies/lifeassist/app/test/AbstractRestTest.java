@@ -19,9 +19,9 @@ import org.junit.ClassRule;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MappingIterator;
-import com.puresoltechnologies.lifeassist.app.rest.LifeAssistantApplication;
-import com.puresoltechnologies.lifeassist.app.rest.config.LifeAssistantConfiguration;
-import com.puresoltechnologies.lifeassist.common.utils.JsonSerializer;
+import com.puresoltechnologies.lifeassist.app.rest.server.LifeAssistantApplication;
+import com.puresoltechnologies.lifeassist.app.rest.server.config.LifeAssistantConfiguration;
+import com.puresoltechnologies.lifeassist.common.rest.JsonSerializer;
 
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
@@ -39,12 +39,10 @@ public abstract class AbstractRestTest extends AbstractLifeAssistantTest {
 
     private static JerseyClient restClient = null;
 
-    private final Class<?> serviceClass;
     private final String basePath;
 
     public AbstractRestTest(Class<?> serviceClass) {
 	super();
-	this.serviceClass = serviceClass;
 	Path pathAnnotation = serviceClass.getAnnotation(Path.class);
 	this.basePath = pathAnnotation.value();
     }

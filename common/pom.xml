@@ -15,6 +15,7 @@
 	<modules>
 		<module>utils</module>
 		<module>db</module>
+		<module>rest</module>
 		<module>installer</module>
 		<module>plugins</module>
 	</modules>

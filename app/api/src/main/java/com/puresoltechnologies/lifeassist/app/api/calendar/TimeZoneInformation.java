@@ -1,8 +1,5 @@
 package com.puresoltechnologies.lifeassist.app.api.calendar;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * This class contains the time zone information.
  * 
@@ -14,11 +11,10 @@ public class TimeZoneInformation implements Comparable<TimeZoneInformation> {
     private final String name;
     private final int offset;
 
-    @JsonCreator
     public TimeZoneInformation(//
-	    @JsonProperty("id") String id, //
-	    @JsonProperty("name") String name, //
-	    @JsonProperty("offset") int offset) {
+	    String id, //
+	    String name, //
+	    int offset) {
 	this.id = id;
 	this.name = name;
 	this.offset = offset;

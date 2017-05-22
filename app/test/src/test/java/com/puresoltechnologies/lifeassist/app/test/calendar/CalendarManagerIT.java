@@ -7,22 +7,22 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
+import com.puresoltechnologies.lifeassist.app.api.calendar.DurationUnit;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Entry;
 import com.puresoltechnologies.lifeassist.app.api.calendar.EntryType;
+import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.DurationUnit;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Entry;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.EntrySerie;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.OccupancyStatus;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Reminder;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Turnus;
 
 public class CalendarManagerIT extends AbstractCalendarManagerTest {
 
@@ -30,7 +30,7 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
     public void testGetAppointmentTypes() throws SQLException {
 	List<EntryType> appointmentTypes = getCalendarManager().getEntryTypes();
 	assertNotNull(appointmentTypes);
-	assertEquals(4, appointmentTypes.size());
+	assertEquals(5, appointmentTypes.size());
     }
 
     @Test
@@ -41,20 +41,20 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
     }
 
     @Test
-    public void testAppointmentCRUD() throws SQLException {
+    public void testEntryCRUD() throws SQLException {
+	ZonedDateTime begin = ZonedDateTime.of(1978, 5, 16, 13, 35, 0, 0, ZoneId.of("Europe/Stockholm"));
+	ZonedDateTime end = ZonedDateTime.of(1978, 5, 16, 14, 35, 0, 0, ZoneId.of("Europe/Stockholm"));
 	CalendarManager calendarManager = getCalendarManager();
-	Entry original = new Entry("appointment", "Title", "Description", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
-		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED);
+	Entry original = new Entry("appointment", "Title", "Description", new ArrayList<>(),
+		new Reminder(1, ChronoUnit.DAYS), begin, end, OccupancyStatus.OCCUPIED);
 	long id = calendarManager.insertEntry(original);
 	assertEquals(id, original.getId());
 
 	Entry read = calendarManager.getEntry(id);
 	assertEquals(original, read);
 
-	Entry updated = new Entry("appointment", "Title2", "Description2", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), "Europe/Stockholm",
-		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED);
+	Entry updated = new Entry("appointment", "Title2", "Description2", new ArrayList<>(),
+		new Reminder(1, ChronoUnit.DAYS), begin, end, OccupancyStatus.OCCUPIED);
 	assertFalse(calendarManager.updateEntry(updated));
 	assertTrue(calendarManager.updateEntry(id, updated));
 
@@ -69,31 +69,33 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
     }
 
     @Test
-    public void testAppointmentSerieCRUD() throws SQLException {
+    public void testSeriesCRUD() throws SQLException {
+	ZonedDateTime firstOccurence = ZonedDateTime.of(1978, 5, 16, 13, 35, 0, 0, ZoneId.of("Europe/Stockholm"));
+
 	CalendarManager calendarManager = getCalendarManager();
-	EntrySerie original = new EntrySerie("appointment", "Title", "Description", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), null, "Europe/Stockholm",
-		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.WEEKLY, 2);
-	long id = calendarManager.insertEntrySerie(original);
+	Series original = new Series("appointment", "Title", "Description", new ArrayList<>(),
+		new Reminder(1, ChronoUnit.DAYS), firstOccurence, null, 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED,
+		Turnus.WEEKLY, 2);
+	long id = calendarManager.insertSeries(original);
 	assertEquals(id, original.getId());
 
-	EntrySerie read = calendarManager.getEntrySerie(id);
+	Series read = calendarManager.getSeries(id);
 	assertEquals(original, read);
 
-	EntrySerie updated = new EntrySerie("appointment", "Title2", "Description2", new ArrayList<>(), true,
-		new Reminder(1, ChronoUnit.DAYS), new CalendarDay(1978, 5, 16), null, "Europe/Stockholm",
-		new CalendarTime(13, 35, 0), 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED, Turnus.DAILY, 2);
-	assertFalse(calendarManager.updateEntrySerie(updated));
-	assertTrue(calendarManager.updateEntrySerie(id, updated));
+	Series updated = new Series("appointment", "Title2", "Description2", new ArrayList<>(),
+		new Reminder(1, ChronoUnit.DAYS), firstOccurence, null, 1, ChronoUnit.HOURS, OccupancyStatus.OCCUPIED,
+		Turnus.DAILY, 2);
+	assertFalse(calendarManager.updateSeries(updated));
+	assertTrue(calendarManager.updateSeries(id, updated));
 
-	EntrySerie readUpdated = calendarManager.getEntrySerie(id);
+	Series readUpdated = calendarManager.getSeries(id);
 	assertEquals(updated, readUpdated);
 
-	assertTrue(calendarManager.removeEntrySerie(id));
+	assertTrue(calendarManager.removeSeries(id));
 
-	assertNull(calendarManager.getEntrySerie(id));
+	assertNull(calendarManager.getSeries(id));
 
-	assertFalse(calendarManager.removeEntrySerie(id));
+	assertFalse(calendarManager.removeSeries(id));
     }
 
 }

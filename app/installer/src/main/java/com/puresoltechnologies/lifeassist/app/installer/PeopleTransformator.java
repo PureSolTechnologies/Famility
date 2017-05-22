@@ -18,6 +18,7 @@ import com.puresoltechnologies.versioning.Version;
 
 public class PeopleTransformator implements ComponentTransformator {
 
+    private static final String PEOPLE_SCHEMA = "people";
     static final String PEOPLE_TABLE = "people";
 
     @Override
@@ -49,8 +50,10 @@ public class PeopleTransformator implements ComponentTransformator {
 	ProvidedVersionRange providedVersionRange = new ProvidedVersionRange(targetVersion, null);
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"CREATE SCHEMA IF NOT EXISTS " + PEOPLE_SCHEMA, "Creates the schema for people data."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + PEOPLE_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + PEOPLE_SCHEMA + "." + PEOPLE_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar not null, " //
@@ -59,8 +62,9 @@ public class PeopleTransformator implements ComponentTransformator {
 			+ "CONSTRAINT " + PEOPLE_TABLE + "_PK PRIMARY KEY (id)" //
 			+ ")",
 		"Create people table."));
-	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SEQUENCE person_id_seq INCREMENT BY 1 OWNED BY " + PEOPLE_TABLE + ".id",
+	sequence.appendTransformation(new JDBCTransformationStep(sequence,
+		"Rick-Rainer Ludwig", "CREATE SEQUENCE " + PEOPLE_SCHEMA + "."
+			+ "person_id_seq INCREMENT BY 1 OWNED BY " + PEOPLE_SCHEMA + "." + PEOPLE_TABLE + ".id",
 		"Sequence for person ids."));
 	return sequence;
     }
@@ -69,8 +73,8 @@ public class PeopleTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP SEQUENCE IF EXISTS person_id_seq");
-		statement.execute("DROP TABLE IF EXISTS " + PEOPLE_TABLE);
+		statement.execute("DROP SEQUENCE IF EXISTS " + PEOPLE_SCHEMA + "." + "person_id_seq");
+		statement.execute("DROP TABLE IF EXISTS " + PEOPLE_SCHEMA + "." + PEOPLE_TABLE);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

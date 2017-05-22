@@ -1,8 +1,6 @@
 package com.puresoltechnologies.lifeassist.app.api.people;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
+import java.time.LocalDate;
 
 /**
  * A single person.
@@ -13,18 +11,18 @@ public class Person {
 
     private final long id;
     private final String name;
-    private final CalendarDay birthday;
+    private final LocalDate birthday;
 
-    @JsonCreator
-    public Person(@JsonProperty("id") long id, @JsonProperty("name") String name,
-	    @JsonProperty("birthday") CalendarDay birthday) {
+    public Person(long id, //
+	    String name, //
+	    LocalDate birthday) {
 	super();
 	this.id = id;
 	this.name = name;
 	this.birthday = birthday;
     }
 
-    public Person(String name, CalendarDay birthday) {
+    public Person(String name, LocalDate birthday) {
 	this(-1, name, birthday);
     }
 
@@ -36,7 +34,7 @@ public class Person {
 	return name;
     }
 
-    public CalendarDay getBirthday() {
+    public LocalDate getBirthday() {
 	return birthday;
     }
 

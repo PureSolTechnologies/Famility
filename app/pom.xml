@@ -18,7 +18,8 @@
 		<module>api</module>
 		<module>impl</module>
 		<module>ui</module>
-		<module>rest</module>
+		<module>rest.api</module>
+		<module>rest.server</module>
 		<module>pkg</module>
 		<module>test</module>
 	</modules>

@@ -1,8 +1,5 @@
 package com.puresoltechnologies.lifeassist.app.api.calendar;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * Represents a single type of an calendar entry.
  * 
@@ -13,10 +10,9 @@ public class EntryType {
     private final String type;
     private final String name;
 
-    @JsonCreator
     public EntryType(//
-	    @JsonProperty("type") String type, //
-	    @JsonProperty("name") String name //
+	    String type, //
+	    String name //
     ) {
 	super();
 	this.type = type;

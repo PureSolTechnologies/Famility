@@ -1,6 +1,7 @@
 package com.puresoltechnologies.lifeassist.app.test.calendar;
 
-import com.puresoltechnologies.lifeassist.app.rest.services.CalendarService;
+import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarService;
+import com.puresoltechnologies.lifeassist.app.rest.server.services.CalendarServiceImpl;
 import com.puresoltechnologies.lifeassist.app.test.AbstractRestTest;
 
 /**
@@ -11,7 +12,7 @@ import com.puresoltechnologies.lifeassist.app.test.AbstractRestTest;
 public abstract class AbstractCalendarServiceTest extends AbstractRestTest {
 
     public AbstractCalendarServiceTest() {
-	super(CalendarService.class);
+	super(CalendarServiceImpl.class);
     }
 
 }

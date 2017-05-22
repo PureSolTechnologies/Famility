@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.puresoltechnologies.lifeassist</groupId>
-			<artifactId>app.rest</artifactId>
+			<artifactId>app.rest.server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.lifeassist</groupId>

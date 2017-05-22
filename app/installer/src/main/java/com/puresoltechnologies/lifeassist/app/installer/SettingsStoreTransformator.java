@@ -72,7 +72,7 @@ public class SettingsStoreTransformator implements ComponentTransformator {
 			+ "value varchar, " //
 			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE + "_PK PRIMARY KEY (person_id, parameter), "//
 			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE
-			+ "_people_PK FOREIGN KEY (person_id) REFERENCES people (id), "//
+			+ "_people_PK FOREIGN KEY (person_id) REFERENCES people.people (id), "//
 			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE + "_" + SYSTEM_SETTINGS_TABLE
 			+ "_PK FOREIGN KEY (parameter) REFERENCES " + SYSTEM_SETTINGS_TABLE + " (parameter) "//
 			+ ")",

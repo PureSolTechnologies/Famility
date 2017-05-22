@@ -4,7 +4,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConfiguration;
-import com.puresoltechnologies.lifeassist.app.rest.config.LifeAssistantConfiguration;
+import com.puresoltechnologies.lifeassist.app.rest.server.config.LifeAssistantConfiguration;
 
 /**
  * This is a class to read the {@link LifeAssistantConfiguration} into an own

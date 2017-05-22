@@ -18,6 +18,7 @@ import com.puresoltechnologies.versioning.Version;
 
 public class EventLoggerTransformator implements ComponentTransformator {
 
+    private static final String MONITORING_SCHEMA = "monitoring";
     private static final String EVENT_LOG_TABLE = "eventlog";
 
     @Override
@@ -48,8 +49,10 @@ public class EventLoggerTransformator implements ComponentTransformator {
 	ProvidedVersionRange providedVersionRange = new ProvidedVersionRange(targetVersion, null);
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"CREATE SCHEMA IF NOT EXISTS " + MONITORING_SCHEMA, "Creates the schema for monitoring data."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + EVENT_LOG_TABLE //
+		"CREATE TABLE IF NOT EXISTS " + MONITORING_SCHEMA + "." + EVENT_LOG_TABLE //
 			+ " (" //
 			+ "server varchar not null, " //
 			+ "time timestamp not null, " //
@@ -73,7 +76,7 @@ public class EventLoggerTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP TABLE IF EXISTS " + EVENT_LOG_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + MONITORING_SCHEMA + "." + EVENT_LOG_TABLE);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

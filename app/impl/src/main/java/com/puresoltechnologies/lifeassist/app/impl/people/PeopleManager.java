@@ -5,23 +5,24 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarDay;
-import com.puresoltechnologies.lifeassist.app.api.calendar.CalendarTime;
+import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.api.people.Birthday;
 import com.puresoltechnologies.lifeassist.app.api.people.Person;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.EntrySerie;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.OccupancyStatus;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Reminder;
-import com.puresoltechnologies.lifeassist.app.impl.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
-import com.puresoltechnologies.lifeassist.app.model.QPeople;
+import com.puresoltechnologies.lifeassist.app.model.people.QPeople;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
@@ -51,7 +52,7 @@ public class PeopleManager {
 		    long id = resultSet.getLong("id");
 		    String name = resultSet.getString("name");
 		    LocalDate birthday = resultSet.getDate("birthday").toLocalDate();
-		    people.add(new Person(id, name, CalendarDay.of(birthday)));
+		    people.add(new Person(id, name, birthday));
 		}
 	    }
 	}
@@ -61,11 +62,11 @@ public class PeopleManager {
     public long addPerson(Person person) throws SQLException {
 	Long serieId = null;
 	if (person.getBirthday() != null) {
-	    EntrySerie entrySerie = createBirthdayEntrySerie(person);
-	    serieId = calendarManager.insertEntrySerie(entrySerie);
+	    Series entrySerie = createBirthdayEntrySerie(person);
+	    serieId = calendarManager.insertSeries(entrySerie);
 	}
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("person_id_seq"));
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("people.person_id_seq"));
 	    long id = query.fetchOne();
 
 	    Date birthday = convertBirthdayToDate(person);
@@ -85,17 +86,18 @@ public class PeopleManager {
 	}
     }
 
-    private EntrySerie createBirthdayEntrySerie(Person person) {
-	EntrySerie entrySerie = new EntrySerie("birthday", person.getName() + "'s Birthday", "", new ArrayList<>(),
-		true, new Reminder(3, ChronoUnit.DAYS), person.getBirthday(), null, "UTC", new CalendarTime(0, 0, 0),
-		24, ChronoUnit.HOURS, OccupancyStatus.AVAILABLE, Turnus.YEARLY, 0);
+    private Series createBirthdayEntrySerie(Person person) {
+	ZonedDateTime begin = ZonedDateTime.of(person.getBirthday(), LocalTime.of(0, 0), ZoneId.of("UTC"));
+	Series entrySerie = new Series("birthday", person.getName() + "'s Birthday", "", new ArrayList<>(),
+		new Reminder(3, ChronoUnit.DAYS), begin, null, 24, ChronoUnit.HOURS, OccupancyStatus.AVAILABLE,
+		Turnus.YEARLY, 0);
 	return entrySerie;
     }
 
     private Date convertBirthdayToDate(Person person) {
 	Date birthday = null;
 	if (person.getBirthday() != null) {
-	    birthday = Date.valueOf(CalendarDay.toLocalDate(person.getBirthday()));
+	    birthday = Date.valueOf(person.getBirthday());
 	}
 	return birthday;
     }
@@ -115,17 +117,17 @@ public class PeopleManager {
 		return false;
 	    }
 	    Long entrySerieId = oldEntry.get(QPeople.people.birthdayCalendarSeriesId);
-	    CalendarDay oldBirthday = null;
+	    LocalDate oldBirthday = null;
 	    Date date = oldEntry.get(QPeople.people.birthday);
 	    if (date != null) {
-		oldBirthday = CalendarDay.of(date.toLocalDate());
+		oldBirthday = date.toLocalDate();
 	    }
 	    boolean delete = false;
 	    if (oldBirthday == null) {
 		if (person.getBirthday() != null) {
 		    // create birthday entry series
-		    EntrySerie entrySerie = createBirthdayEntrySerie(person);
-		    entrySerieId = calendarManager.insertEntrySerie(entrySerie);
+		    Series entrySerie = createBirthdayEntrySerie(person);
+		    entrySerieId = calendarManager.insertSeries(entrySerie);
 		}
 	    } else {
 		if (person.getBirthday() == null) {
@@ -133,9 +135,9 @@ public class PeopleManager {
 		    delete = true;
 		} else if (!oldBirthday.equals(person.getBirthday())) {
 		    // change birthday entry series
-		    calendarManager.removeEntrySerie(entrySerieId);
-		    EntrySerie entrySerie = createBirthdayEntrySerie(person);
-		    entrySerieId = calendarManager.insertEntrySerie(entrySerie);
+		    calendarManager.removeSeries(entrySerieId);
+		    Series entrySerie = createBirthdayEntrySerie(person);
+		    entrySerieId = calendarManager.insertSeries(entrySerie);
 		}
 	    }
 
@@ -152,7 +154,7 @@ public class PeopleManager {
 	    personIdField.set(person, id);
 
 	    if (delete) {
-		calendarManager.removeEntrySerie(entrySerieId);
+		calendarManager.removeSeries(entrySerieId);
 	    }
 
 	    return updated > 0;
@@ -171,11 +173,7 @@ public class PeopleManager {
 	    }
 	    String name = result.get(QPeople.people.name);
 	    Date date = result.get(QPeople.people.birthday);
-	    CalendarDay birthday = null;
-	    if (date != null) {
-		birthday = CalendarDay.of(date.toLocalDate());
-	    }
-	    return new Person(id, name, birthday);
+	    return new Person(id, name, date != null ? date.toLocalDate() : null);
 	}
     }
 
@@ -194,7 +192,7 @@ public class PeopleManager {
 	    queryFactory.commit();
 
 	    if (entrySerieId != null) {
-		calendarManager.removeEntrySerie(entrySerieId);
+		calendarManager.removeSeries(entrySerieId);
 	    }
 	    return deleted > 0;
 	}

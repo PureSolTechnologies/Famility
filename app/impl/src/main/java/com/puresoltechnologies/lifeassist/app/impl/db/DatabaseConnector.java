@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.querydsl.sql.Configuration;
-import com.querydsl.sql.PostgreSQLTemplates;
 import com.querydsl.sql.SQLTemplates;
 
 /**
@@ -22,7 +21,7 @@ public class DatabaseConnector {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConnector.class);
 
-    private static final SQLTemplates dialect = new PostgreSQLTemplates();
+    private static final SQLTemplates dialect = new ExtendedPostgresTemplates();
     private static final Configuration configuration = new Configuration(dialect);
 
     private static GenericObjectPool<Connection> pool = null;
