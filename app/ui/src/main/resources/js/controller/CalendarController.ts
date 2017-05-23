@@ -1,6 +1,9 @@
 import restController from './RESTController';
 
 import CalendarEntry from '../models/calendar/CalendarEntry';
+import EntryType from '../models/calendar/EntryType';
+import DurationUnit from '../models/calendar/DurationUnit';
+import TimeZoneInformation from '../models/calendar/TimeZoneInformation';
 
 export default class CalendarController {
 
@@ -10,44 +13,44 @@ export default class CalendarController {
         return CalendarController.namesOfMonths[month - 1];
     }
 
-    static getEntryTypes( successfulCallback: ( types: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+    static getEntryTypes( successfulCallback: ( types: EntryType[] ) => void, errorCallback: ( response: any ) => void ): void {
         restController.GET( '/calendar/entries/types',
             null,
             function( response: any ) {
-                var types: any[] = JSON.parse( response.response );
+                var types: EntryType[] = JSON.parse( response.response );
                 successfulCallback( types );
             },
             errorCallback
         );
     }
 
-    static getDurationUnits( successfulCallback: ( units: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+    static getDurationUnits( successfulCallback: ( units: DurationUnit[] ) => void, errorCallback: ( response: any ) => void ): void {
         restController.GET( '/calendar/entries/duration-units',
             null,
             function( response: any ) {
-                var units: any[] = JSON.parse( response.response );
+                var units: DurationUnit[] = JSON.parse( response.response );
                 successfulCallback( units );
             },
             errorCallback
         );
     }
 
-    static getReminderDurationUnits( successfulCallback: ( units: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+    static getReminderDurationUnits( successfulCallback: ( units: DurationUnit[] ) => void, errorCallback: ( response: any ) => void ): void {
         restController.GET( '/calendar/entries/reminder-duration-units',
             null,
             function( response: any ) {
-                var units: any[] = JSON.parse( response.response );
+                var units: DurationUnit[] = JSON.parse( response.response );
                 successfulCallback( units );
             },
             errorCallback
         );
     }
 
-    static getTurnusUnits( successfulCallback: ( units: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+    static getTurnusUnits( successfulCallback: ( units: DurationUnit[] ) => void, errorCallback: ( response: any ) => void ): void {
         restController.GET( '/calendar/entries/turnus-units',
             null,
             function( response: any ) {
-                var units: any[] = JSON.parse( response.response );
+                var units: DurationUnit[] = JSON.parse( response.response );
                 successfulCallback( units );
             },
             errorCallback
@@ -86,11 +89,11 @@ export default class CalendarController {
         );
     }
 
-    static getTimezones( successfulCallback: ( zones: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+    static getTimezones( successfulCallback: ( zones: TimeZoneInformation[] ) => void, errorCallback: ( response: any ) => void ): void {
         restController.GET( '/calendar/timezones',
             null,
             function( response: any ) {
-                var timezones: any[] = JSON.parse( response.response );
+                var timezones: TimeZoneInformation[] = JSON.parse( response.response );
                 successfulCallback( timezones );
             },
             errorCallback

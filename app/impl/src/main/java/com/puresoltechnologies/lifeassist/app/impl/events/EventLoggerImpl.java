@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import com.puresoltechnologies.lifeassist.app.api.events.Event;
 import com.puresoltechnologies.lifeassist.app.api.events.EventLogger;
+import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
+import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
+import com.puresoltechnologies.lifeassist.app.model.monitoring.QEventlog;
 
 /**
  * This is the central event logger implementation.
@@ -82,11 +85,11 @@ public class EventLoggerImpl implements EventLogger {
     @Override
     public void logEvent(Event event) {
 	writeToLogger(event);
-	writeToHBase(event);
+	writeToDatabase(event);
     }
 
-    protected void writeToHBase(Event event) {
-	try {
+    protected void writeToDatabase(Event event) {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    Throwable throwable = event.getThrowable();
 	    String exceptionMessage = null;
 	    String exceptionStacktrace = null;
@@ -94,26 +97,24 @@ public class EventLoggerImpl implements EventLogger {
 		exceptionMessage = throwable.getMessage();
 		exceptionStacktrace = getStackTrace(throwable);
 	    }
-	    if (!connection.isClosed()) {
-		String email = event.getUserEmail() != null ? event.getUserEmail().getAddress() : null;
-		LocalDateTime timestamp = LocalDateTime.ofInstant(event.getTime(), ZoneId.systemDefault());
-		preparedLogEventStatement.setTimestamp(1, Timestamp.valueOf(timestamp));
-		preparedLogEventStatement.setString(2, event.getComponent());
-		preparedLogEventStatement.setLong(3, event.getEventId());
-		preparedLogEventStatement.setString(4, server);
-		preparedLogEventStatement.setString(5, event.getType().name());
-		preparedLogEventStatement.setString(6, event.getSeverity().name());
-		preparedLogEventStatement.setString(7, event.getMessage());
-		preparedLogEventStatement.setString(8, email);
-		preparedLogEventStatement.setLong(9, event.getUserId());
-		preparedLogEventStatement.setString(10, event.getClientHostname());
-		preparedLogEventStatement.setString(11, exceptionMessage);
-		preparedLogEventStatement.setString(12, exceptionStacktrace);
-		preparedLogEventStatement.execute();
-		connection.commit();
-	    } else {
-		throw new IllegalStateException("Connection to HBase was closed already!");
-	    }
+	    LocalDateTime timestamp = LocalDateTime.ofInstant(event.getTime(), ZoneId.systemDefault());
+	    String email = event.getUserEmail() != null ? event.getUserEmail().getAddress() : null;
+
+	    queryFactory.insert(QEventlog.eventlog) //
+		    .set(QEventlog.eventlog.time, Timestamp.valueOf(timestamp)) //
+		    .set(QEventlog.eventlog.component, event.getComponent()) //
+		    .set(QEventlog.eventlog.eventId, event.getEventId()) //
+		    .set(QEventlog.eventlog.server, server) //
+		    .set(QEventlog.eventlog.type, event.getType().name()) //
+		    .set(QEventlog.eventlog.severity, event.getSeverity().name()) //
+		    .set(QEventlog.eventlog.message, event.getMessage()) //
+		    .set(QEventlog.eventlog.userName, email) //
+		    .set(QEventlog.eventlog.userId, event.getUserId()) //
+		    .set(QEventlog.eventlog.client, event.getClientHostname()) //
+		    .set(QEventlog.eventlog.exceptionMessage, exceptionMessage) //
+		    .set(QEventlog.eventlog.exceptionStacktrace, exceptionStacktrace) //
+		    .execute();
+	    queryFactory.commit();
 	} catch (SQLException e) {
 	    throw new RuntimeException("Could not insert event into event log.", e);
 	}

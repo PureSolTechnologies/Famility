@@ -1,34 +1,36 @@
+import CalendarEntry from './CalendarEntry';
+
 export default class CalendarTime {
 
-    static fromEntry( entry ) {
+    static fromEntry( entry: CalendarEntry ): CalendarTime {
         var time = new CalendarTime;
-        time.hour = entry.time.hour;
-        time.minute = entry.time.minute;
-        time.second = entry.time.second;
+        time.hour = entry.beginTime.hour;
+        time.minute = entry.beginTime.minute;
+        time.second = entry.beginTime.second;
         return time;
     }
 
     /**
      * String: hh-MM-ss
      */
-    static fromString( s ) {
+    static fromString( s: string ): CalendarTime {
         var parts = s.split( ':' );
         var calendarTime = new CalendarTime;
-        calendarTime.hour = parts[0];
+        calendarTime.hour = Number( parts[0] );
         if ( parts[1] ) {
-            calendarTime.minute = parts[1];
+            calendarTime.minute = Number( parts[1] );
         } else {
             calendarTime.minute = 0;
         }
         if ( parts[2] ) {
-            calendarTime.second = parts[2];
+            calendarTime.second = Number( parts[2] );
         } else {
             calendarTime.second = 0;
         }
         return calendarTime;
     }
 
-    static fromDate( date ) {
+    static fromDate( date: any ): CalendarTime {
         var calendarTime = new CalendarTime;
         calendarTime.hour = date.getHours();
         calendarTime.minute = date.getMinutes();
@@ -36,13 +38,13 @@ export default class CalendarTime {
         return calendarTime;
     }
 
-    toString( showSecond = true ) {
-        var minute = this.minute;
-        if ( minute < 10 ) {
+    toString( showSecond: boolean = true ): string {
+        var minute = String( this.minute );
+        if ( this.minute < 10 ) {
             minute = "0" + minute;
         }
-        var second = this.second;
-        if ( second < 10 ) {
+        var second: string = String( this.second );
+        if ( this.second < 10 ) {
             second = "0" + second;
         }
         if ( showSecond ) {
@@ -52,8 +54,10 @@ export default class CalendarTime {
         }
     }
 
-    hour;
-    minute;
-    second;
+    constructor(
+        public hour: number = null,
+        public minute: number = null,
+        public second: number = null
+    ) { }
 
 }

@@ -74,7 +74,7 @@ public class RestConverter {
     }
 
     public static Series convert(CalendarSeries series) {
-	LocalDate startDate = CalendarDay.toLocalDate(series.getStartDate());
+	LocalDate startDate = CalendarDay.toLocalDate(series.getFirstOccurence());
 	LocalTime time = CalendarTime.toLocalTime(series.getStartTime());
 	ZoneId zonedId = ZoneId.of(series.getTimezone());
 	ZonedDateTime firstOccurence = ZonedDateTime.of(startDate, time, zonedId);
@@ -185,7 +185,8 @@ public class RestConverter {
 	return convertedPluginDescriptions;
     }
 
-    private static PluginDescription convert(com.puresoltechnologies.lifeassist.common.plugins.PluginDescription pluginDescription) {
+    private static PluginDescription convert(
+	    com.puresoltechnologies.lifeassist.common.plugins.PluginDescription pluginDescription) {
 	return new PluginDescription(pluginDescription.getName(), pluginDescription.getDescription());
     }
 

@@ -13,12 +13,13 @@ export default class CreateEntry extends React.Component<any, any> {
     constructor( props: any ) {
         super( props );
         this.state = {
-            date: '',
-            timezone: 'Europe/Berlin',
+            beginDate: '',
+            beginTimezone: 'Europe/Berlin',
             beginTime: '',
+            endDate: '',
+            endTimezone: 'Europe/Berlin',
+            endTime: '',
             wholeDay: false,
-            durationAmount: 1,
-            durationUnit: 'HOURS',
             type: 'appointment',
             entryTypes: [],
             title: '',
@@ -36,15 +37,18 @@ export default class CreateEntry extends React.Component<any, any> {
             turnusSkips: 0
         };
         if ( this.props.params.date ) {
-            this.state.date = this.props.params.date;
+            this.state.beginDate = this.props.params.date;
         }
         if ( this.props.params.beginTime ) {
             this.state.beginTime = this.props.params.beginTime;
         }
-        this.changeDate = this.changeDate.bind( this );
-        this.changeTimezone = this.changeTimezone.bind( this );
-        this.changeWholeDay = this.changeWholeDay.bind( this );
+        this.changeBeginDate = this.changeBeginDate.bind( this );
         this.changeBeginTime = this.changeBeginTime.bind( this );
+        this.changeBeginTimezone = this.changeBeginTimezone.bind( this );
+        this.changeEndDate = this.changeEndDate.bind( this );
+        this.changeEndTime = this.changeEndTime.bind( this );
+        this.changeEndTimezone = this.changeEndTimezone.bind( this );
+        this.changeWholeDay = this.changeWholeDay.bind( this );
         this.changeDurationAmount = this.changeDurationAmount.bind( this );
         this.changeDurationUnit = this.changeDurationUnit.bind( this );
         this.changeType = this.changeType.bind( this );
@@ -95,14 +99,39 @@ export default class CreateEntry extends React.Component<any, any> {
             function( response ) { });
     }
 
-    changeDate( event: any ): void {
+    changeBeginDate( event: any ): void {
         var date = event.target.value;
         this.setState( {
-            date: date
+            beginDate: date
         });
     }
 
-    changeTimezone( timezone: any ): void {
+    changeBeginTime( event: any ): void {
+        var time = event.target.value;
+        this.setState( {
+            beginTime: time
+        });
+    }
+
+    changeBeginTimezone( timezone: any ): void {
+        this.setState( { timezone: timezone });
+    }
+
+    changeEndDate( event: any ): void {
+        var date = event.target.value;
+        this.setState( {
+            endDate: date
+        });
+    }
+
+    changeEndTime( event: any ): void {
+        var time = event.target.value;
+        this.setState( {
+            endTime: time
+        });
+    }
+
+    changeEndTimezone( timezone: any ): void {
         this.setState( { timezone: timezone });
     }
 
@@ -110,13 +139,6 @@ export default class CreateEntry extends React.Component<any, any> {
         var wholeDay = event.target.checked;
         this.setState( {
             wholeDay: wholeDay
-        });
-    }
-
-    changeBeginTime( event: any ): void {
-        var beginTime = event.target.value;
-        this.setState( {
-            beginTime: beginTime
         });
     }
 
@@ -210,16 +232,17 @@ export default class CreateEntry extends React.Component<any, any> {
             amount: this.state.reminderDurationAmount,
             unit: this.state.reminderDurationUnit
         };
-        entry.date = CalendarDay.fromString( this.state.date );
-        entry.timezone = this.state.timezone;
-        entry.time = CalendarTime.fromString( this.state.beginTime );
-        entry.durationAmount = this.state.durationAmount;
-        entry.durationUnit = this.state.durationUnit;
+        entry.beginDate = CalendarDay.fromString( this.state.beginDate );
+        entry.beginTimezone = this.state.beginTimezone;
+        entry.beginTime = CalendarTime.fromString( this.state.beginTime );
+        entry.endDate = CalendarDay.fromString( this.state.endDate );
+        entry.endTimezone = this.state.endTimezone;
+        entry.endTime = CalendarTime.fromString( this.state.endTime );
         entry.occupancy = this.state.occupancy;
 
         CalendarController.createEntry( entry,
             function( response ) {
-                component.props.router.push( '/calendar/day/' + entry.date.year + '/' + entry.date.month + '/' + entry.date.dayOfMonth );
+                component.props.router.push( '/calendar/day/' + entry.beginDate.year + '/' + entry.beginDate.month + '/' + entry.beginDate.dayOfMonth );
             },
             function( response ) { });
     }
@@ -245,12 +268,29 @@ export default class CreateEntry extends React.Component<any, any> {
             <form className="border-0">
                 <h3>Time</h3>
                 <div className="row">
-                    <div className="col-md-6">
-                        <label htmlFor="date">Date</label>
-                        <input type="date" className="form-control" id="date" value={this.state.date} onChange={this.changeDate}></input>
+                <div className="col-md-4">
+                    <label htmlFor="beginDate">Date</label>
+                    <input type="date" className="form-control" id="beginDate" value={this.state.beginDate} onChange={this.changeBeginDate}></input>
+                </div>
+                <div className="col-md-4">
+                    <label htmlFor="beginTime">Begin</label>
+                    <input type="time" className="form-control" id="beginTime" disabled={this.state.wholeDay} value={this.state.beginTime} onChange={this.changeBeginTime}></input>
+                </div>
+                <div className="col-md-4">
+                    <TimeZoneSelector onChange={this.changeBeginTimezone} value={this.state.beginTimezone} />
+                </div>
+            </div>
+                    <div className="row">
+                    <div className="col-md-4">
+                        <label htmlFor="endDate">Date</label>
+                        <input type="date" className="form-control" id="endDate" value={this.state.endDate} onChange={this.changeEndDate}></input>
                     </div>
-                    <div className="col-md-6">
-                        <TimeZoneSelector onChange={this.changeTimezone} value={this.state.timezone} />
+                    <div className="col-md-4">
+                        <label htmlFor="endTime">Begin</label>
+                        <input type="time" className="form-control" id="endTime" disabled={this.state.wholeDay} value={this.state.endTime} onChange={this.changeEndTime}></input>
+                    </div>
+                    <div className="col-md-4">
+                        <TimeZoneSelector onChange={this.changeEndTimezone} value={this.state.endTimezone} />
                     </div>
                 </div>
                 <div className="row">
@@ -260,10 +300,6 @@ export default class CreateEntry extends React.Component<any, any> {
                                 <input className="form-check-input" type="checkbox" checked={this.state.wholeDay} onChange={this.changeWholeDay} />&nbsp;Whole Day
                             </label>
                         </div>
-                    </div>
-                    <div className="col-md-4">
-                        <label htmlFor="beginTime">Begin</label>
-                        <input type="time" className="form-control" id="beginTime" disabled={this.state.wholeDay} value={this.state.beginTime} onChange={this.changeBeginTime}></input>
                     </div>
                     <div className="col-md-6">
                         <label htmlFor="duration">Duration</label>

@@ -24,7 +24,7 @@ public class CalendarSeries {
     private final Collection<Person> participants;
     private final boolean reminding;
     private final Reminder reminder;
-    private final CalendarDay startDate;
+    private final CalendarDay firstOccurence;
     private final CalendarDay lastOccurence;
     private final String timezone;
     private final CalendarTime startTime;
@@ -44,7 +44,7 @@ public class CalendarSeries {
 	    @JsonProperty("participants") Collection<Person> participants, //
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("reminder") Reminder reminder, //
-	    @JsonProperty("startDate") CalendarDay startDate, //
+	    @JsonProperty("firstOccurence") CalendarDay firstOccurence, //
 	    @JsonProperty("lastOccurence") CalendarDay lastOccurence, //
 	    @JsonProperty("timezone") String timezone, //
 	    @JsonProperty("startTime") CalendarTime startTime, //
@@ -62,7 +62,7 @@ public class CalendarSeries {
 	this.participants = participants;
 	this.reminding = reminding;
 	this.reminder = reminder;
-	this.startDate = startDate;
+	this.firstOccurence = firstOccurence;
 	this.lastOccurence = lastOccurence;
 	this.timezone = timezone;
 	this.startTime = startTime;
@@ -81,7 +81,7 @@ public class CalendarSeries {
 	    Collection<Person> participants, //
 	    boolean reminding, //
 	    Reminder reminder, //
-	    CalendarDay startDate, //
+	    CalendarDay firstOccurence, //
 	    CalendarDay lastOccurence, //
 	    String timezone, //
 	    CalendarTime startTime, //
@@ -91,7 +91,7 @@ public class CalendarSeries {
 	    String turnus, //
 	    int skipping //
     ) {
-	this(-1l, type, title, description, participants, reminding, reminder, startDate, lastOccurence, timezone,
+	this(-1l, type, title, description, participants, reminding, reminder, firstOccurence, lastOccurence, timezone,
 		startTime, durationAmount, durationUnit, occupancy, turnus, skipping);
     }
 
@@ -123,8 +123,8 @@ public class CalendarSeries {
 	return reminder;
     }
 
-    public CalendarDay getStartDate() {
-	return startDate;
+    public CalendarDay getFirstOccurence() {
+	return firstOccurence;
     }
 
     public CalendarDay getLastOccurence() {
@@ -183,7 +183,7 @@ public class CalendarSeries {
 	result = prime * result + ((reminder == null) ? 0 : reminder.hashCode());
 	result = prime * result + (reminding ? 1231 : 1237);
 	result = prime * result + skipping;
-	result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+	result = prime * result + ((firstOccurence == null) ? 0 : firstOccurence.hashCode());
 	result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
 	result = prime * result + ((timezone == null) ? 0 : timezone.hashCode());
 	result = prime * result + ((title == null) ? 0 : title.hashCode());
@@ -237,10 +237,10 @@ public class CalendarSeries {
 	    return false;
 	if (skipping != other.skipping)
 	    return false;
-	if (startDate == null) {
-	    if (other.startDate != null)
+	if (firstOccurence == null) {
+	    if (other.firstOccurence != null)
 		return false;
-	} else if (!startDate.equals(other.startDate))
+	} else if (!firstOccurence.equals(other.firstOccurence))
 	    return false;
 	if (startTime == null) {
 	    if (other.startTime != null)
