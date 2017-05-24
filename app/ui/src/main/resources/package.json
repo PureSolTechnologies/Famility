@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run less && webpack-dev-server --inline --content-base ./ --env.dev",
+    "dev": "npm run less && webpack-dev-server --inline --content-base ./ --env.dev --host 192.168.0.110",
     "build": "npm run less && webpack --env.prod",
     "less": "lessc less/puresol-technologies.less css/puresol-technologies.css",
     "lint": "eslint app test",

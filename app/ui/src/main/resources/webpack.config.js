@@ -20,6 +20,7 @@ module.exports = env => {
     },
     devtool: ifNotProd('source-map', 'eval'),
     devServer: {
+      host: "0.0.0.0",
       port: 9090,
       historyApiFallback: true
     },

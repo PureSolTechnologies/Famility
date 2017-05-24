@@ -1,5 +1,7 @@
 import ServerConfiguration from '../config/ServerConfiguration';
 
+declare var serverConfiguration: any;
+
 export class RESTController {
 
     baseURL = 'http://localhost:8080/rest';
@@ -7,20 +9,7 @@ export class RESTController {
     server: ServerConfiguration;
 
     constructor() {
-        var component = this;
-        var request = new XMLHttpRequest();
-        request.open( 'GET', '/conf/server.json', false );
-        request.addEventListener( 'load',
-            function( event: any ) {
-                component.server = JSON.parse( event.target.response );
-            }
-        );
-        request.addEventListener( 'error',
-            function( event: any ) {
-                component.server = new ServerConfiguration();
-            }
-        );
-        request.send();
+        this.server = new ServerConfiguration( serverConfiguration.host, serverConfiguration.port );
     }
 
     createRequest( type: string, path: string, headers: any, successCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): XMLHttpRequest {
