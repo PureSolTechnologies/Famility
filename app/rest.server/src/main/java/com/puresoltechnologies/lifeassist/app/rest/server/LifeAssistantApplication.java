@@ -11,14 +11,14 @@ import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.rest.server.config.LifeAssistantConfiguration;
+import com.puresoltechnologies.lifeassist.app.rest.server.filters.CORSFilter;
+import com.puresoltechnologies.lifeassist.app.rest.server.filters.IllegalEmailAddressExceptionMapper;
+import com.puresoltechnologies.lifeassist.app.rest.server.filters.SQLExceptionMapper;
 import com.puresoltechnologies.lifeassist.app.rest.server.health.DatabaseHealthCheck;
-import com.puresoltechnologies.lifeassist.app.rest.server.health.filters.CORSFilter;
-import com.puresoltechnologies.lifeassist.app.rest.server.health.filters.IllegalEmailAddressExceptionMapper;
-import com.puresoltechnologies.lifeassist.app.rest.server.health.filters.SQLExceptionMapper;
 import com.puresoltechnologies.lifeassist.app.rest.server.metrics.DatabaseConnectionPoolMetricsSet;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.CalendarServiceImpl;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.LoginServiceImpl;
-import com.puresoltechnologies.lifeassist.app.rest.server.services.PeopleServiceImpl;
+import com.puresoltechnologies.lifeassist.app.rest.server.services.ContactsServiceImpl;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.PluginServiceImpl;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.SettingsServiceImpl;
 
@@ -64,7 +64,7 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 	jersey.register(LoginServiceImpl.class);
 	jersey.register(PluginServiceImpl.class);
 	jersey.register(CalendarServiceImpl.class);
-	jersey.register(PeopleServiceImpl.class);
+	jersey.register(ContactsServiceImpl.class);
 	jersey.register(SettingsServiceImpl.class);
 
 	ServletEnvironment servlets = environment.servlets();

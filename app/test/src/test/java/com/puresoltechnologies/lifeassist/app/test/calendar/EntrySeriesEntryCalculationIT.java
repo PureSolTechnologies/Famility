@@ -21,7 +21,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.puresoltechnologies.lifeassist.app.api.calendar.Entry;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Event;
 import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
@@ -29,7 +29,7 @@ import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
-import com.puresoltechnologies.lifeassist.app.model.calendar.QEntries;
+import com.puresoltechnologies.lifeassist.app.model.calendar.QEvents;
 import com.puresoltechnologies.lifeassist.app.model.calendar.QSeries;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarTime;
@@ -78,7 +78,7 @@ public class EntrySeriesEntryCalculationIT extends AbstractCalendarManagerTest {
 	    assertTrue(select.fetchResults().isEmpty());
 	    // one entry series was created, yet, and therefore no entries are
 	    // to be expected
-	    select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries);
+	    select = queryFactory.select(QEvents.events.all()).from(QEvents.events);
 	    assertTrue(select.fetchResults().isEmpty());
 	}
 	// create new entry series
@@ -95,7 +95,7 @@ public class EntrySeriesEntryCalculationIT extends AbstractCalendarManagerTest {
 	    SQLQuery<Tuple> select = queryFactory.select(QSeries.series.all()).from(QSeries.series);
 	    assertEquals(1, select.fetchResults().getTotal());
 	    // The first occurrence is created
-	    select = queryFactory.select(QEntries.entries.all()).from(QEntries.entries);
+	    select = queryFactory.select(QEvents.events.all()).from(QEvents.events);
 	    assertEquals(1, select.fetchResults().getTotal());
 	}
     }
@@ -103,11 +103,11 @@ public class EntrySeriesEntryCalculationIT extends AbstractCalendarManagerTest {
     @Test
     public void testBoundaries() throws SQLException {
 	CalendarManager calendarManager = getCalendarManager();
-	Collection<Entry> yearEntries = calendarManager.getYearEntries(2017, "appointment");
+	Collection<Event> yearEntries = calendarManager.getYearEntries(2017, "appointment");
 	assertFalse(yearEntries.isEmpty());
-	List<Entry> entries = new ArrayList<>(yearEntries);
+	List<Event> entries = new ArrayList<>(yearEntries);
 	Collections.sort(entries);
-	for (Entry entry : entries) {
+	for (Event entry : entries) {
 	    ZonedDateTime startZonedDateTime = ZonedDateTime.of(startDate.getLocalDate(), time.getLocalTime(),
 		    entry.getBegin().getZone());
 	    ZonedDateTime endZonedDateTime = ZonedDateTime.of(endDate.getLocalDate(), time.getLocalTime(),

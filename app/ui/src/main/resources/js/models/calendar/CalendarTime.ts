@@ -1,8 +1,8 @@
-import CalendarEntry from './CalendarEntry';
+import CalendarEvent from './CalendarEvent';
 
 export default class CalendarTime {
 
-    static fromEntry( entry: CalendarEntry ): CalendarTime {
+    static fromEvent( entry: CalendarEvent ): CalendarTime {
         var time = new CalendarTime;
         time.hour = entry.beginTime.hour;
         time.minute = entry.beginTime.minute;

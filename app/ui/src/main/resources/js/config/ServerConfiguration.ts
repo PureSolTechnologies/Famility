@@ -1,6 +1,8 @@
 export default class ServerConfiguration {
 
-    constructor( host: string = '192.168.0.110', port: number = 8080 )
-    { }
+    constructor(
+        public host: string = 'localhost',
+        public port: number = 8080
+    ) { }
 
 }

@@ -10,20 +10,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.puresoltechnologies.lifeassist.app.api.calendar.Entry;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Event;
 import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
-import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarEntry;
+import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarEvent;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarSeries;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarTime;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.DurationUnit;
-import com.puresoltechnologies.lifeassist.app.rest.api.calendar.EntryType;
+import com.puresoltechnologies.lifeassist.app.rest.api.calendar.EventType;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.Reminder;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.TimeZoneInformation;
-import com.puresoltechnologies.lifeassist.app.rest.api.people.Birthday;
-import com.puresoltechnologies.lifeassist.app.rest.api.people.Person;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Birthday;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
 import com.puresoltechnologies.lifeassist.app.rest.api.plugins.PluginDescription;
 import com.puresoltechnologies.lifeassist.app.rest.api.services.ParameterDescription;
 
@@ -43,32 +43,32 @@ public class RestConverter {
 		reminder.getUnit());
     }
 
-    public static CalendarEntry convert(Entry entry) {
-	Collection<com.puresoltechnologies.lifeassist.app.api.people.Person> oldParticipants = entry.getParticipants();
-	List<Person> participants = new ArrayList<>();
+    public static CalendarEvent convert(Event entry) {
+	Collection<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> oldParticipants = entry.getParticipants();
+	List<Contact> participants = new ArrayList<>();
 	oldParticipants
-		.forEach(e -> participants.add(new Person(e.getId(), e.getName(), CalendarDay.of(e.getBirthday()))));
+		.forEach(e -> participants.add(new Contact(e.getId(), e.getName(), CalendarDay.of(e.getBirthday()))));
 	ZonedDateTime begin = entry.getBegin();
 	ZonedDateTime end = entry.getEnd();
-	return new CalendarEntry(entry.getId(), entry.getType(), entry.getTitle(), entry.getDescription(), participants,
+	return new CalendarEvent(entry.getId(), entry.getType(), entry.getTitle(), entry.getDescription(), participants,
 		entry.getReminder() != null, convert(entry.getReminder()), CalendarDay.of(begin.toLocalDate()),
 		CalendarTime.of(begin.toLocalTime()), begin.getZone().getId(), CalendarDay.of(end.toLocalDate()),
 		CalendarTime.of(end.toLocalTime()), end.getZone().getId(), entry.getOccupancy().name());
     }
 
-    public static Entry convert(CalendarEntry entry) {
-	Collection<Person> oldParticipants = entry.getParticipants();
-	List<com.puresoltechnologies.lifeassist.app.api.people.Person> participants = new ArrayList<>();
+    public static Event convert(CalendarEvent entry) {
+	Collection<Contact> oldParticipants = entry.getParticipants();
+	List<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> participants = new ArrayList<>();
 	oldParticipants
-		.forEach(e -> participants.add(new com.puresoltechnologies.lifeassist.app.api.people.Person(e.getId(),
+		.forEach(e -> participants.add(new com.puresoltechnologies.lifeassist.app.api.contacts.Contact(e.getId(),
 			e.getName(), CalendarDay.toLocalDate(e.getBirthday()))));
-	return new Entry(entry.getId(), entry.getType(), entry.getTitle(), entry.getDescription(), participants,
+	return new Event(entry.getId(), entry.getType(), entry.getTitle(), entry.getDescription(), participants,
 		entry.isReminding() ? convert(entry.getReminder()) : null, entry.getBegin(), entry.getEnd(),
 		OccupancyStatus.valueOf(entry.getOccupancy()));
     }
 
-    public static Collection<CalendarEntry> convert(Collection<Entry> entries) {
-	List<CalendarEntry> convertedEntries = new ArrayList<>();
+    public static Collection<CalendarEvent> convert(Collection<Event> entries) {
+	List<CalendarEvent> convertedEntries = new ArrayList<>();
 	entries.forEach(e -> convertedEntries.add(convert(e)));
 	return convertedEntries;
     }
@@ -88,7 +88,7 @@ public class RestConverter {
 
     public static CalendarSeries convert(Series series) {
 	return new CalendarSeries(series.getId(), series.getType(), series.getTitle(), series.getDescription(),
-		convertPeopleToRest(series.getParticipants()), series.getReminder() != null,
+		convertContactsToRest(series.getParticipants()), series.getReminder() != null,
 		convert(series.getReminder()), CalendarDay.of(series.getFirstOccurence().toLocalDate()),
 		CalendarDay.of(series.getLastOccurence()), series.getFirstOccurence().getZone().getId(),
 		CalendarTime.of(series.getFirstOccurence().toLocalTime()), series.getDurationAmount(),
@@ -96,38 +96,38 @@ public class RestConverter {
 		series.getSkipping());
     }
 
-    public static Collection<com.puresoltechnologies.lifeassist.app.api.people.Person> convertPeople(
-	    Collection<Person> people) {
-	List<com.puresoltechnologies.lifeassist.app.api.people.Person> convertedPeople = new ArrayList<>();
+    public static Collection<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> convertPeople(
+	    Collection<Contact> people) {
+	List<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> convertedPeople = new ArrayList<>();
 	people.forEach(e -> convertedPeople.add(convert(e)));
 	return convertedPeople;
     }
 
-    public static Collection<Person> convertPeopleToRest(
-	    Collection<com.puresoltechnologies.lifeassist.app.api.people.Person> people) {
-	List<Person> converterdPeople = new ArrayList<>();
+    public static Collection<Contact> convertContactsToRest(
+	    Collection<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> people) {
+	List<Contact> converterdPeople = new ArrayList<>();
 	people.forEach(e -> converterdPeople.add(convert(e)));
 	return converterdPeople;
     }
 
-    public static com.puresoltechnologies.lifeassist.app.api.people.Person convert(Person person) {
-	return new com.puresoltechnologies.lifeassist.app.api.people.Person(person.getName(),
+    public static com.puresoltechnologies.lifeassist.app.api.contacts.Contact convert(Contact person) {
+	return new com.puresoltechnologies.lifeassist.app.api.contacts.Contact(person.getName(),
 		CalendarDay.toLocalDate(person.getBirthday()));
     }
 
-    public static Person convert(com.puresoltechnologies.lifeassist.app.api.people.Person person) {
-	return new Person(person.getName(), CalendarDay.of(person.getBirthday()));
+    public static Contact convert(com.puresoltechnologies.lifeassist.app.api.contacts.Contact person) {
+	return new Contact(person.getName(), CalendarDay.of(person.getBirthday()));
     }
 
-    public static List<EntryType> convertEntryTypes(
-	    List<com.puresoltechnologies.lifeassist.app.api.calendar.EntryType> entryTypes) {
-	List<EntryType> convertedEntryTypes = new ArrayList<>();
+    public static List<EventType> convertEventTypes(
+	    List<com.puresoltechnologies.lifeassist.app.api.calendar.EventType> entryTypes) {
+	List<EventType> convertedEntryTypes = new ArrayList<>();
 	entryTypes.forEach(e -> convertedEntryTypes.add(convert(e)));
 	return convertedEntryTypes;
     }
 
-    public static EntryType convert(com.puresoltechnologies.lifeassist.app.api.calendar.EntryType entryType) {
-	return new EntryType(entryType.getType(), entryType.getName());
+    public static EventType convert(com.puresoltechnologies.lifeassist.app.api.calendar.EventType entryType) {
+	return new EventType(entryType.getType(), entryType.getName());
     }
 
     public static List<TimeZoneInformation> convertTimezones(
@@ -154,13 +154,13 @@ public class RestConverter {
     }
 
     public static Collection<Birthday> convertBirthdays(
-	    List<com.puresoltechnologies.lifeassist.app.api.people.Birthday> birthdays) {
+	    List<com.puresoltechnologies.lifeassist.app.api.contacts.Birthday> birthdays) {
 	List<Birthday> convertedBirthdays = new ArrayList<>();
 	birthdays.forEach(e -> convertedBirthdays.add(convert(e)));
 	return convertedBirthdays;
     }
 
-    private static Birthday convert(com.puresoltechnologies.lifeassist.app.api.people.Birthday birthday) {
+    private static Birthday convert(com.puresoltechnologies.lifeassist.app.api.contacts.Birthday birthday) {
 	return new Birthday(birthday.getId(), birthday.getName(), CalendarDay.of(birthday.getBirthday()));
     }
 

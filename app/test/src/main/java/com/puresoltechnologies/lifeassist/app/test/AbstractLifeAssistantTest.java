@@ -27,11 +27,11 @@ import io.dropwizard.testing.ResourceHelpers;
  */
 public abstract class AbstractLifeAssistantTest {
 
-    private static String configurationFile = ResourceHelpers.resourceFilePath("configuration.yml");
-    private static TestConfiguration configuration = null;
+    static String configurationFile = ResourceHelpers.resourceFilePath("configuration.yml");
+    static TestConfiguration configuration = null;
     private static boolean handleDatabase = true;
 
-    private static void readConfiguration() throws IOException {
+    static void readConfiguration() throws IOException {
 	Yaml yaml = new Yaml();
 	try (FileReader fileReader = new FileReader(new File(configurationFile))) {
 	    configuration = yaml.loadAs(fileReader, TestConfiguration.class);

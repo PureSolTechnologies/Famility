@@ -44,22 +44,24 @@ public class AddUserStep implements TransformationStep {
 	logger.info("Add new account for '" + user + "'.");
 	try {
 	    Connection connection = sequence.getConnection();
-	    try (PreparedStatement statement = connection
-		    .prepareStatement("INSERT INTO " + PasswordStoreTransformator.PASSWORD_TABLE_NAME//
-			    + " (created, " //
-			    + "last_modified, " //
-			    + "email," //
-			    + "password, " //
-			    + "state, " + "activation_key) VALUES (?,?,?,?,?,?) ")) {
-		LocalDateTime now = LocalDateTime.now();
-		PasswordData passwordData = new PasswordData(1, Encrypter1.encrypt(password));
-		statement.setTimestamp(1, Timestamp.valueOf(now));
-		statement.setTimestamp(2, Timestamp.valueOf(now));
-		statement.setString(3, user.getAddress());
-		statement.setString(4, passwordData.toString());
-		statement.setString(5, state.name());
-		statement.setString(6, "");
-		statement.execute();
+	    try {
+		try (PreparedStatement statement = connection
+			.prepareStatement("INSERT INTO " + PasswordStoreTransformator.PASSWORD_TABLE_NAME//
+				+ " (created, " //
+				+ "last_modified, " //
+				+ "email," //
+				+ "password, " //
+				+ "state, " + "activation_key) VALUES (?,?,?,?,?,?) ")) {
+		    LocalDateTime now = LocalDateTime.now();
+		    PasswordData passwordData = new PasswordData(1, Encrypter1.encrypt(password));
+		    statement.setTimestamp(1, Timestamp.valueOf(now));
+		    statement.setTimestamp(2, Timestamp.valueOf(now));
+		    statement.setString(3, user.getAddress());
+		    statement.setString(4, passwordData.toString());
+		    statement.setString(5, state.name());
+		    statement.setString(6, "");
+		    statement.execute();
+		}
 		connection.commit();
 	    } finally {
 		connection.rollback();

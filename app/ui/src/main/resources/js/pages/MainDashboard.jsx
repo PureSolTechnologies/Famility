@@ -3,8 +3,8 @@ import React from 'react';
 import LocalWeather from '../components/LocalWeather';
 import PeopleController from '../controller/PeopleController';
 import CalendarController from '../controller/CalendarController';
-import EntriesToday from '../components/calendar/EntriesToday';
-import EntriesTomorrow from '../components/calendar/EntriesTomorrow';
+import EventsToday from '../components/calendar/EventsToday';
+import EventsTomorrow from '../components/calendar/EventsTomorrow';
 import Birthdays from '../components/calendar/Birthdays';
 
 export default class MainDashboard extends React.Component {
@@ -20,7 +20,7 @@ export default class MainDashboard extends React.Component {
                     <div className="card">
                         <h3 className="card-header">Today</h3>
                         <div className="card-block" style={{ padding: "0pt" }}>
-                            <EntriesToday />
+                            <EventsToday />
                         </div>
                     </div>
                 </div>
@@ -36,7 +36,7 @@ export default class MainDashboard extends React.Component {
                     <div className="card">
                         <h3 className="card-header">Tomorrow</h3>
                         <div className="card-block" style={{ padding: "0pt" }}>
-                            <EntriesTomorrow />
+                            <EventsTomorrow />
                         </div>
                     </div>
                 </div>

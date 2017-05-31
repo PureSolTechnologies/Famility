@@ -8,7 +8,7 @@ import java.util.Collection;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.puresoltechnologies.lifeassist.app.rest.api.people.Person;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
 
 /**
  * This class is used to transfer the data for a single appointment serie.
@@ -21,7 +21,7 @@ public class CalendarSeries {
     private final String type;
     private final String title;
     private final String description;
-    private final Collection<Person> participants;
+    private final Collection<Contact> participants;
     private final boolean reminding;
     private final Reminder reminder;
     private final CalendarDay firstOccurence;
@@ -41,7 +41,7 @@ public class CalendarSeries {
 	    @JsonProperty("type") String type, //
 	    @JsonProperty("title") String title, //
 	    @JsonProperty("description") String description, //
-	    @JsonProperty("participants") Collection<Person> participants, //
+	    @JsonProperty("participants") Collection<Contact> participants, //
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("reminder") Reminder reminder, //
 	    @JsonProperty("firstOccurence") CalendarDay firstOccurence, //
@@ -78,7 +78,7 @@ public class CalendarSeries {
 	    String type, //
 	    String title, //
 	    String description, //
-	    Collection<Person> participants, //
+	    Collection<Contact> participants, //
 	    boolean reminding, //
 	    Reminder reminder, //
 	    CalendarDay firstOccurence, //
@@ -111,7 +111,7 @@ public class CalendarSeries {
 	return description;
     }
 
-    public Collection<Person> getParticipants() {
+    public Collection<Contact> getParticipants() {
 	return participants;
     }
 

@@ -16,8 +16,8 @@ import java.util.List;
 import org.junit.Test;
 
 import com.puresoltechnologies.lifeassist.app.api.calendar.DurationUnit;
-import com.puresoltechnologies.lifeassist.app.api.calendar.Entry;
-import com.puresoltechnologies.lifeassist.app.api.calendar.EntryType;
+import com.puresoltechnologies.lifeassist.app.api.calendar.Event;
+import com.puresoltechnologies.lifeassist.app.api.calendar.EventType;
 import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
@@ -28,7 +28,7 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
 
     @Test
     public void testGetAppointmentTypes() throws SQLException {
-	List<EntryType> appointmentTypes = getCalendarManager().getEntryTypes();
+	List<EventType> appointmentTypes = getCalendarManager().getEventTypes();
 	assertNotNull(appointmentTypes);
 	assertEquals(5, appointmentTypes.size());
     }
@@ -45,27 +45,27 @@ public class CalendarManagerIT extends AbstractCalendarManagerTest {
 	ZonedDateTime begin = ZonedDateTime.of(1978, 5, 16, 13, 35, 0, 0, ZoneId.of("Europe/Stockholm"));
 	ZonedDateTime end = ZonedDateTime.of(1978, 5, 16, 14, 35, 0, 0, ZoneId.of("Europe/Stockholm"));
 	CalendarManager calendarManager = getCalendarManager();
-	Entry original = new Entry("appointment", "Title", "Description", new ArrayList<>(),
+	Event original = new Event("appointment", "Title", "Description", new ArrayList<>(),
 		new Reminder(1, ChronoUnit.DAYS), begin, end, OccupancyStatus.OCCUPIED);
-	long id = calendarManager.insertEntry(original);
+	long id = calendarManager.insertEvent(original);
 	assertEquals(id, original.getId());
 
-	Entry read = calendarManager.getEntry(id);
+	Event read = calendarManager.getEvent(id);
 	assertEquals(original, read);
 
-	Entry updated = new Entry("appointment", "Title2", "Description2", new ArrayList<>(),
+	Event updated = new Event("appointment", "Title2", "Description2", new ArrayList<>(),
 		new Reminder(1, ChronoUnit.DAYS), begin, end, OccupancyStatus.OCCUPIED);
-	assertFalse(calendarManager.updateEntry(updated));
-	assertTrue(calendarManager.updateEntry(id, updated));
+	assertFalse(calendarManager.updateEvent(updated));
+	assertTrue(calendarManager.updateEvent(id, updated));
 
-	Entry readUpdated = calendarManager.getEntry(id);
+	Event readUpdated = calendarManager.getEvent(id);
 	assertEquals(updated, readUpdated);
 
-	assertTrue(calendarManager.removeEntry(id));
+	assertTrue(calendarManager.removeEvent(id));
 
-	assertNull(calendarManager.getEntry(id));
+	assertNull(calendarManager.getEvent(id));
 
-	assertFalse(calendarManager.removeEntry(id));
+	assertFalse(calendarManager.removeEvent(id));
     }
 
     @Test

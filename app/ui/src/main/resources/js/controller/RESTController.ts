@@ -4,12 +4,13 @@ declare var serverConfiguration: any;
 
 export class RESTController {
 
-    baseURL = 'http://localhost:8080/rest';
+    private baseURL: string;
 
-    server: ServerConfiguration;
+    private server: ServerConfiguration;
 
     constructor() {
         this.server = new ServerConfiguration( serverConfiguration.host, serverConfiguration.port );
+        this.baseURL = "http://" + this.server.host + ":" + this.server.port + "/rest";
     }
 
     createRequest( type: string, path: string, headers: any, successCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): XMLHttpRequest {

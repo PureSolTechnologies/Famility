@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 
-import com.puresoltechnologies.lifeassist.app.api.people.Person;
+import com.puresoltechnologies.lifeassist.app.api.contacts.Contact;
 
 /**
  * This class is used to transfer the data for a single appointment serie.
@@ -18,7 +18,7 @@ public class Series {
     private final String type;
     private final String title;
     private final String description;
-    private final Collection<Person> participants;
+    private final Collection<Contact> participants;
     private final Reminder reminder;
     private final ZonedDateTime firstOccurence;
     private final LocalDate lastOccurence;
@@ -28,7 +28,7 @@ public class Series {
     private final Turnus turnus;
     private final int skipping;
 
-    public Series(long id, String type, String title, String description, Collection<Person> participants,
+    public Series(long id, String type, String title, String description, Collection<Contact> participants,
 	    Reminder reminder, ZonedDateTime firstOccurence, LocalDate lastOccurence, int durationAmount,
 	    ChronoUnit durationUnit, OccupancyStatus occupancy, Turnus turnus, int skipping) {
 	super();
@@ -47,7 +47,7 @@ public class Series {
 	this.skipping = skipping;
     }
 
-    public Series(String type, String title, String description, Collection<Person> participants, Reminder reminder,
+    public Series(String type, String title, String description, Collection<Contact> participants, Reminder reminder,
 	    ZonedDateTime firstOccurence, LocalDate lastOccurence, int durationAmount, ChronoUnit durationUnit,
 	    OccupancyStatus occupancy, Turnus turnus, int skipping) {
 	this(-1, type, title, description, participants, reminder, firstOccurence, lastOccurence, durationAmount,
@@ -70,7 +70,7 @@ public class Series {
 	return description;
     }
 
-    public Collection<Person> getParticipants() {
+    public Collection<Contact> getParticipants() {
 	return participants;
     }
 

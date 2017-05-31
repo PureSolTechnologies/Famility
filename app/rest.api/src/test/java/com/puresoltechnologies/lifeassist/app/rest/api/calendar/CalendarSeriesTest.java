@@ -9,15 +9,15 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.puresoltechnologies.lifeassist.app.rest.api.people.Person;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
 import com.puresoltechnologies.lifeassist.common.rest.JsonSerializer;
 
 public class CalendarSeriesTest {
 
     @Test
     public void testSerialization() throws IOException {
-	List<Person> participants = new ArrayList<>();
-	participants.add(new Person(12345, "name", new CalendarDay(2015, 2, 3)));
+	List<Contact> participants = new ArrayList<>();
+	participants.add(new Contact(12345, "name", new CalendarDay(2015, 2, 3)));
 	CalendarSeries appointment = new CalendarSeries("birthday", "Birthday", "description", participants, true,
 		new Reminder(3, ChronoUnit.HOURS), new CalendarDay(2017, 1, 2), new CalendarDay(2017, 10, 2),
 		"Europe/Berlin", new CalendarTime(12, 30, 0), 2, ChronoUnit.HOURS, "AWAY", "WEEKLY", 1);

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,12 +44,12 @@ public class PasswordStoreImpl implements PasswordStore {
 
     public static final String PASSWORD_TABLE_NAME = "passwords";
 
-    public static final String CREATE_ACCOUNT_STATEMENT = "UPSERT INTO " + PASSWORD_TABLE_NAME
+    public static final String CREATE_ACCOUNT_STATEMENT = "INSERT INTO " + PASSWORD_TABLE_NAME
 	    + " (created, last_modified, email, password, state, activation_key)" + " VALUES (?, ?, ?, ?, '"
 	    + PasswordState.CREATED.name() + "', ?)";
-    public static final String ACTIVATE_ACCOUNT_STATEMENT = "UPSERT INTO " + PASSWORD_TABLE_NAME
-	    + " (last_modified, email, state) VALUES (?, ?, '" + PasswordState.ACTIVE.name() + "')";
-    public static final String CHANGE_PASSWORD_STATEMENT = "UPSERT INTO " + PASSWORD_TABLE_NAME
+    public static final String ACTIVATE_ACCOUNT_STATEMENT = "UPDATE " + PASSWORD_TABLE_NAME
+	    + " SET last_modified=?, state='" + PasswordState.ACTIVE.name() + "' WHERE email=?";
+    public static final String CHANGE_PASSWORD_STATEMENT = "INSERT INTO " + PASSWORD_TABLE_NAME
 	    + " (password, email) VALUES (?, ?)";
     public static final String RETRIEVE_ACCOUNT_STATEMENT = "SELECT * FROM " + PASSWORD_TABLE_NAME + " WHERE email = ?";
     public static final String DELETE_ACCOUNT_STATEMENT = "DELETE FROM " + PASSWORD_TABLE_NAME + " WHERE email = ?";
@@ -129,8 +129,8 @@ public class PasswordStoreImpl implements PasswordStore {
 		    eventLogger.logEvent(event);
 		    throw new RuntimeException(event.getMessage(), e);
 		}
-		preparedStatement.setTime(1, new Time(created.getTime()));
-		preparedStatement.setTime(2, new Time(created.getTime()));
+		preparedStatement.setTimestamp(1, new Timestamp(created.getTime()));
+		preparedStatement.setTimestamp(2, new Timestamp(created.getTime()));
 		preparedStatement.setString(3, email.getAddress());
 		preparedStatement.setString(4, passwordHash);
 		preparedStatement.setString(5, activationKey);
@@ -177,7 +177,7 @@ public class PasswordStoreImpl implements PasswordStore {
 	    }
 
 	    try (PreparedStatement preparedStatement = connection.prepareStatement(ACTIVATE_ACCOUNT_STATEMENT)) {
-		preparedStatement.setTime(1, new Time(new Date().getTime()));
+		preparedStatement.setTimestamp(1, new Timestamp(new Date().getTime()));
 		preparedStatement.setString(2, email.getAddress());
 		preparedStatement.execute();
 		connection.commit();

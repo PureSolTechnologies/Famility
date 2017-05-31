@@ -1,5 +1,6 @@
 package com.puresoltechnologies.lifeassist.app.rest.server.services;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.ws.rs.HeaderParam;
@@ -34,11 +35,13 @@ public class LoginServiceImpl implements LoginService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response authenticate(@HeaderParam("email") String email, @HeaderParam("password") String password)
 	    throws SQLException {
-	PasswordStore passwordStore = new PasswordStoreImpl(DatabaseConnector.getConnection());
-	if (passwordStore.authenticate(new EmailAddress(email), new Password(password))) {
-	    return Response.ok().entity(email).build();
-	} else {
-	    return Response.status(Status.UNAUTHORIZED).build();
+	try (Connection connection = DatabaseConnector.getConnection()) {
+	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
+	    if (passwordStore.authenticate(new EmailAddress(email), new Password(password))) {
+		return Response.ok().entity(email).build();
+	    } else {
+		return Response.status(Status.UNAUTHORIZED).build();
+	    }
 	}
     }
 
@@ -48,8 +51,8 @@ public class LoginServiceImpl implements LoginService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createLogin(@HeaderParam("email") String email, @HeaderParam("password") String password)
 	    throws SQLException {
-	try {
-	    PasswordStore passwordStore = new PasswordStoreImpl(DatabaseConnector.getConnection());
+	try (Connection connection = DatabaseConnector.getConnection()) {
+	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
 	    passwordStore.createPassword(new EmailAddress(email), new Password(password));
 	    return Response.ok().entity(email).build();
 	} catch (PasswordCreationException e) {
@@ -64,8 +67,8 @@ public class LoginServiceImpl implements LoginService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response activateLogin(@HeaderParam("email") String email,
 	    @HeaderParam("activation-key") String activationKey) throws SQLException {
-	try {
-	    PasswordStore passwordStore = new PasswordStoreImpl(DatabaseConnector.getConnection());
+	try (Connection connection = DatabaseConnector.getConnection()) {
+	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
 	    passwordStore.activatePassword(new EmailAddress(email), activationKey);
 	    return Response.ok().entity(email).build();
 	} catch (PasswordActivationException e) {
@@ -80,8 +83,8 @@ public class LoginServiceImpl implements LoginService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response changePassword(@HeaderParam("email") String email, @HeaderParam("password") String password,
 	    @HeaderParam("new-password") String newPassword) throws SQLException {
-	try {
-	    PasswordStore passwordStore = new PasswordStoreImpl(DatabaseConnector.getConnection());
+	try (Connection connection = DatabaseConnector.getConnection()) {
+	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
 	    passwordStore.changePassword(new EmailAddress(email), new Password(password), new Password(newPassword));
 	    return Response.ok().entity(email).build();
 	} catch (PasswordChangeException e) {
@@ -95,9 +98,11 @@ public class LoginServiceImpl implements LoginService {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createLogin(@HeaderParam("email") String email) throws SQLException {
-	PasswordStore passwordStore = new PasswordStoreImpl(DatabaseConnector.getConnection());
-	passwordStore.deletePassword(new EmailAddress(email));
-	return Response.ok().entity(email).build();
+	try (Connection connection = DatabaseConnector.getConnection()) {
+	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
+	    passwordStore.deletePassword(new EmailAddress(email));
+	    return Response.ok().entity(email).build();
+	}
     }
 
 }

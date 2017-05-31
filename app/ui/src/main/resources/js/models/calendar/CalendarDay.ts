@@ -1,12 +1,12 @@
-import CalendarEntry from './CalendarEntry';
+import CalendarEvent from './CalendarEvent';
 
 export default class CalendarDay {
 
-    static fromEntry( entry: CalendarEntry ): CalendarDay {
+    static fromEvent( event: CalendarEvent ): CalendarDay {
         var day = new CalendarDay;
-        day.year = entry.beginDate.year;
-        day.month = entry.beginDate.month;
-        day.dayOfMonth = entry.beginDate.dayOfMonth;
+        day.year = event.beginDate.year;
+        day.month = event.beginDate.month;
+        day.dayOfMonth = event.beginDate.dayOfMonth;
         return day;
     }
 

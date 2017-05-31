@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.genesis.commons.ProvidedVersionRange;
 import com.puresoltechnologies.genesis.commons.SequenceMetadata;
 import com.puresoltechnologies.genesis.commons.postgresql.PostgreSQLUtils;
@@ -15,7 +14,6 @@ import com.puresoltechnologies.genesis.transformation.jdbc.JDBCTransformationSte
 import com.puresoltechnologies.genesis.transformation.postgresql.PostgreSQLTransformationSequence;
 import com.puresoltechnologies.genesis.transformation.spi.ComponentTransformator;
 import com.puresoltechnologies.genesis.transformation.spi.TransformationSequence;
-import com.puresoltechnologies.passwordstore.domain.PasswordState;
 import com.puresoltechnologies.versioning.Version;
 
 public class PasswordStoreTransformator implements ComponentTransformator {
@@ -29,7 +27,9 @@ public class PasswordStoreTransformator implements ComponentTransformator {
 
     @Override
     public Set<String> getDependencies() {
-	return new HashSet<>();
+	HashSet<String> dependencies = new HashSet<>();
+	dependencies.add("Contacts");
+	return dependencies;
     }
 
     @Override
@@ -59,7 +59,11 @@ public class PasswordStoreTransformator implements ComponentTransformator {
 			+ "password varchar, " //
 			+ "state varchar, "//
 			+ "activation_key varchar, "//
-			+ "CONSTRAINT " + PASSWORD_TABLE_NAME + "_PK PRIMARY KEY (email))",
+			+ "CONSTRAINT " + PASSWORD_TABLE_NAME + "_PK PRIMARY KEY (email), " //
+			+ "CONSTRAINT " + PASSWORD_TABLE_NAME + "_" + ContactsTransformator.EMAILS_TABLE
+			+ "_FK FOREIGN KEY (email) REFERENCES " + ContactsTransformator.CONTACTS_SCHEMA + "."
+			+ ContactsTransformator.EMAILS_TABLE + " (address)" //
+			+ ")",
 		"Create passwords table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE INDEX " //
@@ -67,19 +71,6 @@ public class PasswordStoreTransformator implements ComponentTransformator {
 			+ " ON " + PASSWORD_TABLE_NAME //
 			+ " (state)",
 		"Creating index on state."));
-
-	sequence.appendTransformation(new AddUserStep(sequence, new EmailAddress("user@puresol-technologies.com"),
-		"password", PasswordState.ACTIVE, "Rick-Rainer Ludwig", "Create default user account."));
-
-	sequence.appendTransformation(new AddUserStep(sequence, new EmailAddress("engineer@puresol-technologies.com"),
-		"password", PasswordState.ACTIVE, "Rick-Rainer Ludwig", "Create default engineer account."));
-
-	sequence.appendTransformation(
-		new AddUserStep(sequence, new EmailAddress("administrator@puresol-technologies.com"), "password",
-			PasswordState.ACTIVE, "Rick-Rainer Ludwig", "Create default administrator account."));
-
-	sequence.appendTransformation(new AddUserStep(sequence, new EmailAddress("ludwig@puresol-technologies.com"),
-		"password", PasswordState.ACTIVE, "Rick-Rainer Ludwig", "Creates first user account."));
 
 	return sequence;
     }

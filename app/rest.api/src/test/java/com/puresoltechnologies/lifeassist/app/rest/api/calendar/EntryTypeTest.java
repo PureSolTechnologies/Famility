@@ -12,10 +12,10 @@ public class EntryTypeTest {
 
     @Test
     public void testSerialization() throws IOException {
-	EntryType entryType = new EntryType("type", "name");
+	EventType entryType = new EventType("type", "name");
 	String serialized = JsonSerializer.toString(entryType);
 	System.out.println(serialized);
-	EntryType deserialized = JsonSerializer.fromString(serialized, EntryType.class);
+	EventType deserialized = JsonSerializer.fromString(serialized, EventType.class);
 	assertEquals(entryType, deserialized);
     }
 

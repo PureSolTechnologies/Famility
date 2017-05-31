@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import AbstractEntriesView from './AbstractEntriesView';
+import AbstractEventsView from './AbstractEventsView';
 import CalendarController from '../../controller/CalendarController';
 
 declare var $: any;
 
-export default class DayView extends AbstractEntriesView<any, any> {
+export default class DayView extends AbstractEventsView<any, any> {
 
     static propTypes = {
         calendar: React.PropTypes.object.isRequired,
@@ -16,14 +16,14 @@ export default class DayView extends AbstractEntriesView<any, any> {
     constructor( props: any ) {
         super( props );
         this.enableTooltips("root");
-        this.state = { month: props.month, day: props.day, calendar: props.calendar, entries: [] };
+        this.state = { month: props.month, day: props.day, calendar: props.calendar, events: [] };
     }
 
     private componentDidMount() {
         let component: DayView = this;
-        CalendarController.getDayEntries( this.state.calendar.year, this.state.month, this.state.day,
-            function( entries ) {
-                component.setState( { entries: entries });
+        CalendarController.getDayEvents( this.state.calendar.year, this.state.month, this.state.day,
+            function( events ) {
+                component.setState( { events: events });
             },
             function( response ) { });
     }
@@ -52,11 +52,11 @@ export default class DayView extends AbstractEntriesView<any, any> {
         let rows: any[] = [];
         for ( let i: number = 0; i <= 23; i++ ) {
             const hour: number = i;
-            let entries: any[] = this.findEntries( this.state.entries, this.state.month, this.state.day, hour );
+            let events: any[] = this.findEvents( this.state.events, this.state.month, this.state.day, hour );
             rows.push(
                 <tr key={i}>
                     <th>{hour} h</th>
-                    {this.createTableRowEntry( entries, this.state.calendar.year, this.state.month, this.state.day, hour )}
+                    {this.createTableRowEvent( events, this.state.calendar.year, this.state.month, this.state.day, hour )}
                 </tr>
             );
         }
@@ -71,7 +71,7 @@ export default class DayView extends AbstractEntriesView<any, any> {
                     <thead className="thead-inverse">
                         <tr>
                             <th>Time</th>
-                            <th>Entry</th>
+                            <th>Event</th>
                         </tr>
                     </thead>
                     <tbody>

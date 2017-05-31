@@ -3,12 +3,12 @@ import { browserHistory } from 'react-router';
 
 import CalendarController from '../../../controller/CalendarController';
 import Dialog from '../../../components/dialog/Dialog';
-import CalendarEntry from '../../../models/calendar/CalendarEntry';
+import CalendarEvent from '../../../models/calendar/CalendarEvent';
 import CalendarDay from '../../../models/calendar/CalendarDay';
 import CalendarTime from '../../../models/calendar/CalendarTime';
 import TimeZoneSelector from '../../../components/calendar/TimeZoneSelector';
 
-export default class CreateEntry extends React.Component<any, any> {
+export default class CreateEvent extends React.Component<any, any> {
 
     constructor( props: any ) {
         super( props );
@@ -21,7 +21,7 @@ export default class CreateEntry extends React.Component<any, any> {
             endTime: '',
             wholeDay: false,
             type: 'appointment',
-            entryTypes: [],
+            eventTypes: [],
             title: '',
             description: '',
             participans: [],
@@ -90,10 +90,10 @@ export default class CreateEntry extends React.Component<any, any> {
                 });
             },
             function( response ) { });
-        CalendarController.getEntryTypes(
-            function( entryTypes ) {
+        CalendarController.getEventTypes(
+            function( eventTypes ) {
                 component.setState( {
-                    entryTypes: entryTypes
+                    eventTypes: eventTypes
                 });
             },
             function( response ) { });
@@ -221,36 +221,36 @@ export default class CreateEntry extends React.Component<any, any> {
 
     create() {
         var component = this;
-        var entry = new CalendarEntry();
-        entry.id = -1;
-        entry.type = this.state.type;
-        entry.title = this.state.title;
-        entry.description = this.state.description;
-        entry.participants = [];
-        entry.reminding = this.state.reminding;
-        entry.reminder = {
+        var event = new CalendarEvent();
+        event.id = -1;
+        event.type = this.state.type;
+        event.title = this.state.title;
+        event.description = this.state.description;
+        event.participants = [];
+        event.reminding = this.state.reminding;
+        event.reminder = {
             amount: this.state.reminderDurationAmount,
             unit: this.state.reminderDurationUnit
         };
-        entry.beginDate = CalendarDay.fromString( this.state.beginDate );
-        entry.beginTimezone = this.state.beginTimezone;
-        entry.beginTime = CalendarTime.fromString( this.state.beginTime );
-        entry.endDate = CalendarDay.fromString( this.state.endDate );
-        entry.endTimezone = this.state.endTimezone;
-        entry.endTime = CalendarTime.fromString( this.state.endTime );
-        entry.occupancy = this.state.occupancy;
+        event.beginDate = CalendarDay.fromString( this.state.beginDate );
+        event.beginTimezone = this.state.beginTimezone;
+        event.beginTime = CalendarTime.fromString( this.state.beginTime );
+        event.endDate = CalendarDay.fromString( this.state.endDate );
+        event.endTimezone = this.state.endTimezone;
+        event.endTime = CalendarTime.fromString( this.state.endTime );
+        event.occupancy = this.state.occupancy;
 
-        CalendarController.createEntry( entry,
+        CalendarController.createEvent( event,
             function( response ) {
-                component.props.router.push( '/calendar/day/' + entry.beginDate.year + '/' + entry.beginDate.month + '/' + entry.beginDate.dayOfMonth );
+                component.props.router.push( '/calendar/day/' + event.beginDate.year + '/' + event.beginDate.month + '/' + event.beginDate.dayOfMonth );
             },
             function( response ) { });
     }
 
     render() {
-        var entryTypes: any[] = [];
-        for ( var entryType of this.state.entryTypes ) {
-            entryTypes.push( <option key={entryType.type} value={entryType.type}>{entryType.name}</option> );
+        var eventTypes: any[] = [];
+        for ( var eventType of this.state.eventTypes ) {
+            eventTypes.push( <option key={eventType.type} value={eventType.type}>{eventType.name}</option> );
         }
         var durationUnits: any[] = [];
         for ( var durationUnit of this.state.durationUnits ) {
@@ -264,7 +264,7 @@ export default class CreateEntry extends React.Component<any, any> {
         for ( var turnusUnit of this.state.turnusUnits ) {
             turnusUnits.push( <option key={turnusUnit.unit} value={turnusUnit.unit}>{turnusUnit.name}</option> );
         }
-        return <Dialog title="Create Calendar Entry">
+        return <Dialog title="Create Calendar Event">
             <form className="border-0">
                 <h3>Time</h3>
                 <div className="row">
@@ -315,9 +315,9 @@ export default class CreateEntry extends React.Component<any, any> {
                 <h3>Information</h3>
                 <div className="row">
                     <div className="col-md-3">
-                        <label htmlFor="entryType">Entry Type</label>
-                        <select className="form-control" id="entryType" value={this.state.type} onChange={this.changeType}>
-                            {entryTypes}
+                        <label htmlFor="eventType">Event Type</label>
+                        <select className="form-control" id="eventType" value={this.state.type} onChange={this.changeType}>
+                            {eventTypes}
                         </select>
                     </div>
                     <div className="col-md-9">

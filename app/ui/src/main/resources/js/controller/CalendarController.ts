@@ -1,7 +1,7 @@
 import restController from './RESTController';
 
-import CalendarEntry from '../models/calendar/CalendarEntry';
-import EntryType from '../models/calendar/EntryType';
+import CalendarEvent from '../models/calendar/CalendarEvent';
+import EventType from '../models/calendar/EventType';
 import DurationUnit from '../models/calendar/DurationUnit';
 import TimeZoneInformation from '../models/calendar/TimeZoneInformation';
 
@@ -13,11 +13,11 @@ export default class CalendarController {
         return CalendarController.namesOfMonths[month - 1];
     }
 
-    static getEntryTypes( successfulCallback: ( types: EntryType[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/types',
+    static getEventTypes( successfulCallback: ( types: EventType[] ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/events/types',
             null,
             function( response: any ) {
-                var types: EntryType[] = JSON.parse( response.response );
+                var types: EventType[] = JSON.parse( response.response );
                 successfulCallback( types );
             },
             errorCallback
@@ -25,7 +25,7 @@ export default class CalendarController {
     }
 
     static getDurationUnits( successfulCallback: ( units: DurationUnit[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/duration-units',
+        restController.GET( '/calendar/events/duration-units',
             null,
             function( response: any ) {
                 var units: DurationUnit[] = JSON.parse( response.response );
@@ -36,7 +36,7 @@ export default class CalendarController {
     }
 
     static getReminderDurationUnits( successfulCallback: ( units: DurationUnit[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/reminder-duration-units',
+        restController.GET( '/calendar/events/reminder-duration-units',
             null,
             function( response: any ) {
                 var units: DurationUnit[] = JSON.parse( response.response );
@@ -47,7 +47,7 @@ export default class CalendarController {
     }
 
     static getTurnusUnits( successfulCallback: ( units: DurationUnit[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/turnus-units',
+        restController.GET( '/calendar/events/turnus-units',
             null,
             function( response: any ) {
                 var units: DurationUnit[] = JSON.parse( response.response );
@@ -100,120 +100,120 @@ export default class CalendarController {
         );
     }
 
-    static createEntry( entry: CalendarEntry, successfulCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.PUT( '/calendar/entries',
+    static createEvent( event: CalendarEvent, successfulCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.PUT( '/calendar/events',
             { "Content-Type": "application/json; charset=utf-8" },
-            entry,
+            event,
             successfulCallback,
             errorCallback
         );
     }
 
-    static getEntry( id: number, successfulCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/' + id,
+    static getEvent( id: number, successfulCallback: ( response: any ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/events/' + id,
             { "Content-Type": "application/json; charset=utf-8" },
             function( response: any ) {
-                var entry: any = JSON.parse( response.response );
-                successfulCallback( entry );
+                var event: any = JSON.parse( response.response );
+                successfulCallback( event );
             },
             errorCallback
         );
     }
 
-    static createEntrySerie( entrySerie: any, successfulCallback: ( response: any[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.PUT( '/calendar/entrySeries',
+    static createEventSerie( series: any, successfulCallback: ( response: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.PUT( '/calendar/series',
             { "Content-Type": "application/json; charset=utf-8" },
-            entrySerie,
+            series,
             successfulCallback,
             errorCallback
         );
     }
 
-    static createEntriesResult( entity: any ): any[] {
-        var entries = JSON.parse( entity );
-        entries.months = [];
+    static createEventsResult( entity: any ): any[] {
+        var events = JSON.parse( entity );
+        events.months = [];
         for ( var i = 1; i <= 12; i++ ) {
-            entries.months[i] = [];
+            events.months[i] = [];
         }
-        for ( var entry of entries ) {
-            var month = entry.date.month;
-            var dayOfMonth = entry.date.dayOfMonth;
-            if ( !entries.months[month][dayOfMonth] ) {
-                entries.months[month][dayOfMonth] = [];
+        for ( var event of events ) {
+            var month = event.date.month;
+            var dayOfMonth = event.date.dayOfMonth;
+            if ( !events.months[month][dayOfMonth] ) {
+                events.months[month][dayOfMonth] = [];
             }
-            entries.months[month][dayOfMonth].push( entry );
+            events.months[month][dayOfMonth].push( event );
         }
-        return entries;
+        return events;
     }
 
-    static getYearEntries( year: number, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/year/' + year,
+    static getYearEvents( year: number, successCallback: ( events: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/events/year/' + year,
             null,
             function( response: any ) {
-                var result: any[] = CalendarController.createEntriesResult( response.response );
+                var result: any[] = CalendarController.createEventsResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getMonthEntries( year: number, month: number, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/year/' + year + '/month/' + month,
+    static getMonthEvents( year: number, month: number, successCallback: ( events: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/events/year/' + year + '/month/' + month,
             null,
             function( response: any ) {
-                var result: any[] = CalendarController.createEntriesResult( response.response );
+                var result: any[] = CalendarController.createEventsResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getDayEntries( year: number, month: number, day: number, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/year/' + year + '/month/' + month + '/day/' + day,
+    static getDayEvents( year: number, month: number, day: number, successCallback: ( events: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/events/year/' + year + '/month/' + month + '/day/' + day,
             null,
             function( response: any ) {
-                var result = CalendarController.createEntriesResult( response.response );
+                var result = CalendarController.createEventsResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getWeekEntries( year: number, week: number, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
-        restController.GET( '/calendar/entries/year/' + year + '/week/' + week,
+    static getWeekEvents( year: number, week: number, successCallback: ( events: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+        restController.GET( '/calendar/events/year/' + year + '/week/' + week,
             null,
             function( response: any ) {
-                var result = CalendarController.createEntriesResult( response.response );
+                var result = CalendarController.createEventsResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getEntriesToday( type: string, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+    static getEventsToday( type: string, successCallback: ( events: any[] ) => void, errorCallback: ( response: any ) => void ): void {
         var query: string = "";
         if ( type ) {
             query = '?type=' + type;
         }
-        restController.GET( '/calendar/entries/today' + query,
+        restController.GET( '/calendar/events/today' + query,
             null,
             function( response: any ) {
-                var result: any[] = CalendarController.createEntriesResult( response.response );
+                var result: any[] = CalendarController.createEventsResult( response.response );
                 successCallback( result );
             },
             errorCallback
         );
     }
 
-    static getEntriesTomorrow( type: string, successCallback: ( entries: any[] ) => void, errorCallback: ( response: any ) => void ): void {
+    static getEventsTomorrow( type: string, successCallback: ( events: any[] ) => void, errorCallback: ( response: any ) => void ): void {
         var query: string = "";
         if ( type ) {
             query = '?type=' + type;
         }
-        restController.GET( '/calendar/entries/tomorrow' + query,
+        restController.GET( '/calendar/events/tomorrow' + query,
             null,
             function( response: any ) {
-                var result: any[] = CalendarController.createEntriesResult( response.response );
+                var result: any[] = CalendarController.createEventsResult( response.response );
                 successCallback( result );
             },
             errorCallback
