@@ -1,7 +1,6 @@
 import React from 'react';
 
 import LocalWeather from '../components/LocalWeather';
-import PeopleController from '../controller/PeopleController';
 import CalendarController from '../controller/CalendarController';
 import EventsToday from '../components/calendar/EventsToday';
 import EventsTomorrow from '../components/calendar/EventsTomorrow';

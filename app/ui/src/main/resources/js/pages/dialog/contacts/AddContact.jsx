@@ -1,13 +1,13 @@
 import React from 'react';
 
-import PeopleController from '../../../controller/PeopleController';
+import ContactsController from '../../../controller/ContactsController';
 import Dialog from '../../../components/dialog/Dialog';
 
-export default class AddUser extends React.Component {
+export default class AddContact extends React.Component {
 
     constructor( props ) {
         super( props );
-        this.state = { userName: '', birthday: '' };
+        this.state = { contactName: '', birthday: '' };
         this.handleNameChange = this.handleNameChange.bind( this );
         this.handleBirthdayChange = this.handleBirthdayChange.bind( this );
         this.addUser = this.addUser.bind( this );
@@ -16,7 +16,7 @@ export default class AddUser extends React.Component {
 
     handleNameChange( event ) {
         this.setState( {
-            userName: event.target.value
+            contactName: event.target.value
         });
     }
 
@@ -28,7 +28,7 @@ export default class AddUser extends React.Component {
 
     addUser() {
         var component = this;
-        PeopleController.addUser( this.state.userName, this.state.birthday,
+        ContactsController.addUser( this.state.contactName, this.state.birthday,
             function( response ) { component.props.router.push( '/admin/people' ); },
             function( response ) { }
         );
@@ -44,7 +44,7 @@ export default class AddUser extends React.Component {
                 <form>
                     <div className="form-group">
                         <label htmlFor="UserName">User name</label>
-                        <input type="text" className="form-control" id="UserName" placeholder="Enter display name" value={this.state.userName} onChange={this.handleNameChange} />
+                        <input type="text" className="form-control" id="UserName" placeholder="Enter display name" value={this.state.contactName} onChange={this.handleNameChange} />
                     </div>
                     <div className="form-group">
                         <label htmlFor="Birthday">Birthday</label>

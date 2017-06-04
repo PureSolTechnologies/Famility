@@ -38,6 +38,7 @@ import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarYear;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.DurationUnit;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.EventType;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.TimeZoneInformation;
+import com.puresoltechnologies.lifeassist.app.rest.server.auth.PermitAll;
 
 @Path("/calendar")
 public class CalendarServiceImpl implements CalendarService {
@@ -61,6 +62,7 @@ public class CalendarServiceImpl implements CalendarService {
     @GET
     @Path("/{year}")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public CalendarYear getYear(@PathParam("year") int year) {
 	return CalendarFactory.createYear(year);
     }
@@ -69,6 +71,7 @@ public class CalendarServiceImpl implements CalendarService {
     @GET
     @Path("/timezones")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<TimeZoneInformation> getTimezones(@QueryParam("dateTime") String dateTime,
 	    @QueryParam("language") String language, @QueryParam("zoneId") String zoneId) {
 	Instant instant;
@@ -90,6 +93,7 @@ public class CalendarServiceImpl implements CalendarService {
     @GET
     @Path("/event/types")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<EventType> getEventTypes() throws SQLException {
 	return RestConverter.convertEventTypes(calendarManager.getEventTypes());
     }
@@ -98,6 +102,7 @@ public class CalendarServiceImpl implements CalendarService {
     @GET
     @Path("/events/duration-units")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<DurationUnit> getDurationUnits() {
 	return RestConverter.convertDurationUnits(calendarManager.getDurationUnits());
     }
@@ -106,6 +111,7 @@ public class CalendarServiceImpl implements CalendarService {
     @GET
     @Path("/events/reminder-duration-units")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<DurationUnit> getReminderDurationUnits() {
 	return RestConverter.convertDurationUnits(calendarManager.getReminderDurationUnits());
     }
@@ -114,6 +120,7 @@ public class CalendarServiceImpl implements CalendarService {
     @GET
     @Path("/events/turnus-units")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<DurationUnit> getTurnusUnits() {
 	return RestConverter.convertDurationUnits(calendarManager.getTurnusUnits());
     }

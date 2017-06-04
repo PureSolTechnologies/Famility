@@ -34,14 +34,16 @@ export default class LoginPage extends React.Component {
     login() {
         var controller = this;
         LoginController.login( this.state.email, this.state.password,
-            function(event) {
-                if (event.status == 200) {
-                    store.dispatch( login( controller.state.email ) );
+            function( response ) {
+                if ( response.status == 200 ) {
+                    var authId = response.getResponseHeader( "Auth-Id" );
+                    var authToken = response.getResponseHeader( "Auth-Token" );
+                    store.dispatch( login( { name: controller.state.email, authId: authId, authToken: authToken }) );
                     const destination = controller.props.params.redirect ? controller.props.params.redirect : "";
                     browserHistory.replace( destination );
                 }
             },
-            function(event) { });
+            function( response ) { });
     }
 
     render() {

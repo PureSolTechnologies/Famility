@@ -29,7 +29,7 @@ export default function Menu() {
                         <Link className="nav-link" to="/plugins"><PlugIcon /> Plugins</Link>
                     </li>
                     <li className="nav-item">
-                         <Link className="nav-link" to="/admin/people"><SettingsIcon /> Settings</Link>
+                         <Link className="nav-link" to="/admin/contacts"><SettingsIcon /> Settings</Link>
                     </li>
                 </ul>
                 <div className="form-inline my-2 my-lg-0">

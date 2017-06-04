@@ -54,7 +54,8 @@ public class ContactManager {
 		while (resultSet.next()) {
 		    long id = resultSet.getLong("id");
 		    String name = resultSet.getString("name");
-		    LocalDate birthday = resultSet.getDate("birthday").toLocalDate();
+		    Date date = resultSet.getDate("birthday");
+		    LocalDate birthday = date != null ? date.toLocalDate() : null;
 		    contacts.add(new Contact(id, name, birthday));
 		}
 	    }
@@ -204,7 +205,11 @@ public class ContactManager {
     public List<Birthday> getBirthdays() throws SQLException {
 	List<Contact> contacts = getContacts();
 	List<Birthday> birthdays = new ArrayList<>();
-	contacts.forEach(person -> birthdays.add(Birthday.of(person)));
+	contacts.forEach(person -> {
+	    if (person.getBirthday() != null) {
+		birthdays.add(Birthday.of(person));
+	    }
+	});
 	Collections.sort(birthdays);
 	return birthdays;
     }

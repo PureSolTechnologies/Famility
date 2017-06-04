@@ -67,6 +67,9 @@ public class Birthday implements Comparable<Birthday> {
 
     @Override
     public int compareTo(Birthday other) {
+	if (getNextAnniversary() == null) {
+	    return 0;
+	}
 	return getNextAnniversary().compareTo(other.getNextAnniversary());
     }
 

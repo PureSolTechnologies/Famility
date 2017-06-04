@@ -44,7 +44,8 @@ public class RestConverter {
     }
 
     public static CalendarEvent convert(Event entry) {
-	Collection<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> oldParticipants = entry.getParticipants();
+	Collection<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> oldParticipants = entry
+		.getParticipants();
 	List<Contact> participants = new ArrayList<>();
 	oldParticipants
 		.forEach(e -> participants.add(new Contact(e.getId(), e.getName(), CalendarDay.of(e.getBirthday()))));
@@ -59,8 +60,8 @@ public class RestConverter {
     public static Event convert(CalendarEvent entry) {
 	Collection<Contact> oldParticipants = entry.getParticipants();
 	List<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> participants = new ArrayList<>();
-	oldParticipants
-		.forEach(e -> participants.add(new com.puresoltechnologies.lifeassist.app.api.contacts.Contact(e.getId(),
+	oldParticipants.forEach(
+		e -> participants.add(new com.puresoltechnologies.lifeassist.app.api.contacts.Contact(e.getId(),
 			e.getName(), CalendarDay.toLocalDate(e.getBirthday()))));
 	return new Event(entry.getId(), entry.getType(), entry.getTitle(), entry.getDescription(), participants,
 		entry.isReminding() ? convert(entry.getReminder()) : null, entry.getBegin(), entry.getEnd(),
@@ -116,7 +117,8 @@ public class RestConverter {
     }
 
     public static Contact convert(com.puresoltechnologies.lifeassist.app.api.contacts.Contact person) {
-	return new Contact(person.getName(), CalendarDay.of(person.getBirthday()));
+	return new Contact(person.getName(),
+		person.getBirthday() != null ? CalendarDay.of(person.getBirthday()) : null);
     }
 
     public static List<EventType> convertEventTypes(

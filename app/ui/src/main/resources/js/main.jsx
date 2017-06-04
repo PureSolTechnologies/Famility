@@ -19,13 +19,13 @@ import Copyright from './pages/Copyright';
 import LoginPage from './pages/LoginPage';
 import MainDashboard from './pages/MainDashboard';
 import MetricsDashboard from './pages/MetricsDashboard';
-import PeopleAdministrator from './pages/PeopleAdministrator';
+import ContactsAdministrator from './pages/ContactsAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
 
 import CreateEntry from './pages/dialog/calendar/CreateEntry';
 import ShowEntry from './pages/dialog/calendar/ShowEntry';
-import AddUser from './pages/dialog/people/AddUser';
+import AddContact from './pages/dialog/contacts/AddContact';
 
 function getCurrentYear() {
     var calendar = store.getState().calendar;
@@ -72,10 +72,10 @@ ReactDOM.render(
             <Route path="/dialog" component={DialogLayout}>
                 <Route path="calendar/create-entry(/:date)(/:beginTime)(/:endTime)" component={CreateEntry} />
                 <Route path="calendar/show-entry/:id" component={ShowEntry} />
-                <Route path="people/add" component={AddUser} />
+                <Route path="contacts/add" component={AddContact} />
             </Route>
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >
-                <Route path="people" component={PeopleAdministrator} />
+                <Route path="contacts" component={ContactsAdministrator} />
                 <Route path="system" component={SystemAdministrator} />
                 <Route path="metrics" component={MetricsDashboard} />
             </Route>

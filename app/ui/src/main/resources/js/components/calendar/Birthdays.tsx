@@ -1,7 +1,7 @@
 import * as  React from 'react';
 
 import CalendarController from '../../controller/CalendarController';
-import PeopleController from '../../controller/PeopleController';
+import ContactsController from '../../controller/ContactsController';
 
 export default class Birthdays extends React.Component<any, any> {
 
@@ -12,7 +12,7 @@ export default class Birthdays extends React.Component<any, any> {
 
     componentDidMount() {
         var component = this;
-        PeopleController.getBirthdays(
+        ContactsController.getBirthdays(
             function( birthdays: any ) {
                 component.setState( { birthdays: birthdays });
             },
