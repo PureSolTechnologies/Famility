@@ -51,11 +51,12 @@ public class CORSFilter implements ContainerResponseFilter {
 	}
 	// Allow changing the following headers...
 	if (!headers.containsKey("Access-Control-Allow-Headers")) {
-	    headers.add("Access-Control-Allow-Headers", "auth-id, auth-token, email, password, new-password");
+	    headers.add("Access-Control-Allow-Headers",
+		    "auth-id, auth-token, email, password, new-password, content-type");
 	}
 	// Allow exposure for following headers....
 	if (!headers.containsKey("Access-Control-Expose-Headers")) {
-	    headers.add("Access-Control-Expose-Headers", "auth-id, auth-token, email, password, new-password");
+	    headers.add("Access-Control-Expose-Headers", "auth-id, auth-token, email");
 	}
 	// Allow credentials...
 	if (!headers.containsKey("Access-Control-Allow-Credentials")) {

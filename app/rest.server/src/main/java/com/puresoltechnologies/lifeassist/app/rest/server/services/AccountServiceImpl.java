@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -35,7 +34,7 @@ public class AccountServiceImpl implements AccountsService {
     private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     @Override
-    @PUT
+    @POST
     @Path("/{email}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(roles = { "Administrator" })
@@ -53,11 +52,11 @@ public class AccountServiceImpl implements AccountsService {
 
     @Override
     @POST
-    @Path("/{email}/activate")
+    @Path("/{email}/activate/{key}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Response activateAccount(@PathParam("email") String email,
-	    @HeaderParam("activation-key") String activationKey) throws SQLException {
+    public Response activateAccount(@PathParam("email") String email, @PathParam("key") String activationKey)
+	    throws SQLException {
 	try (Connection connection = DatabaseConnector.getConnection()) {
 	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
 	    passwordStore.activatePassword(new EmailAddress(email), activationKey);

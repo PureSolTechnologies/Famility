@@ -20,7 +20,7 @@ export default function Menu() {
                     <li className="nav-item">
                         <Link className="nav-link" to="/home"><HomeIcon /> Dashboard</Link>
                     </li>
-                    <li className="nav-item"><Link className="nav-link" to="/admin/contacts"><OrganizationIcon /> Contacts</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/admin/accounts"><OrganizationIcon /> Accounts</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/admin/system"><GearIcon /> System</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/admin/metrics"><GearIcon /> Metrics</Link></li>
                 </ul>

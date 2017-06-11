@@ -19,13 +19,15 @@ import Copyright from './pages/Copyright';
 import LoginPage from './pages/LoginPage';
 import MainDashboard from './pages/MainDashboard';
 import MetricsDashboard from './pages/MetricsDashboard';
-import ContactsAdministrator from './pages/ContactsAdministrator';
+import Contacts from './pages/Contacts';
+import AccountsAdministrator from './pages/AccountsAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
 
+import CreateAccount from './pages/dialog/accounts/CreateAccount';
 import CreateEntry from './pages/dialog/calendar/CreateEntry';
 import ShowEntry from './pages/dialog/calendar/ShowEntry';
-import AddContact from './pages/dialog/contacts/AddContact';
+import CreateContact from './pages/dialog/contacts/CreateContact';
 
 function getCurrentYear() {
     var calendar = store.getState().calendar;
@@ -57,6 +59,7 @@ ReactDOM.render(
                 <Route path="plugins" component={Plugins} />
                 <Route path="copyright" component={Copyright} />
                 <Route path="login(/:redirect)" component={LoginPage} />
+                <Route path="contacts" component={Contacts} />
                 <Redirect from="/calendar" to="/calendar/year" />
                 <Route path="/calendar" component={CalendarLayout}>
                     <Redirect from="/calendar/year" to={getCurrentYear()} />
@@ -69,13 +72,16 @@ ReactDOM.render(
                     <Route path="day/:year/:month/:day" component={DayCalendar} />
                 </Route>
             </Route>
+            <Redirect from="/dialog" to="/" />
             <Route path="/dialog" component={DialogLayout}>
+                <Route path="accounts/create" component={CreateAccount} />
                 <Route path="calendar/create-entry(/:date)(/:beginTime)(/:endTime)" component={CreateEntry} />
                 <Route path="calendar/show-entry/:id" component={ShowEntry} />
-                <Route path="contacts/add" component={AddContact} />
+                <Route path="contacts/create" component={CreateContact} />
             </Route>
+            <Redirect from="/admin" to="/admin/accounts" />
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >
-                <Route path="contacts" component={ContactsAdministrator} />
+                <Route path="accounts" component={AccountsAdministrator} />
                 <Route path="system" component={SystemAdministrator} />
                 <Route path="metrics" component={MetricsDashboard} />
             </Route>

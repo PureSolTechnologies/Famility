@@ -1,6 +1,6 @@
 import * as  React from 'react';
 import { Link } from 'react-router';
-const { SettingsIcon, CalendarIcon, HomeIcon, PlugIcon } = require('react-octicons');
+const { SettingsIcon, OrganizationIcon, CalendarIcon, HomeIcon, PlugIcon } = require( 'react-octicons' );
 
 import LoginControl from './components/LoginControl';
 import PureSolTechnologies from './components/PureSolTechnologies';
@@ -23,13 +23,16 @@ export default function Menu() {
                         <Link className="nav-link" to="/home"><HomeIcon /> Dashboard</Link>
                     </li>
                     <li className="nav-item">
+                        <Link className="nav-link" to="/contacts"><OrganizationIcon /> Contacts</Link>
+                    </li>
+                    <li className="nav-item">
                         <Link className="nav-link" to="/calendar"><CalendarIcon /> Calendar</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to="/plugins"><PlugIcon /> Plugins</Link>
                     </li>
                     <li className="nav-item">
-                         <Link className="nav-link" to="/admin/contacts"><SettingsIcon /> Settings</Link>
+                        <Link className="nav-link" to="/admin"><SettingsIcon /> Settings</Link>
                     </li>
                 </ul>
                 <div className="form-inline my-2 my-lg-0">

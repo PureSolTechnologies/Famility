@@ -106,18 +106,18 @@ public class RestConverter {
 
     public static Collection<Contact> convertContactsToRest(
 	    Collection<com.puresoltechnologies.lifeassist.app.api.contacts.Contact> people) {
-	List<Contact> converterdPeople = new ArrayList<>();
-	people.forEach(e -> converterdPeople.add(convert(e)));
-	return converterdPeople;
+	List<Contact> convertedPeople = new ArrayList<>();
+	people.forEach(e -> convertedPeople.add(convert(e)));
+	return convertedPeople;
     }
 
     public static com.puresoltechnologies.lifeassist.app.api.contacts.Contact convert(Contact person) {
-	return new com.puresoltechnologies.lifeassist.app.api.contacts.Contact(person.getName(),
+	return new com.puresoltechnologies.lifeassist.app.api.contacts.Contact(person.getId(), person.getName(),
 		CalendarDay.toLocalDate(person.getBirthday()));
     }
 
     public static Contact convert(com.puresoltechnologies.lifeassist.app.api.contacts.Contact person) {
-	return new Contact(person.getName(),
+	return new Contact(person.getId(), person.getName(),
 		person.getBirthday() != null ? CalendarDay.of(person.getBirthday()) : null);
     }
 

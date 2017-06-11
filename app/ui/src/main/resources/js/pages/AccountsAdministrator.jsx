@@ -4,7 +4,7 @@ import { SettingsIcon, TrashcanIcon } from 'react-octicons';
 
 import ContactsController from '../controller/ContactsController';
 
-export default class ContactsAdministrator extends React.Component {
+export default class AccountsAdministrator extends React.Component {
 
     constructor( props ) {
         super( props );
@@ -55,8 +55,8 @@ export default class ContactsAdministrator extends React.Component {
         return (
             <div className="row">
                 <div className="col-md-12">
-                    <h1>People Administrator</h1>
-                    <Link className="btn btn-primary" to="/dialog/contacts/add" role="button">Add User...</Link>
+                    <h1>Accounts</h1>
+                    <Link className="btn btn-primary" to="/dialog/accounts/create" role="button">Create Account...</Link>
                     <table className="table table-hover">
                         <thead className="thead-default">
                             <tr>

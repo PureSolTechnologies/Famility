@@ -37,7 +37,7 @@ public class ContactsServiceImpl implements ContactsService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addContact(Contact contact) throws SQLException, URISyntaxException {
 	contactManager.addContact(RestConverter.convert(contact));
-	return Response.created(new URI(contact.getName())).build();
+	return Response.created(new URI(String.valueOf(contact.getId()))).build();
     }
 
     @Override
