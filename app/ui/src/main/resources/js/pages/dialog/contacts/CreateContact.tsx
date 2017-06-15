@@ -29,7 +29,7 @@ export default class CreateContact extends React.Component<any, any> {
     createContact() {
         var component = this;
         ContactsController.createContact( this.state.contactName, this.state.birthday,
-            function( response ) { component.props.router.push( '/contacts' ); },
+            function( response ) { component.props.router.push( '/dialog/contacts/edit/' + response.response ); },
             function( response ) { }
         );
     }

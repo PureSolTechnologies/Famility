@@ -24,8 +24,8 @@ import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QContacts;
-import com.puresoltechnologies.lifeassist.app.model.contacts.QEmailTypes;
-import com.puresoltechnologies.lifeassist.app.model.contacts.QEmails;
+import com.puresoltechnologies.lifeassist.app.model.contacts.QEmailAddresses;
+import com.puresoltechnologies.lifeassist.app.model.contacts.QEmailAdressTypes;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
@@ -70,7 +70,7 @@ public class ContactManager {
 	    serieId = calendarManager.insertSeries(entrySerie);
 	}
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.person_id_seq"));
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.contact_id_seq"));
 	    long id = query.fetchOne();
 
 	    Date birthday = convertBirthdayToDate(person);
@@ -216,11 +216,11 @@ public class ContactManager {
 
     public long addEMailType(String name) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.email_type_id_seq"));
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.email_address_type_id_seq"));
 	    long id = query.fetchOne();
-	    queryFactory.insert(QEmailTypes.emailTypes) //
-		    .set(QEmailTypes.emailTypes.id, id) //
-		    .set(QEmailTypes.emailTypes.name, name) //
+	    queryFactory.insert(QEmailAdressTypes.emailAdressTypes) //
+		    .set(QEmailAdressTypes.emailAdressTypes.id, id) //
+		    .set(QEmailAdressTypes.emailAdressTypes.name, name) //
 		    .execute();
 	    queryFactory.commit();
 	    return id;
@@ -229,10 +229,10 @@ public class ContactManager {
 
     public void addEMailAddress(long id, EmailAddress emailAddress, long emailTypeId) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
-	    queryFactory.insert(QEmails.emails) //
-		    .set(QEmails.emails.contactId, id) //
-		    .set(QEmails.emails.address, emailAddress.getAddress()) //
-		    .set(QEmails.emails.typeId, emailTypeId) //
+	    queryFactory.insert(QEmailAddresses.emailAddresses) //
+		    .set(QEmailAddresses.emailAddresses.contactId, id) //
+		    .set(QEmailAddresses.emailAddresses.address, emailAddress.getAddress()) //
+		    .set(QEmailAddresses.emailAddresses.typeId, emailTypeId) //
 		    .execute();
 	    queryFactory.commit();
 	}

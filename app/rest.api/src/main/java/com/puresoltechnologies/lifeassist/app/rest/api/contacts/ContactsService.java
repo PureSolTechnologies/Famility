@@ -10,7 +10,7 @@ public interface ContactsService {
 
     public Collection<Contact> getContacts() throws SQLException;
 
-    public Response addContact(Contact person) throws SQLException, URISyntaxException;
+    public Response createContact(Contact person) throws SQLException, URISyntaxException;
 
     public Contact getContact(long id) throws SQLException;
 

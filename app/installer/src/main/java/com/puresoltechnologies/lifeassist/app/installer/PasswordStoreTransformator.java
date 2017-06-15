@@ -60,9 +60,9 @@ public class PasswordStoreTransformator implements ComponentTransformator {
 			+ "state varchar, "//
 			+ "activation_key varchar, "//
 			+ "CONSTRAINT " + PASSWORD_TABLE_NAME + "_PK PRIMARY KEY (email), " //
-			+ "CONSTRAINT " + PASSWORD_TABLE_NAME + "_" + ContactsTransformator.EMAILS_TABLE
+			+ "CONSTRAINT " + PASSWORD_TABLE_NAME + "_" + ContactsTransformator.EMAIL_ADDRESSES_TABLE
 			+ "_FK FOREIGN KEY (email) REFERENCES " + ContactsTransformator.CONTACTS_SCHEMA + "."
-			+ ContactsTransformator.EMAILS_TABLE + " (address)" //
+			+ ContactsTransformator.EMAIL_ADDRESSES_TABLE + " (address)" //
 			+ ")",
 		"Create passwords table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",

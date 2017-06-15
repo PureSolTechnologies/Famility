@@ -9,7 +9,7 @@ import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
 import com.puresoltechnologies.lifeassist.app.impl.passwords.PasswordStoreImpl;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QContacts;
-import com.puresoltechnologies.lifeassist.app.model.contacts.QEmails;
+import com.puresoltechnologies.lifeassist.app.model.contacts.QEmailAddresses;
 import com.puresoltechnologies.passwordstore.api.PasswordStore;
 import com.puresoltechnologies.passwordstore.domain.PasswordActivationException;
 import com.puresoltechnologies.passwordstore.domain.PasswordChangeException;
@@ -102,10 +102,10 @@ public class AccountManager {
 
     public User getUser(EmailAddress email) throws SQLException {
 	try (ExtendedSQLQueryFactory createQueryFactory = DatabaseConnector.createQueryFactory()) {
-	    Tuple result = createQueryFactory.select(QContacts.contacts.name, QEmails.emails.address) //
-		    .from(QContacts.contacts, QEmails.emails) //
-		    .where(QEmails.emails.address.eq(email.getAddress())) //
-		    .where(QEmails.emails.contactId.eq(QContacts.contacts.id)) //
+	    Tuple result = createQueryFactory.select(QContacts.contacts.name, QEmailAddresses.emailAddresses.address) //
+		    .from(QContacts.contacts, QEmailAddresses.emailAddresses) //
+		    .where(QEmailAddresses.emailAddresses.address.eq(email.getAddress())) //
+		    .where(QEmailAddresses.emailAddresses.contactId.eq(QContacts.contacts.id)) //
 		    .fetchOne();
 	    String name = result.get(QContacts.contacts.name);
 	    return new User(email, name, new Role("administrator", "Administrator"));

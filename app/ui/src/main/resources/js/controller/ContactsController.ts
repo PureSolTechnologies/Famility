@@ -34,9 +34,20 @@ export default class ContactsController {
         );
     }
 
-    static deleteContact( userId: number, successCallback: ( response: XMLHttpRequest ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+    static getContact( contactId: number, successCallback: ( contact: any ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
         //{"name":"Rick-Rainer Ludwig","birthday":{"year":1978,"month":5,"dayOfMonth":16,"dayOfWeek":2,"weekOfYear":20,"quarterOfYear":2}}
-        restController.DELETE( '/contacts/' + userId, null,
+        restController.GET( '/contacts/' + contactId, null,
+            function( response ) {
+                var contact: any = JSON.parse( response.response );
+                successCallback( contact );
+            },
+            errorCallback
+        );
+    }
+
+    static deleteContact( contactId: number, successCallback: ( response: XMLHttpRequest ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+        //{"name":"Rick-Rainer Ludwig","birthday":{"year":1978,"month":5,"dayOfMonth":16,"dayOfWeek":2,"weekOfYear":20,"quarterOfYear":2}}
+        restController.DELETE( '/contacts/' + contactId, null,
             successCallback,
             errorCallback
         );

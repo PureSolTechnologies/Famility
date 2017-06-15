@@ -35,9 +35,11 @@ public class ContactsServiceImpl implements ContactsService {
     @Override
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addContact(Contact contact) throws SQLException, URISyntaxException {
-	contactManager.addContact(RestConverter.convert(contact));
-	return Response.created(new URI(String.valueOf(contact.getId()))).build();
+    public Response createContact(Contact contact) throws SQLException, URISyntaxException {
+	com.puresoltechnologies.lifeassist.app.api.contacts.Contact converted = RestConverter.convert(contact);
+	contactManager.addContact(converted);
+	String idString = String.valueOf(converted.getId());
+	return Response.created(new URI("/contacts/" + idString)).entity(idString).build();
     }
 
     @Override

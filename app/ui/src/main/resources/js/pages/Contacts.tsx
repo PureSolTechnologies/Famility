@@ -1,18 +1,18 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router';
-import { SettingsIcon, TrashcanIcon } from 'react-octicons';
+const { SettingsIcon, TrashcanIcon } = require( 'react-octicons' );
 
 import ContactsController from '../controller/ContactsController';
 
-export default class Contacts extends React.Component {
+export default class Contacts extends React.Component<any, any> {
 
-    constructor( props ) {
+    constructor( props: any ) {
         super( props );
         this.state = { contacts: [] };
         this.deleteContact = this.deleteContact.bind( this );
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         var component = this;
         ContactsController.getContacts(
             function( contacts ) {
@@ -22,7 +22,7 @@ export default class Contacts extends React.Component {
         );
     }
 
-    deleteContact( contact ) {
+    deleteContact( contact: any ): void {
         var component = this;
         ContactsController.deleteContact( contact.id,
             function( response ) { component.componentDidMount(); },
@@ -30,7 +30,7 @@ export default class Contacts extends React.Component {
         );
     }
     render() {
-        var rows = [];
+        var rows: any[] = [];
         var contacts = this.state.contacts;
         for ( var i = 0; i < contacts.length; i++ ) {
             const contact = contacts[i];
@@ -39,15 +39,18 @@ export default class Contacts extends React.Component {
                     <tr key={contact.id}>
                         <td>{contact.name}</td>
                         <td>{contact.birthday.year + "-" + contact.birthday.month + "-" + contact.birthday.dayOfMonth}</td>
-                        <td><button className="btn btn-secondary"><SettingsIcon />&nbsp;Edit...</button>&nbsp;<button className="btn btn-secondary" onClick={() => this.deleteContact( contact )} ><TrashcanIcon />&nbsp;Delete</button></td>
-                    </tr>
+                        <td><Link className="btn btn-secondary" to={'/dialog/contacts/edit/' +
+                            contact.id} role="button"><SettingsIcon />&nbsp;Edit...</Link>&nbsp;
+                                <button className="btn btn-secondary" onClick={() => this.deleteContact( contact )} ><TrashcanIcon />&nbsp;Delete</button></td>
+                    </tr >
                 );
             } else {
                 rows.push(
                     <tr key={contact.id}>
                         <td>{contact.name}</td>
                         <td></td>
-                        <td><button className="btn btn-secondary"><SettingsIcon />&nbsp;Edit...</button>&nbsp;<button className="btn btn-secondary" onClick={() => this.deleteContact( contact )} ><TrashcanIcon />&nbsp;Delete</button></td>
+                        <td><button className="btn btn-secondary"><SettingsIcon />&nbsp;Edit...</button>&nbsp;
+                        <button className="btn btn-secondary" onClick={() => this.deleteContact( contact )} ><TrashcanIcon />&nbsp;Delete</button></td>
                     </tr>
                 );
             }

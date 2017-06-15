@@ -11,23 +11,26 @@ import DialogLayout from './DialogLayout';
 
 import LoginController from './controller/LoginController';
 
-import DayCalendar from './pages/calendar/DayCalendar';
-import WeekCalendar from './pages/calendar/WeekCalendar';
-import MonthCalendar from './pages/calendar/MonthCalendar';
-import YearCalendar from './pages/calendar/YearCalendar';
+import AccountsAdministrator from './pages/AccountsAdministrator';
+import Contacts from './pages/Contacts';
 import Copyright from './pages/Copyright';
 import LoginPage from './pages/LoginPage';
 import MainDashboard from './pages/MainDashboard';
 import MetricsDashboard from './pages/MetricsDashboard';
-import Contacts from './pages/Contacts';
-import AccountsAdministrator from './pages/AccountsAdministrator';
 import Plugins from './pages/Plugins';
 import SystemAdministrator from './pages/SystemAdministrator';
+
+
+import DayCalendar from './pages/calendar/DayCalendar';
+import WeekCalendar from './pages/calendar/WeekCalendar';
+import MonthCalendar from './pages/calendar/MonthCalendar';
+import YearCalendar from './pages/calendar/YearCalendar';
 
 import CreateAccount from './pages/dialog/accounts/CreateAccount';
 import CreateEntry from './pages/dialog/calendar/CreateEntry';
 import ShowEntry from './pages/dialog/calendar/ShowEntry';
 import CreateContact from './pages/dialog/contacts/CreateContact';
+import EditContact from './pages/dialog/contacts/EditContact';
 
 function getCurrentYear() {
     var calendar = store.getState().calendar;
@@ -78,6 +81,7 @@ ReactDOM.render(
                 <Route path="calendar/create-entry(/:date)(/:beginTime)(/:endTime)" component={CreateEntry} />
                 <Route path="calendar/show-entry/:id" component={ShowEntry} />
                 <Route path="contacts/create" component={CreateContact} />
+                <Route path="contacts/edit/:id" component={EditContact} />
             </Route>
             <Redirect from="/admin" to="/admin/accounts" />
             <Route path="/admin" component={AdminLayout} onEnter={LoginController.requireAuth} >

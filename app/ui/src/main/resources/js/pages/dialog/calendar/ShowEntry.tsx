@@ -5,6 +5,7 @@ const { TrashcanIcon, GearIcon  } = require( 'react-octicons' );
 
 import CalendarController from '../../../controller/CalendarController';
 import Dialog from '../../../components/dialog/Dialog';
+import Loading from '../../../components/Loading';
 import EventView from '../../../components/calendar/EventView';
 
 export default class ShowEvent extends React.Component<any, any> {
@@ -30,13 +31,13 @@ export default class ShowEvent extends React.Component<any, any> {
     }
 
     edit(): void {
-        
+
     }
 
     remove(): void {
-        
+
     }
-    
+
     close() {
         var entry = this.state.entry;
         var referTo = this.props.location.query.origin;
@@ -50,7 +51,11 @@ export default class ShowEvent extends React.Component<any, any> {
     render() {
         var entry = this.state.entry;
         if ( !entry.title ) {
-            return <div />;
+            return (
+                <Dialog title="Show Calendar Event">
+                    <Loading />
+                </Dialog>
+            );
         }
         return <Dialog title="Show Calendar Event">
             <EventView entry={entry} />

@@ -10,7 +10,7 @@ import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
 import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
 import com.puresoltechnologies.lifeassist.common.rest.JsonSerializer;
 
-public class PersonTest {
+public class ContactTest {
 
     @Test
     public void testSerialization() throws IOException {

@@ -38,6 +38,18 @@ export default class CalendarDay {
         return day + "." + month + "." + String( this.year );
     }
 
+    toISOString(): string {
+        let day: string = String( this.dayOfMonth );
+        if ( this.dayOfMonth < 10 ) {
+            day = "0" + day;
+        }
+        let month: string = String( this.month );
+        if ( this.month < 10 ) {
+            month = "0" + month;
+        }
+        return String( this.year ) + "-" + month + "-" + day;
+    }
+
     constructor(
         public year: number = null,
         public month: number = null,
