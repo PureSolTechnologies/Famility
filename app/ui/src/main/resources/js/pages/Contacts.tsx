@@ -32,6 +32,7 @@ export default class Contacts extends React.Component<any, any> {
     render() {
         var rows: any[] = [];
         var contacts = this.state.contacts;
+        var component = this;
         for ( var i = 0; i < contacts.length; i++ ) {
             const contact = contacts[i];
             if ( contact.birthday != null ) {
@@ -49,7 +50,7 @@ export default class Contacts extends React.Component<any, any> {
                     <tr key={contact.id}>
                         <td>{contact.name}</td>
                         <td></td>
-                        <td><button className="btn btn-secondary"><SettingsIcon />&nbsp;Edit...</button>&nbsp;
+                        <td><button className="btn btn-secondary" onClick={() => component.props.router.push( '/dialog/contacts/edit/' + contact.id )}><SettingsIcon />&nbsp;Edit...</button>&nbsp;
                         <button className="btn btn-secondary" onClick={() => this.deleteContact( contact )} ><TrashcanIcon />&nbsp;Delete</button></td>
                     </tr>
                 );
