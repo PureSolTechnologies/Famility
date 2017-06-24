@@ -25,8 +25,11 @@ export default function Menu() {
                     <li className="nav-item">
                         <Link className="nav-link" to="/contacts"><OrganizationIcon /> Contacts</Link>
                     </li>
-                    <li className="nav-item">
+                        <li className="nav-item">
                         <Link className="nav-link" to="/calendar"><CalendarIcon /> Calendar</Link>
+                    </li>
+                        <li className="nav-item">
+                        <Link className="nav-link" to="/finance">$$$ Finance</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to="/plugins"><PlugIcon /> Plugins</Link>

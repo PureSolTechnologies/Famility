@@ -16,6 +16,7 @@ import com.puresoltechnologies.lifeassist.app.model.contacts.QEmailAdressTypes;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QOtherContactTypes;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QPhoneNumberTypes;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QPostalAddressTypes;
+import com.puresoltechnologies.lifeassist.app.model.finance.QCurrencies;
 import com.puresoltechnologies.passwordstore.domain.PasswordActivationException;
 import com.puresoltechnologies.passwordstore.domain.PasswordCreationException;
 import com.querydsl.sql.SQLExpressions;
@@ -152,6 +153,39 @@ public class CreateDefaultConfiguration {
 	}
     }
 
+    private static void addCurrencies() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    /*
+	     * Official currencies
+	     */
+	    addCurrency(queryFactory, "EUR", 978, (short) 2, "Euro", "€");
+	    addCurrency(queryFactory, "USD", 840, (short) 2, "United States dollar", "$");
+	    /*
+	     * Cryptocurrencies
+	     */
+	    addCurrency(queryFactory, "DASH", 0, (short) 8, "Dash", "");
+	    addCurrency(queryFactory, "ETH", 0, (short) 2, "Ether", "");
+	    addCurrency(queryFactory, "XBT", 0, (short) 8, "Bitcoin", "");
+	    addCurrency(queryFactory, "XLM", 0, (short) 8, "Stellar Lumen", "");
+	    addCurrency(queryFactory, "XMR", 0, (short) 8, "Monero", "");
+	    addCurrency(queryFactory, "XRP", 0, (short) 8, "Ripple", "");
+	    addCurrency(queryFactory, "XZC", 0, (short) 8, "Zcoin", "");
+	    addCurrency(queryFactory, "ZEC", 0, (short) 8, "Zcash", "");
+	    queryFactory.commit();
+	}
+    }
+
+    private static void addCurrency(ExtendedSQLQueryFactory queryFactory, String code, int num, short e, String name,
+	    String symbol) {
+	queryFactory.insert(QCurrencies.currencies) //
+		.set(QCurrencies.currencies.code, code) //
+		.set(QCurrencies.currencies.num, num) //
+		.set(QCurrencies.currencies.e, e) //
+		.set(QCurrencies.currencies.name, name) //
+		.set(QCurrencies.currencies.symbol, symbol) //
+		.execute();
+    }
+
     public static void main(String[] args)
 	    throws SQLException, PasswordCreationException, PasswordActivationException, IOException {
 	initializeDatabase();
@@ -161,5 +195,6 @@ public class CreateDefaultConfiguration {
 	createDefaultPhoneNumberTypes();
 	createDefaultPostalAddressTypes();
 	createDefaultOtherContactTypes();
+	addCurrencies();
     }
 }
