@@ -20,8 +20,9 @@ import com.puresoltechnologies.versioning.Version;
 
 public class SettingsStoreTransformator implements ComponentTransformator {
 
-    static final String SYSTEM_SETTINGS_TABLE = "system_settings";
-    private static final String PERSON_SETTINGS_TABLE = "person_settings";
+    static final String SETTINGS_SCHEMA = "settings";
+    static final String SYSTEM_TABLE = "system";
+    private static final String ACCOUNTS_TABLE = "accounts";
 
     @Override
     public String getComponentName() {
@@ -31,6 +32,7 @@ public class SettingsStoreTransformator implements ComponentTransformator {
     @Override
     public Set<String> getDependencies() {
 	HashSet<String> dependencies = new HashSet<>();
+	dependencies.add("Accounts Store");
 	dependencies.add("Contacts");
 	return dependencies;
     }
@@ -53,8 +55,12 @@ public class SettingsStoreTransformator implements ComponentTransformator {
 	ProvidedVersionRange providedVersionRange = new ProvidedVersionRange(targetVersion, null);
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"CREATE SCHEMA " + SETTINGS_SCHEMA, "Creates the schema for settings."));
+
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + SYSTEM_SETTINGS_TABLE //
+		"CREATE TABLE " + SETTINGS_SCHEMA + "." + SYSTEM_TABLE //
 			+ " (" //
 			+ "parameter varchar not null, " //
 			+ "type varchar(8) not null, " //
@@ -62,20 +68,21 @@ public class SettingsStoreTransformator implements ComponentTransformator {
 			+ "default_value varchar not null, " //
 			+ "unit varchar not null, " //
 			+ "description varchar not null, " //
-			+ "CONSTRAINT " + SYSTEM_SETTINGS_TABLE + "_PK PRIMARY KEY (parameter))",
+			+ "CONSTRAINT " + SYSTEM_TABLE + "_PK PRIMARY KEY (parameter))",
 		"Create system settings table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + PERSON_SETTINGS_TABLE //
+		"CREATE TABLE " + SETTINGS_SCHEMA + "." + ACCOUNTS_TABLE //
 			+ " (" //
 			+ "person_id bigint not null, " //
 			+ "parameter varchar not null, " //
 			+ "value varchar, " //
-			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE + "_PK PRIMARY KEY (person_id, parameter), "//
-			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE + "_" + ContactsTransformator.CONTACTS_TABLE
+			+ "CONSTRAINT " + ACCOUNTS_TABLE + "_PK PRIMARY KEY (person_id, parameter), "//
+			+ "CONSTRAINT " + ACCOUNTS_TABLE + "_" + ContactsTransformator.CONTACTS_TABLE
 			+ "_PK FOREIGN KEY (person_id) REFERENCES " + ContactsTransformator.CONTACTS_SCHEMA + "."
 			+ ContactsTransformator.CONTACTS_TABLE + " (id), "//
-			+ "CONSTRAINT " + PERSON_SETTINGS_TABLE + "_" + SYSTEM_SETTINGS_TABLE
-			+ "_PK FOREIGN KEY (parameter) REFERENCES " + SYSTEM_SETTINGS_TABLE + " (parameter) "//
+			+ "CONSTRAINT " + ACCOUNTS_TABLE + "_" + SYSTEM_TABLE
+			+ "_PK FOREIGN KEY (parameter) REFERENCES " + SETTINGS_SCHEMA + "." + SYSTEM_TABLE
+			+ " (parameter) "//
 			+ ")",
 		"Create person settings table."));
 	sequence.appendTransformation(new AddSystemParameter(sequence, "timezone", ParameterType.STRING,
@@ -88,8 +95,9 @@ public class SettingsStoreTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP TABLE IF EXISTS " + PERSON_SETTINGS_TABLE);
-		statement.execute("DROP TABLE IF EXISTS " + SYSTEM_SETTINGS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + SETTINGS_SCHEMA + "." + ACCOUNTS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + SETTINGS_SCHEMA + "." + SYSTEM_TABLE);
+		statement.execute("DROP SCHEMA IF EXISTS " + SETTINGS_SCHEMA);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

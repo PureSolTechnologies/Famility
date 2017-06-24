@@ -57,7 +57,7 @@ public class FinanceTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SCHEMA IF NOT EXISTS " + FINANCE_SCHEMA, "Creates the schema for finance data."));
+		"CREATE SCHEMA " + FINANCE_SCHEMA, "Creates the schema for finance data."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
 		"CREATE TABLE " + FINANCE_SCHEMA + "." + CURRENCY_TABLE_NAME //
@@ -236,6 +236,7 @@ public class FinanceTransformator implements ComponentTransformator {
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + FOREIGN_EXCHANGES_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + BANKING_INSTITUTIONS_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + CURRENCY_TABLE_NAME);
+		statement.execute("DROP SCHEMA IF EXISTS " + FINANCE_SCHEMA);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

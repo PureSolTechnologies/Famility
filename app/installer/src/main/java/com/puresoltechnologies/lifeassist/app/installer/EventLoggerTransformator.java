@@ -50,9 +50,9 @@ public class EventLoggerTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SCHEMA IF NOT EXISTS " + MONITORING_SCHEMA, "Creates the schema for monitoring data."));
+		"CREATE SCHEMA " + MONITORING_SCHEMA, "Creates the schema for monitoring data."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + MONITORING_SCHEMA + "." + EVENT_LOG_TABLE //
+		"CREATE TABLE " + MONITORING_SCHEMA + "." + EVENT_LOG_TABLE //
 			+ " (" //
 			+ "server varchar not null, " //
 			+ "time timestamp not null, " //
@@ -77,6 +77,7 @@ public class EventLoggerTransformator implements ComponentTransformator {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
 		statement.execute("DROP TABLE IF EXISTS " + MONITORING_SCHEMA + "." + EVENT_LOG_TABLE);
+		statement.execute("DROP SCHEMA IF EXISTS " + MONITORING_SCHEMA);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

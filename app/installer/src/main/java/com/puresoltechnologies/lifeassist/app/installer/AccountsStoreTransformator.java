@@ -16,13 +16,14 @@ import com.puresoltechnologies.genesis.transformation.spi.ComponentTransformator
 import com.puresoltechnologies.genesis.transformation.spi.TransformationSequence;
 import com.puresoltechnologies.versioning.Version;
 
-public class PasswordStoreTransformator implements ComponentTransformator {
+public class AccountsStoreTransformator implements ComponentTransformator {
 
+    static final String ACCOUNT_SCHEMA = "accounts";
     static final String PASSWORD_TABLE_NAME = "passwords";
 
     @Override
     public String getComponentName() {
-	return "Password Store";
+	return "Accounts Store";
     }
 
     @Override
@@ -51,8 +52,11 @@ public class PasswordStoreTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"CREATE SCHEMA " + ACCOUNT_SCHEMA, "Creates the schema for account data."));
+
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE " + PASSWORD_TABLE_NAME//
+		"CREATE TABLE " + ACCOUNT_SCHEMA + "." + PASSWORD_TABLE_NAME//
 			+ " (created timestamp, " //
 			+ "last_modified timestamp, " //
 			+ "email varchar not null," //
@@ -68,7 +72,7 @@ public class PasswordStoreTransformator implements ComponentTransformator {
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE INDEX " //
 			+ PASSWORD_TABLE_NAME + "_state_idx"//
-			+ " ON " + PASSWORD_TABLE_NAME //
+			+ " ON " + ACCOUNT_SCHEMA + "." + PASSWORD_TABLE_NAME //
 			+ " (state)",
 		"Creating index on state."));
 
@@ -79,7 +83,8 @@ public class PasswordStoreTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP TABLE IF EXISTS " + PASSWORD_TABLE_NAME);
+		statement.execute("DROP TABLE IF EXISTS " + ACCOUNT_SCHEMA + "." + PASSWORD_TABLE_NAME);
+		statement.execute("DROP SCHEMA IF EXISTS " + ACCOUNT_SCHEMA);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

@@ -51,8 +51,8 @@ public class EventLoggerImpl implements EventLogger {
     private final Connection connection;
     private final PreparedStatement preparedLogEventStatement;
 
-    public EventLoggerImpl(Connection connection) {
-	this.connection = connection;
+    public EventLoggerImpl() throws SQLException {
+	this.connection = DatabaseConnector.getConnection();
 	try {
 	    preparedLogEventStatement = connection.prepareStatement(LOG_EVENT_STATEMENT);
 	    logEvent(EventLoggerEvents.createStartEvent());
@@ -67,6 +67,12 @@ public class EventLoggerImpl implements EventLogger {
 	    preparedLogEventStatement.close();
 	} catch (SQLException e) {
 	    logger.warn("Could not close prepared statement.", e);
+	} finally {
+	    try {
+		connection.close();
+	    } catch (SQLException e) {
+		logger.warn("Could not cleanly close connection.", e);
+	    }
 	}
 	logEvent(EventLoggerEvents.createStopEvent());
     }

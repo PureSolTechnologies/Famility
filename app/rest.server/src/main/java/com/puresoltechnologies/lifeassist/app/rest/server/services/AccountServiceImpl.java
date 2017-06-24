@@ -1,6 +1,5 @@
 package com.puresoltechnologies.lifeassist.app.rest.server.services;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.ws.rs.DELETE;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.commons.types.Password;
-import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.passwords.PasswordStoreImpl;
 import com.puresoltechnologies.lifeassist.app.rest.api.accounts.AccountsService;
 import com.puresoltechnologies.lifeassist.app.rest.server.auth.PermitAll;
@@ -40,8 +38,8 @@ public class AccountServiceImpl implements AccountsService {
     @RolesAllowed(roles = { "Administrator" })
     public Response createAccount(@PathParam("email") String email, @HeaderParam("password") String password)
 	    throws SQLException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
+	try {
+	    PasswordStore passwordStore = new PasswordStoreImpl();
 	    passwordStore.createPassword(new EmailAddress(email), new Password(password));
 	    return Response.ok().entity(email).build();
 	} catch (PasswordCreationException e) {
@@ -57,8 +55,8 @@ public class AccountServiceImpl implements AccountsService {
     @PermitAll
     public Response activateAccount(@PathParam("email") String email, @PathParam("key") String activationKey)
 	    throws SQLException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
+	try {
+	    PasswordStore passwordStore = new PasswordStoreImpl();
 	    passwordStore.activatePassword(new EmailAddress(email), activationKey);
 	    return Response.ok().entity(email).build();
 	} catch (PasswordActivationException e) {
@@ -73,8 +71,8 @@ public class AccountServiceImpl implements AccountsService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response changePassword(@PathParam("email") String email, @HeaderParam("password") String password,
 	    @HeaderParam("new-password") String newPassword) throws SQLException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
+	try {
+	    PasswordStore passwordStore = new PasswordStoreImpl();
 	    passwordStore.changePassword(new EmailAddress(email), new Password(password), new Password(newPassword));
 	    return Response.ok().entity(email).build();
 	} catch (PasswordChangeException e) {
@@ -89,11 +87,9 @@ public class AccountServiceImpl implements AccountsService {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(roles = { "Administrator" })
     public Response deleteAccount(@PathParam("email") String email) throws SQLException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
-	    passwordStore.deletePassword(new EmailAddress(email));
-	    return Response.ok().entity(email).build();
-	}
+	PasswordStore passwordStore = new PasswordStoreImpl();
+	passwordStore.deletePassword(new EmailAddress(email));
+	return Response.ok().entity(email).build();
     }
 
 }

@@ -53,16 +53,16 @@ public class AddSystemParameter implements TransformationStep {
 	try {
 	    Connection connection = sequence.getConnection();
 
-	    try (PreparedStatement statement = connection
-		    .prepareStatement("INSERT INTO " + SettingsStoreTransformator.SYSTEM_SETTINGS_TABLE//
-			    + " (" //
-			    + "parameter, " //
-			    + "type, " //
-			    + "value, " //
-			    + "default_value, " //
-			    + "unit, " //
-			    + "description " //
-			    + ") VALUES (?,?,?,?,?,?) ")) {
+	    try (PreparedStatement statement = connection.prepareStatement("INSERT INTO "
+		    + SettingsStoreTransformator.SETTINGS_SCHEMA + "." + SettingsStoreTransformator.SYSTEM_TABLE//
+		    + " (" //
+		    + "parameter, " //
+		    + "type, " //
+		    + "value, " //
+		    + "default_value, " //
+		    + "unit, " //
+		    + "description " //
+		    + ") VALUES (?,?,?,?,?,?) ")) {
 		statement.setString(1, parameter);
 		statement.setString(2, type.name());
 		statement.setString(3, value);

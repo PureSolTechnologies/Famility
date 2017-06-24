@@ -61,9 +61,9 @@ public class ContactsTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SCHEMA IF NOT EXISTS " + CONTACTS_SCHEMA, "Creates the schema for people data."));
+		"CREATE SCHEMA " + CONTACTS_SCHEMA, "Creates the schema for people data."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar not null, " //
@@ -73,7 +73,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create contacts table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + EMAIL_ADDRESS_TYPES_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + EMAIL_ADDRESS_TYPES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar(32) not null unique, " //
@@ -81,7 +81,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create table email types."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + PHONE_NUMBER_TYPES_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + PHONE_NUMBER_TYPES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar(32) not null unique, " //
@@ -89,7 +89,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create table for phone number types."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + OTHER_CONTACT_TYPES_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + OTHER_CONTACT_TYPES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar(32) not null unique, " //
@@ -97,7 +97,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create table for other contact types."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + POSTAL_ADDRESS_TYPES_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + POSTAL_ADDRESS_TYPES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar(32) not null unique, " //
@@ -105,7 +105,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create table for postal address types."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + BANK_ACCOUNT_TYPES_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + BANK_ACCOUNT_TYPES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "name varchar(32) not null unique, " //
@@ -113,7 +113,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create table for bank account types."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + EMAIL_ADDRESSES_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + EMAIL_ADDRESSES_TABLE //
 			+ " (" //
 			+ "contact_id bigint not null, " //
 			+ "address varchar not null unique, " //
@@ -128,7 +128,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create table for email addresses."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + PHONE_NUMBERS_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + PHONE_NUMBERS_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "contact_id bigint not null, " //
@@ -143,7 +143,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ ")",
 		"Create table for phone numbers."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + POSTAL_ADDRESSES_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + POSTAL_ADDRESSES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "contact_id bigint not null, " //
@@ -159,7 +159,7 @@ public class ContactsTransformator implements ComponentTransformator {
 		"Create table for postal addresses."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + BANK_ACCOUNTS_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + BANK_ACCOUNTS_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "contact_id bigint not null, " //
@@ -175,7 +175,7 @@ public class ContactsTransformator implements ComponentTransformator {
 		"Create table for bank accounts."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CONTACTS_SCHEMA + "." + OTHER_CONTACTS_TABLE //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + OTHER_CONTACTS_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "contact_id bigint not null, " //
@@ -258,6 +258,7 @@ public class ContactsTransformator implements ComponentTransformator {
 		statement.execute("DROP TABLE IF EXISTS " + CONTACTS_SCHEMA + "." + BANK_ACCOUNT_TYPES_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + CONTACTS_SCHEMA + "." + OTHER_CONTACT_TYPES_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE);
+		statement.execute("DROP SCHEMA IF EXISTS " + CONTACTS_SCHEMA);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

@@ -1,6 +1,5 @@
 package com.puresoltechnologies.lifeassist.app.rest.server.services;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.commons.types.Password;
 import com.puresoltechnologies.lifeassist.app.impl.accounts.AccountManager;
 import com.puresoltechnologies.lifeassist.app.impl.accounts.User;
-import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.passwords.PasswordStoreImpl;
 import com.puresoltechnologies.lifeassist.app.rest.api.auth.AuthService;
 import com.puresoltechnologies.lifeassist.app.rest.server.auth.AuthElement;
@@ -90,25 +88,22 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UUID login(EmailAddress email, Password password) throws SQLException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
-	    if (passwordStore.authenticate(email, password)) {
-		/*
-		 * Once all parameters are matched, the authToken will be
-		 * generated and will be stored in the
-		 * authorizationTokensStorage. The authToken will be needed for
-		 * every REST API invocation and is only valid within the login
-		 * session
-		 */
-		UUID authToken = UUID.randomUUID();
-		authorizationTokensStorage.put(authToken, email);
-		Date time = new Date();
-		sessionStarts.put(authToken, time);
-		lastActivities.put(authToken, time);
-		return authToken;
-	    } else {
-		return null;
-	    }
+	PasswordStore passwordStore = new PasswordStoreImpl();
+	if (passwordStore.authenticate(email, password)) {
+	    /*
+	     * Once all parameters are matched, the authToken will be generated
+	     * and will be stored in the authorizationTokensStorage. The
+	     * authToken will be needed for every REST API invocation and is
+	     * only valid within the login session
+	     */
+	    UUID authToken = UUID.randomUUID();
+	    authorizationTokensStorage.put(authToken, email);
+	    Date time = new Date();
+	    sessionStarts.put(authToken, time);
+	    lastActivities.put(authToken, time);
+	    return authToken;
+	} else {
+	    return null;
 	}
     }
 

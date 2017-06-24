@@ -1,6 +1,5 @@
 package com.puresoltechnologies.lifeassist.app.impl.accounts;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.puresoltechnologies.commons.types.EmailAddress;
@@ -35,11 +34,9 @@ public class AccountManager {
      */
     public void createAccount(EmailAddress email, Password password)
 	    throws SQLException, PasswordCreationException, PasswordActivationException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
-	    String activationKey = passwordStore.createPassword(email, password);
-	    passwordStore.activatePassword(email, activationKey);
-	}
+	PasswordStore passwordStore = new PasswordStoreImpl();
+	String activationKey = passwordStore.createPassword(email, password);
+	passwordStore.activatePassword(email, activationKey);
     }
 
     /**
@@ -55,17 +52,13 @@ public class AccountManager {
      */
     public boolean changeAccountPassword(EmailAddress email, Password oldPassword, Password newPassword)
 	    throws SQLException, PasswordChangeException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
-	    return passwordStore.changePassword(email, oldPassword, newPassword);
-	}
+	PasswordStore passwordStore = new PasswordStoreImpl();
+	return passwordStore.changePassword(email, oldPassword, newPassword);
     }
 
     public Password resetAccountPassword(EmailAddress email) throws SQLException, PasswordResetException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
-	    return passwordStore.resetPassword(email);
-	}
+	PasswordStore passwordStore = new PasswordStoreImpl();
+	return passwordStore.resetPassword(email);
     }
 
     /**
@@ -78,10 +71,8 @@ public class AccountManager {
      * @throws PasswordChangeException
      */
     public boolean authenticateAccount(EmailAddress email, Password password) throws SQLException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
-	    return passwordStore.authenticate(email, password);
-	}
+	PasswordStore passwordStore = new PasswordStoreImpl();
+	return passwordStore.authenticate(email, password);
     }
 
     /**
@@ -94,10 +85,8 @@ public class AccountManager {
      * @throws PasswordChangeException
      */
     public void deleteAccount(EmailAddress email) throws SQLException {
-	try (Connection connection = DatabaseConnector.getConnection()) {
-	    PasswordStore passwordStore = new PasswordStoreImpl(connection);
-	    passwordStore.deletePassword(email);
-	}
+	PasswordStore passwordStore = new PasswordStoreImpl();
+	passwordStore.deletePassword(email);
     }
 
     public User getUser(EmailAddress email) throws SQLException {

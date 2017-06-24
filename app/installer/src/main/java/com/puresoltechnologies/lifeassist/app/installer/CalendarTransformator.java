@@ -57,16 +57,16 @@ public class CalendarTransformator implements ComponentTransformator {
 	SequenceMetadata metadata = new SequenceMetadata(getComponentName(), startVersion, providedVersionRange);
 	PostgreSQLTransformationSequence sequence = new PostgreSQLTransformationSequence(metadata);
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
-		"CREATE SCHEMA IF NOT EXISTS " + CALENDAR_SCHEMA, "Creates the schema for calendar data."));
+		"CREATE SCHEMA " + CALENDAR_SCHEMA, "Creates the schema for calendar data."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SCHEMA + "." + CALENDAR_EVENT_TYPES_TABLE //
+		"CREATE TABLE " + CALENDAR_SCHEMA + "." + CALENDAR_EVENT_TYPES_TABLE //
 			+ " (" //
 			+ "type varchar not null unique, " //
 			+ "name varchar not null, " //
 			+ "CONSTRAINT " + CALENDAR_EVENT_TYPES_TABLE + "_PK PRIMARY KEY (type))",
 		"Create event types table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SCHEMA + "." + CALENDAR_SERIES_TABLE //
+		"CREATE TABLE " + CALENDAR_SCHEMA + "." + CALENDAR_SERIES_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "type varchar not null, " //
@@ -90,7 +90,7 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ ")",
 		"Create event series table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SCHEMA + "." + CALENDAR_EVENTS_TABLE //
+		"CREATE TABLE " + CALENDAR_SCHEMA + "." + CALENDAR_EVENTS_TABLE //
 			+ " (" //
 			+ "id bigint not null, " //
 			+ "series_id bigint, " //
@@ -114,7 +114,7 @@ public class CalendarTransformator implements ComponentTransformator {
 			+ " )",
 		"Create events table."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SCHEMA + "." + CALENDAR_SERIES_PARTICIPANTS_TABLE //
+		"CREATE TABLE " + CALENDAR_SCHEMA + "." + CALENDAR_SERIES_PARTICIPANTS_TABLE //
 			+ " (" //
 			+ "calendar_series_id bigint not null, " //
 			+ "person_id bigint not null, " //
@@ -136,7 +136,7 @@ public class CalendarTransformator implements ComponentTransformator {
 		"Creating index on person_id."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SCHEMA + "." + CALENDAR_EVENT_PARTICIPANTS_TABLE //
+		"CREATE TABLE " + CALENDAR_SCHEMA + "." + CALENDAR_EVENT_PARTICIPANTS_TABLE //
 			+ " (" //
 			+ "event_id bigint not null, " //
 			+ "person_id bigint not null, " //
@@ -151,7 +151,7 @@ public class CalendarTransformator implements ComponentTransformator {
 		"Create event participants table."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE IF NOT EXISTS " + CALENDAR_SCHEMA + "." + CALENDAR_EVENT_DEPENDENCIES_TABLE //
+		"CREATE TABLE " + CALENDAR_SCHEMA + "." + CALENDAR_EVENT_DEPENDENCIES_TABLE //
 			+ " (" //
 			+ "from_event_id bigint not null, " //
 			+ "to_event_id bigint not null, " //
@@ -236,6 +236,7 @@ public class CalendarTransformator implements ComponentTransformator {
 		statement.execute("DROP TABLE IF EXISTS " + CALENDAR_SCHEMA + "." + CALENDAR_EVENT_TYPES_TABLE);
 		statement.execute("DROP SEQUENCE IF EXISTS " + CALENDAR_SCHEMA + "." + "event_id_seq");
 		statement.execute("DROP SEQUENCE IF EXISTS " + CALENDAR_SCHEMA + "." + "series_id_seq");
+		statement.execute("DROP SCHEMA IF EXISTS " + CALENDAR_SCHEMA);
 	    }
 	    connection.commit();
 	} catch (NumberFormatException | SQLException e) {

@@ -46,7 +46,7 @@ public class AddUserStep implements TransformationStep {
 	    Connection connection = sequence.getConnection();
 	    try {
 		try (PreparedStatement statement = connection
-			.prepareStatement("INSERT INTO " + PasswordStoreTransformator.PASSWORD_TABLE_NAME//
+			.prepareStatement("INSERT INTO " + AccountsStoreTransformator.PASSWORD_TABLE_NAME//
 				+ " (created, " //
 				+ "last_modified, " //
 				+ "email," //
