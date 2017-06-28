@@ -1,6 +1,62 @@
 import restController from './RESTController';
+import TypeDefinition from '../models/contact/TypeDefinition';
 
 export default class ContactsController {
+
+    static getEmailAddressTypes( successfulCallback: ( types: TypeDefinition[] ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+        restController.GET( '/contacts/email-address-types',
+            null,
+            function( response ) {
+                var types: TypeDefinition[] = JSON.parse( response.response );
+                successfulCallback( types );
+            },
+            errorCallback
+        );
+    }
+
+    static getPostalAddressTypes( successfulCallback: ( types: TypeDefinition[] ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+        restController.GET( '/contacts/postal-address-types',
+            null,
+            function( response ) {
+                var types: TypeDefinition[] = JSON.parse( response.response );
+                successfulCallback( types );
+            },
+            errorCallback
+        );
+    }
+
+    static getPhoneNumberTypes( successfulCallback: ( types: TypeDefinition[] ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+        restController.GET( '/contacts/phone-number-types',
+            null,
+            function( response ) {
+                var types: TypeDefinition[] = JSON.parse( response.response );
+                successfulCallback( types );
+            },
+            errorCallback
+        );
+    }
+
+    static getBankAccountTypes( successfulCallback: ( types: TypeDefinition[] ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+        restController.GET( '/contacts/bank-account-types',
+            null,
+            function( response ) {
+                var types: TypeDefinition[] = JSON.parse( response.response );
+                successfulCallback( types );
+            },
+            errorCallback
+        );
+    }
+
+    static getOtherContactTypes( successfulCallback: ( types: TypeDefinition[] ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+        restController.GET( '/contacts/other-contact-types',
+            null,
+            function( response ) {
+                var types: TypeDefinition[] = JSON.parse( response.response );
+                successfulCallback( types );
+            },
+            errorCallback
+        );
+    }
 
     static getContacts( successfulCallback: ( contacts: any[] ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
         restController.GET( '/contacts',

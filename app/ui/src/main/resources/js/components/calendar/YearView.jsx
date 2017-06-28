@@ -24,7 +24,7 @@ export default class YearView extends React.Component {
         CalendarController.getCalendar( this.state.year,
             function( calendar ) {
                 component.setState( { calendarData: calendar });
-                CalendarController.getYearEntries( component.state.year,
+                CalendarController.getYearEvents( component.state.year,
                     function( entries ) {
                         component.setState( { entries: entries });
                     },

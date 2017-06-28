@@ -24,6 +24,8 @@ public class ContactsTransformator implements ComponentTransformator {
     static final String EMAIL_ADDRESS_TYPES_TABLE = "email_adress_types";
     static final String PHONE_NUMBERS_TABLE = "phone_numbers";
     static final String PHONE_NUMBER_TYPES_TABLE = "phone_number_types";
+
+    static final String COUNTRY_PHONE_CODES_TABLE = "country_phone_codes";
     static final String POSTAL_ADDRESSES_TABLE = "postal_addresses";
     static final String POSTAL_ADDRESS_TYPES_TABLE = "postal_address_types";
     static final String BANK_ACCOUNTS_TABLE = "bank_accounts";
@@ -39,6 +41,7 @@ public class ContactsTransformator implements ComponentTransformator {
     @Override
     public Set<String> getDependencies() {
 	Set<String> dependencies = new HashSet<>();
+	dependencies.add("Settings Store");
 	return dependencies;
     }
 
@@ -86,6 +89,14 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ "id bigint not null, " //
 			+ "name varchar(32) not null unique, " //
 			+ "CONSTRAINT " + PHONE_NUMBER_TYPES_TABLE + "_PK PRIMARY KEY (id)" //
+			+ ")",
+		"Create table for phone number types."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE " + CONTACTS_SCHEMA + "." + COUNTRY_PHONE_CODES_TABLE //
+			+ " (" //
+			+ "iso2 varchar(2) not null, " //
+			+ "code varchar(3) not null unique, " //
+			+ "CONSTRAINT " + COUNTRY_PHONE_CODES_TABLE + "_PK PRIMARY KEY (iso2)" //
 			+ ")",
 		"Create table for phone number types."));
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
@@ -148,13 +159,23 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ "id bigint not null, " //
 			+ "contact_id bigint not null, " //
 			+ "type_id bigint not null, " //
+			+ "street varchar not null, " //
+			+ "number varchar not null, " //
+			+ "city varchar not null, " //
+			+ "zip_code varchar not null, " //
+			+ "state varchar, " //
+			+ "country_iso2 varchar not null, " //
+			+ "addendum varchar, " //
 			+ "CONSTRAINT " + POSTAL_ADDRESSES_TABLE + "_PK PRIMARY KEY (id, contact_id), " //
 			+ "CONSTRAINT " + POSTAL_ADDRESSES_TABLE + "_" + CONTACTS_TABLE
 			+ "_FK FOREIGN KEY (contact_id) REFERENCES " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE
 			+ " (id), " //
 			+ "CONSTRAINT " + POSTAL_ADDRESSES_TABLE + "_" + POSTAL_ADDRESS_TYPES_TABLE
 			+ "_FK FOREIGN KEY (type_id) REFERENCES " + CONTACTS_SCHEMA + "." + POSTAL_ADDRESS_TYPES_TABLE
-			+ " (id)" //
+			+ " (id), " //
+			+ "CONSTRAINT " + POSTAL_ADDRESSES_TABLE + "_" + SettingsStoreTransformator.COUNTRIES_TABLE
+			+ "_FK FOREIGN KEY (country_iso2) REFERENCES " + SettingsStoreTransformator.SETTINGS_SCHEMA
+			+ "." + SettingsStoreTransformator.COUNTRIES_TABLE + " (iso2)" //
 			+ ")",
 		"Create table for postal addresses."));
 
@@ -164,6 +185,11 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ "id bigint not null, " //
 			+ "contact_id bigint not null, " //
 			+ "type_id bigint not null, " //
+			+ "iban varchar(14), " //
+			+ "bic varchar(11), " //
+			+ "blz varchar(8), " //
+			+ "account varchar(10), " //
+			+ "bank_name varchar not null, " //
 			+ "CONSTRAINT " + BANK_ACCOUNTS_TABLE + "_PK PRIMARY KEY (id, contact_id), " //
 			+ "CONSTRAINT " + BANK_ACCOUNTS_TABLE + "_" + CONTACTS_TABLE
 			+ "_FK FOREIGN KEY (contact_id) REFERENCES " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE
@@ -180,6 +206,7 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ "id bigint not null, " //
 			+ "contact_id bigint not null, " //
 			+ "type_id bigint not null, " //
+			+ "reference bigint not null, " //
 			+ "CONSTRAINT " + OTHER_CONTACTS_TABLE + "_PK PRIMARY KEY (id, contact_id), " //
 			+ "CONSTRAINT " + OTHER_CONTACTS_TABLE + "_" + CONTACTS_TABLE
 			+ "_FK FOREIGN KEY (contact_id) REFERENCES " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE
@@ -234,6 +261,12 @@ public class ContactsTransformator implements ComponentTransformator {
 		"CREATE SEQUENCE " + CONTACTS_SCHEMA + "." + "other_contact_type_id_seq INCREMENT BY 1 OWNED BY "
 			+ CONTACTS_SCHEMA + "." + OTHER_CONTACT_TYPES_TABLE + ".id",
 		"Sequence for othe contact type ids."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"ALTER TABLE " + SettingsStoreTransformator.SETTINGS_SCHEMA + "."
+			+ SettingsStoreTransformator.ACCOUNTS_TABLE + " ADD CONSTRAINT "
+			+ SettingsStoreTransformator.ACCOUNTS_TABLE + "_" + CONTACTS_TABLE
+			+ "_FK FOREIGN KEY (person_id) REFERENCES " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE + " (id)" //
+		, "Add anniversary type."));
 	return sequence;
     }
 
@@ -241,6 +274,9 @@ public class ContactsTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
+		statement.execute("ALTER TABLE IF EXISTS " + SettingsStoreTransformator.SETTINGS_SCHEMA + "."
+			+ SettingsStoreTransformator.ACCOUNTS_TABLE + " DROP CONSTRAINT IF EXISTS "
+			+ SettingsStoreTransformator.ACCOUNTS_TABLE + "_" + CONTACTS_TABLE + "_FK");
 		statement.execute("DROP SEQUENCE IF EXISTS " + CONTACTS_SCHEMA + "." + "contact_id_seq");
 		statement.execute("DROP SEQUENCE IF EXISTS " + CONTACTS_SCHEMA + "." + "email_type_id_seq");
 		statement.execute("DROP SEQUENCE IF EXISTS " + CONTACTS_SCHEMA + "." + "phone_number_type_id_seq");
@@ -258,6 +294,7 @@ public class ContactsTransformator implements ComponentTransformator {
 		statement.execute("DROP TABLE IF EXISTS " + CONTACTS_SCHEMA + "." + BANK_ACCOUNT_TYPES_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + CONTACTS_SCHEMA + "." + OTHER_CONTACT_TYPES_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + CONTACTS_SCHEMA + "." + COUNTRY_PHONE_CODES_TABLE);
 		statement.execute("DROP SCHEMA IF EXISTS " + CONTACTS_SCHEMA);
 	    }
 	    connection.commit();

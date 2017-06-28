@@ -10,9 +10,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.mysema.commons.lang.CloseableIterator;
 import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
@@ -20,12 +22,17 @@ import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
 import com.puresoltechnologies.lifeassist.app.api.contacts.Birthday;
 import com.puresoltechnologies.lifeassist.app.api.contacts.Contact;
+import com.puresoltechnologies.lifeassist.app.api.contacts.TypeDefinition;
 import com.puresoltechnologies.lifeassist.app.impl.calendar.CalendarManager;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
+import com.puresoltechnologies.lifeassist.app.model.contacts.QBankAccountTypes;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QContacts;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QEmailAddresses;
 import com.puresoltechnologies.lifeassist.app.model.contacts.QEmailAdressTypes;
+import com.puresoltechnologies.lifeassist.app.model.contacts.QOtherContactTypes;
+import com.puresoltechnologies.lifeassist.app.model.contacts.QPhoneNumberTypes;
+import com.puresoltechnologies.lifeassist.app.model.contacts.QPostalAddressTypes;
 import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
@@ -227,6 +234,103 @@ public class ContactManager {
 	}
     }
 
+    public void removeEMailType(long typeId) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    queryFactory.delete(QEmailAdressTypes.emailAdressTypes) //
+		    .where(QEmailAdressTypes.emailAdressTypes.id.eq(typeId)) //
+		    .execute();
+	    queryFactory.commit();
+	}
+    }
+
+    public long addPostalAddressType(String name) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.postal_address_type_id_seq"));
+	    long id = query.fetchOne();
+	    queryFactory.insert(QPostalAddressTypes.postalAddressTypes) //
+		    .set(QPostalAddressTypes.postalAddressTypes.id, id) //
+		    .set(QPostalAddressTypes.postalAddressTypes.name, name) //
+		    .execute();
+	    queryFactory.commit();
+	    return id;
+	}
+    }
+
+    public void removePostalAddressType(long typeId) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    queryFactory.delete(QPostalAddressTypes.postalAddressTypes) //
+		    .where(QPostalAddressTypes.postalAddressTypes.id.eq(typeId)) //
+		    .execute();
+	    queryFactory.commit();
+	}
+    }
+
+    public long addPhoneNumberType(String name) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.phone_number_type_id_seq"));
+	    long id = query.fetchOne();
+	    queryFactory.insert(QPhoneNumberTypes.phoneNumberTypes) //
+		    .set(QPhoneNumberTypes.phoneNumberTypes.id, id) //
+		    .set(QPhoneNumberTypes.phoneNumberTypes.name, name) //
+		    .execute();
+	    queryFactory.commit();
+	    return id;
+	}
+    }
+
+    public void removePhoneNumberType(long typeId) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    queryFactory.delete(QPhoneNumberTypes.phoneNumberTypes) //
+		    .where(QPhoneNumberTypes.phoneNumberTypes.id.eq(typeId)) //
+		    .execute();
+	    queryFactory.commit();
+	}
+    }
+
+    public long addBankAccountType(String name) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.bank_account_type_id_seq"));
+	    long id = query.fetchOne();
+	    queryFactory.insert(QBankAccountTypes.bankAccountTypes) //
+		    .set(QBankAccountTypes.bankAccountTypes.id, id) //
+		    .set(QBankAccountTypes.bankAccountTypes.name, name) //
+		    .execute();
+	    queryFactory.commit();
+	    return id;
+	}
+    }
+
+    public void removeBankAccountType(long typeId) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    queryFactory.delete(QBankAccountTypes.bankAccountTypes) //
+		    .where(QBankAccountTypes.bankAccountTypes.id.eq(typeId)) //
+		    .execute();
+	    queryFactory.commit();
+	}
+    }
+
+    public long addOtherContactType(String name) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    SQLQuery<Long> query = queryFactory.select(SQLExpressions.nextval("contacts.other_contact_type_id_seq"));
+	    long id = query.fetchOne();
+	    queryFactory.insert(QOtherContactTypes.otherContactTypes) //
+		    .set(QOtherContactTypes.otherContactTypes.id, id) //
+		    .set(QOtherContactTypes.otherContactTypes.name, name) //
+		    .execute();
+	    queryFactory.commit();
+	    return id;
+	}
+    }
+
+    public void removeOtherContactType(long typeId) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    queryFactory.delete(QOtherContactTypes.otherContactTypes) //
+		    .where(QOtherContactTypes.otherContactTypes.id.eq(typeId)) //
+		    .execute();
+	    queryFactory.commit();
+	}
+    }
+
     public void addEMailAddress(long id, EmailAddress emailAddress, long emailTypeId) throws SQLException {
 	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
 	    queryFactory.insert(QEmailAddresses.emailAddresses) //
@@ -237,4 +341,105 @@ public class ContactManager {
 	    queryFactory.commit();
 	}
     }
+
+    public void removeEMailAddress(long id, EmailAddress emailAddress) throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    queryFactory.delete(QEmailAddresses.emailAddresses) //
+		    .where(QEmailAddresses.emailAddresses.contactId.eq(id)) //
+		    .where(QEmailAddresses.emailAddresses.address.eq(emailAddress.getAddress())) //
+		    .execute();
+	    queryFactory.commit();
+	}
+    }
+
+    public Collection<TypeDefinition> getEmailAddressTypes() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    try (CloseableIterator<Tuple> typeIterator = queryFactory
+		    .select(QEmailAdressTypes.emailAdressTypes.id, QEmailAdressTypes.emailAdressTypes.name) //
+		    .from(QEmailAdressTypes.emailAdressTypes) //
+		    .iterate()) {
+		List<TypeDefinition> types = new ArrayList<>();
+		while (typeIterator.hasNext()) {
+		    Tuple type = typeIterator.next();
+		    types.add(new TypeDefinition(type.get(QEmailAdressTypes.emailAdressTypes.id),
+			    type.get(QEmailAdressTypes.emailAdressTypes.name)));
+		}
+		return types;
+	    }
+
+	}
+    }
+
+    public Collection<TypeDefinition> getPhoneNumberTypes() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    try (CloseableIterator<Tuple> typeIterator = queryFactory
+		    .select(QPhoneNumberTypes.phoneNumberTypes.id, QPhoneNumberTypes.phoneNumberTypes.name) //
+		    .from(QPhoneNumberTypes.phoneNumberTypes) //
+		    .iterate()) {
+		List<TypeDefinition> types = new ArrayList<>();
+		while (typeIterator.hasNext()) {
+		    Tuple type = typeIterator.next();
+		    types.add(new TypeDefinition(type.get(QPhoneNumberTypes.phoneNumberTypes.id),
+			    type.get(QPhoneNumberTypes.phoneNumberTypes.name)));
+		}
+		return types;
+	    }
+
+	}
+    }
+
+    public Collection<TypeDefinition> getBankAccountTypes() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    try (CloseableIterator<Tuple> typeIterator = queryFactory
+		    .select(QBankAccountTypes.bankAccountTypes.id, QBankAccountTypes.bankAccountTypes.name) //
+		    .from(QBankAccountTypes.bankAccountTypes) //
+		    .iterate()) {
+		List<TypeDefinition> types = new ArrayList<>();
+		while (typeIterator.hasNext()) {
+		    Tuple type = typeIterator.next();
+		    types.add(new TypeDefinition(type.get(QBankAccountTypes.bankAccountTypes.id),
+			    type.get(QBankAccountTypes.bankAccountTypes.name)));
+		}
+		return types;
+	    }
+
+	}
+    }
+
+    public Collection<TypeDefinition> getPostalAddressTypes() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    try (CloseableIterator<Tuple> typeIterator = queryFactory
+		    .select(QPostalAddressTypes.postalAddressTypes.id, QPostalAddressTypes.postalAddressTypes.name) //
+		    .from(QPostalAddressTypes.postalAddressTypes) //
+		    .iterate()) {
+		List<TypeDefinition> types = new ArrayList<>();
+		while (typeIterator.hasNext()) {
+		    Tuple type = typeIterator.next();
+		    types.add(new TypeDefinition(type.get(QPostalAddressTypes.postalAddressTypes.id),
+			    type.get(QPostalAddressTypes.postalAddressTypes.name)));
+		}
+		return types;
+	    }
+
+	}
+    }
+
+    public Collection<TypeDefinition> getOtherContactTypes() throws SQLException {
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    try (CloseableIterator<Tuple> typeIterator = queryFactory
+		    .select(QOtherContactTypes.otherContactTypes.id, QOtherContactTypes.otherContactTypes.name) //
+		    .from(QOtherContactTypes.otherContactTypes) //
+		    .iterate()) {
+		List<TypeDefinition> types = new ArrayList<>();
+		while (typeIterator.hasNext()) {
+		    Tuple type = typeIterator.next();
+		    types.add(new TypeDefinition(type.get(QOtherContactTypes.otherContactTypes.id),
+			    type.get(QOtherContactTypes.otherContactTypes.name)));
+		}
+		return types;
+	    }
+
+	}
+    }
+
 }

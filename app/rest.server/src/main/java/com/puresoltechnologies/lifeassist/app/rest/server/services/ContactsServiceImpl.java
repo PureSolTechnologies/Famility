@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.puresoltechnologies.lifeassist.app.api.contacts.TypeDefinition;
 import com.puresoltechnologies.lifeassist.app.impl.contacts.ContactManager;
 import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Birthday;
 import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
@@ -63,6 +64,41 @@ public class ContactsServiceImpl implements ContactsService {
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Birthday> getBirthdays() throws SQLException {
 	return RestConverter.convertBirthdays(contactManager.getBirthdays());
+    }
+
+    @GET
+    @Path("/email-address-types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<TypeDefinition> getEmailAddressTypes() throws SQLException {
+	return contactManager.getEmailAddressTypes();
+    }
+
+    @GET
+    @Path("/phone-number-types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<TypeDefinition> getPhoneNumberTypes() throws SQLException {
+	return contactManager.getPhoneNumberTypes();
+    }
+
+    @GET
+    @Path("/postal-address-types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<TypeDefinition> getPostalAddressTypes() throws SQLException {
+	return contactManager.getPostalAddressTypes();
+    }
+
+    @GET
+    @Path("/bank-account-types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<TypeDefinition> getBankAccountTypes() throws SQLException {
+	return contactManager.getBankAccountTypes();
+    }
+
+    @GET
+    @Path("/other-contact-types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<TypeDefinition> getOtherContactTypes() throws SQLException {
+	return contactManager.getOtherContactTypes();
     }
 
 }

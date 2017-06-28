@@ -39,7 +39,7 @@ export default class LoginPage extends React.Component {
                     var authId = response.getResponseHeader( "Auth-Id" );
                     var authToken = response.getResponseHeader( "Auth-Token" );
                     store.dispatch( login( { name: controller.state.email, authId: authId, authToken: authToken }) );
-                    const destination = controller.props.params.redirect ? controller.props.params.redirect : "";
+                    const destination = controller.props.params.r ? controller.props.params.r : "";
                     browserHistory.replace( destination );
                 }
             },

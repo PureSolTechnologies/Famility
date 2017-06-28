@@ -5,6 +5,7 @@ import Dialog from '../../../components/dialog/Dialog';
 import Loading from '../../../components/Loading';
 import CalendarDay from '../../../models/calendar/CalendarDay';
 import Collapse from '../../../components/Collapse';
+import AddEmailToContact from '../../../components/contact/AddEmailToContact';
 
 export default class EditContact extends React.Component<any, any> {
 
@@ -12,7 +13,7 @@ export default class EditContact extends React.Component<any, any> {
 
     constructor( props: any ) {
         super( props );
-        this.id = this.props.params.id;
+        this.id = Number(this.props.params.id);
         this.state = { contact: null };
         this.close = this.close.bind( this );
     }
@@ -57,21 +58,7 @@ export default class EditContact extends React.Component<any, any> {
                 </div>
                 <hr />
                 <h3>Emails</h3>
-                <Collapse id="add-email-address" name="Add Email Address..." >
-                    <div className="row">
-                        <div className="form-group col-md-6">
-                            <label htmlFor="newEmailAddress">New Email Address</label>
-                            <input type="text" className="form-control" id="newEmailAddress" placeholder="Enter name email address" value={this.state.newEmailAddress} />
-                        </div>
-                        <div className="form-group col-md-6">
-                            <label htmlFor="newEmailAddressType">New Email Type</label>
-                            <select id="newEmailAddressType" className="form-control" value={this.state.newEmailAddressType}>
-                                <option>test</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button className="btn btn-primary">Add New Email Address</button>
-                </Collapse>
+                <AddEmailToContact contactId={this.id} />
                 <hr />
                 <h3>Postal Addresses</h3>
                 <Collapse id="add-postal-address" name="Add Postal Address..." >

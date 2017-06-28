@@ -62,7 +62,7 @@ ReactDOM.render(
                 <Route path="home" component={MainDashboard} />
                 <Route path="plugins" component={Plugins} />
                 <Route path="copyright" component={Copyright} />
-                <Route path="login(/:redirect)" component={LoginPage} />
+                <Route path="login" component={LoginPage} />
                 <Route path="contacts" component={Contacts} />
                 <Redirect from="/calendar" to="/calendar/year" />
                 <Route path="/calendar" component={CalendarLayout}>

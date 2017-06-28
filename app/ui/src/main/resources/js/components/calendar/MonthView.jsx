@@ -27,7 +27,7 @@ export default class MonthView extends React.Component {
         CalendarController.getCalendar( this.state.year,
             function( calendar ) {
                 component.setState( { calendarData: calendar });
-                CalendarController.getMonthEntries( component.state.year, component.state.month,
+                CalendarController.getMonthEvents( component.state.year, component.state.month,
                     function( entries ) {
                         component.setState( { entries: entries });
                     },

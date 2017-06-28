@@ -26,7 +26,7 @@ export class RESTController {
             this.login = loginState;
         }
     }
-    
+
     createRequest( type: string, path: string, headers: any, successCallback: ( response: XMLHttpRequest ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): XMLHttpRequest {
         const client = new XMLHttpRequest();
         let url = this.baseURL + path;
@@ -36,9 +36,9 @@ export class RESTController {
                 client.setRequestHeader( key, headers[key] );
             }
         }
-        if (this.login) {
-            client.setRequestHeader("auth-id", this.login.authId);
-            client.setRequestHeader("auth-token", this.login.authToken);
+        if ( this.login ) {
+            client.setRequestHeader( "auth-id", this.login.authId );
+            client.setRequestHeader( "auth-token", this.login.authToken );
         }
         client.onreadystatechange = function() {
             if ( this.readyState == this.DONE ) {
@@ -50,7 +50,7 @@ export class RESTController {
                     if ( status === 401 ) {
                         let pathname: any = window.location.pathname;
                         if ( !pathname.startsWith( "/login" ) ) {
-                            browserHistory.push( { pathname: '/login' + window.location.pathname });
+                            browserHistory.push( '/login?r=' + encodeURI( window.location.pathname ) );
                         }
                     } else {
                         errorCallback( client );
