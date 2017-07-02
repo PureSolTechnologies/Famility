@@ -18,7 +18,7 @@ import com.puresoltechnologies.lifeassist.app.api.events.EventLogger;
 import com.puresoltechnologies.lifeassist.app.impl.db.DatabaseConnector;
 import com.puresoltechnologies.lifeassist.app.impl.db.ExtendedSQLQueryFactory;
 import com.puresoltechnologies.lifeassist.app.impl.events.EventLoggerImpl;
-import com.puresoltechnologies.lifeassist.app.model.accounts.QPasswords;
+import com.puresoltechnologies.lifeassist.app.model.settings.QPasswords;
 import com.puresoltechnologies.passwordstore.api.PasswordStore;
 import com.puresoltechnologies.passwordstore.core.PasswordEncrypter;
 import com.puresoltechnologies.passwordstore.core.PasswordEncrypterImpl;

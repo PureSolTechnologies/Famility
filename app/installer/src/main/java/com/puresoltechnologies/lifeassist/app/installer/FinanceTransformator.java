@@ -25,7 +25,8 @@ public class FinanceTransformator implements ComponentTransformator {
     static final String FOREIGN_EXCHANGE_TIME_DATA_TABLE_NAME = "foreign_exchange_time_data";
     static final String FOREIGN_EXCHANGE_CHART_DATA_TABLE_NAME = "foreign_exchange_chart_data";
     static final String BANK_ACCOUNTS_TABLE_NAME = "bank_accounts";
-    static final String BANK_ACCOUNT_STATEMENTS_TABLE_NAME = "bank_account_statements";
+    static final String ACCOUNTS_TABLE_NAME = "accounts";
+    static final String ACCOUNT_STATEMENTS_TABLE_NAME = "account_statements";
 
     @Override
     public String getComponentName() {
@@ -79,6 +80,7 @@ public class FinanceTransformator implements ComponentTransformator {
 			+ "name varchar(64) not null unique, " //
 			+ "url varchar, " //
 			+ "bic varchar(11) unique, " //
+			+ "blz varchar(8) unique, " //
 			+ "CONSTRAINT " + BANKING_INSTITUTIONS_TABLE_NAME + "_PK PRIMARY KEY (id)" //
 			+ ")",
 		"Create banking institutions table."));
@@ -173,20 +175,33 @@ public class FinanceTransformator implements ComponentTransformator {
 		, "Create index for timestamp for exchange rate chart data table."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE " + FINANCE_SCHEMA + "." + BANK_ACCOUNTS_TABLE_NAME //
+		"CREATE TABLE " + FINANCE_SCHEMA + "." + ACCOUNTS_TABLE_NAME //
 			+ " (id bigint not null, " //
+			+ "currency varchar(6) not null, " //
+			+ "CONSTRAINT " + ACCOUNTS_TABLE_NAME + "_PK PRIMARY KEY (id), " //
+			+ "CONSTRAINT " + ACCOUNTS_TABLE_NAME + "_ID_CURRENCY_UNIQUE UNIQUE (id, currency)" //
+			+ ")",
+		"Create internal accounts table."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE " + FINANCE_SCHEMA + "." + BANK_ACCOUNTS_TABLE_NAME //
+			+ " (account_id bigint not null, " //
 			+ "banking_institution_id bigint, " //
-			+ "iban varchar(14), " //
-			+ "CONSTRAINT " + BANK_ACCOUNTS_TABLE_NAME + "_PK PRIMARY KEY (id), " //
+			+ "iban varchar(14) unique, " //
+			+ "currency varchar(6) not null, " //
+			+ "CONSTRAINT " + BANK_ACCOUNTS_TABLE_NAME + "_PK PRIMARY KEY (account_id), " //
 			+ "CONSTRAINT " + BANK_ACCOUNTS_TABLE_NAME + "_" + BANKING_INSTITUTIONS_TABLE_NAME
 			+ "_FK FOREIGN KEY (banking_institution_id) REFERENCES " + FINANCE_SCHEMA + "."
-			+ BANKING_INSTITUTIONS_TABLE_NAME + " (id)" //
+			+ BANKING_INSTITUTIONS_TABLE_NAME + " (id), " //
+			+ "CONSTRAINT " + BANK_ACCOUNTS_TABLE_NAME + "_" + ACCOUNTS_TABLE_NAME
+			+ "_FK FOREIGN KEY (account_id, currency) REFERENCES " + FINANCE_SCHEMA + "."
+			+ ACCOUNTS_TABLE_NAME + " (id, currency)" //
 			+ ")",
-		"Create accounts table."));
+		"Create bank accounts table."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
 		"CREATE SEQUENCE " + FINANCE_SCHEMA + ".account_id_seq OWNED BY " + FINANCE_SCHEMA + "."
-			+ BANK_ACCOUNTS_TABLE_NAME + ".id"//
+			+ ACCOUNTS_TABLE_NAME + ".id"//
 		, "Create sequence for account id."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
@@ -195,9 +210,9 @@ public class FinanceTransformator implements ComponentTransformator {
 		, "Create index on iban for accounts table."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
-		"CREATE TABLE " + FINANCE_SCHEMA + "." + BANK_ACCOUNT_STATEMENTS_TABLE_NAME //
+		"CREATE TABLE " + FINANCE_SCHEMA + "." + ACCOUNT_STATEMENTS_TABLE_NAME //
 			+ " (id bigserial not null, " //
-			+ "bank_account_id bigint not null, " //
+			+ "account_id bigint not null, " //
 			+ "date_of_bookkeeping date, " //
 			+ "value_date date, " //
 			+ "foreign_account varchar, " //
@@ -210,11 +225,11 @@ public class FinanceTransformator implements ComponentTransformator {
 			+ "currency varchar(6) not null, " //
 			+ "info varchar, " //
 			+ "CONSTRAINT " //
-			+ BANK_ACCOUNT_STATEMENTS_TABLE_NAME + "_PK PRIMARY KEY (id), " //
-			+ "CONSTRAINT " + BANK_ACCOUNT_STATEMENTS_TABLE_NAME + "_" + BANK_ACCOUNTS_TABLE_NAME
-			+ "_FK FOREIGN KEY (bank_account_id) REFERENCES " + FINANCE_SCHEMA + "." //
-			+ BANK_ACCOUNTS_TABLE_NAME + " (id), " //
-			+ "CONSTRAINT " + BANK_ACCOUNT_STATEMENTS_TABLE_NAME + "_" + CURRENCY_TABLE_NAME
+			+ ACCOUNT_STATEMENTS_TABLE_NAME + "_PK PRIMARY KEY (id), " //
+			+ "CONSTRAINT " + ACCOUNT_STATEMENTS_TABLE_NAME + "_" + ACCOUNTS_TABLE_NAME
+			+ "_FK FOREIGN KEY (account_id) REFERENCES " + FINANCE_SCHEMA + "." //
+			+ ACCOUNTS_TABLE_NAME + " (id), " //
+			+ "CONSTRAINT " + ACCOUNT_STATEMENTS_TABLE_NAME + "_" + CURRENCY_TABLE_NAME
 			+ "_FK FOREIGN KEY (currency) REFERENCES " + FINANCE_SCHEMA + "." + CURRENCY_TABLE_NAME
 			+ " (code)" //
 			+ ")",
@@ -227,8 +242,9 @@ public class FinanceTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
-		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + BANK_ACCOUNT_STATEMENTS_TABLE_NAME);
+		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + ACCOUNT_STATEMENTS_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + BANK_ACCOUNTS_TABLE_NAME);
+		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + ACCOUNTS_TABLE_NAME);
 		statement.execute(
 			"DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + FOREIGN_EXCHANGE_CHART_DATA_TABLE_NAME);
 		statement.execute(

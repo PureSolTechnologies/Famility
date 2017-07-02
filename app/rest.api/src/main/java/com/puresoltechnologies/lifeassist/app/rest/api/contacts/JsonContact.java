@@ -9,14 +9,14 @@ import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
  * 
  * @author Rick-Rainer Ludwig
  */
-public class Contact {
+public class JsonContact {
 
     private final long id;
     private final String name;
     private final CalendarDay birthday;
 
     @JsonCreator
-    public Contact(@JsonProperty("id") long id, @JsonProperty("name") String name,
+    public JsonContact(@JsonProperty("id") long id, @JsonProperty("name") String name,
 	    @JsonProperty("birthday") CalendarDay birthday) {
 	super();
 	this.id = id;
@@ -24,7 +24,7 @@ public class Contact {
 	this.birthday = birthday;
     }
 
-    public Contact(String name, CalendarDay birthday) {
+    public JsonContact(String name, CalendarDay birthday) {
 	this(-1, name, birthday);
     }
 
@@ -58,7 +58,7 @@ public class Contact {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	Contact other = (Contact) obj;
+	JsonContact other = (JsonContact) obj;
 	if (birthday == null) {
 	    if (other.birthday != null)
 		return false;

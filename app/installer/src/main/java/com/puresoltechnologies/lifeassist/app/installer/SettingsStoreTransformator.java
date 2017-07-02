@@ -31,6 +31,7 @@ public class SettingsStoreTransformator implements ComponentTransformator {
 
     private static final Logger logger = LoggerFactory.getLogger(SettingsStoreTransformator.class);
 
+    static final String PASSWORD_TABLE_NAME = "passwords";
     static final String SETTINGS_SCHEMA = "settings";
     static final String SYSTEM_TABLE = "system";
     static final String ACCOUNTS_TABLE = "accounts";
@@ -69,6 +70,24 @@ public class SettingsStoreTransformator implements ComponentTransformator {
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
 		"CREATE SCHEMA " + SETTINGS_SCHEMA, "Creates the schema for settings."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE " + SETTINGS_SCHEMA + "." + PASSWORD_TABLE_NAME//
+			+ " (created timestamp, " //
+			+ "last_modified timestamp, " //
+			+ "email varchar not null," //
+			+ "password varchar, " //
+			+ "state varchar, "//
+			+ "activation_key varchar, "//
+			+ "CONSTRAINT " + PASSWORD_TABLE_NAME + "_PK PRIMARY KEY (email)" //
+			+ ")",
+		"Create passwords table."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig",
+		"CREATE INDEX " //
+			+ PASSWORD_TABLE_NAME + "_state_idx"//
+			+ " ON " + SETTINGS_SCHEMA + "." + PASSWORD_TABLE_NAME //
+			+ " (state)",
+		"Creating index on state."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
 		"CREATE TABLE " + SETTINGS_SCHEMA + "." + SYSTEM_TABLE //
@@ -213,6 +232,7 @@ public class SettingsStoreTransformator implements ComponentTransformator {
 		statement.execute("DROP TABLE IF EXISTS " + SETTINGS_SCHEMA + "." + COUNTRIES_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + SETTINGS_SCHEMA + "." + ACCOUNTS_TABLE);
 		statement.execute("DROP TABLE IF EXISTS " + SETTINGS_SCHEMA + "." + SYSTEM_TABLE);
+		statement.execute("DROP TABLE IF EXISTS " + SETTINGS_SCHEMA + "." + PASSWORD_TABLE_NAME);
 		statement.execute("DROP SCHEMA IF EXISTS " + SETTINGS_SCHEMA);
 	    }
 	    connection.commit();

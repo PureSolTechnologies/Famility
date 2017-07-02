@@ -6,6 +6,10 @@ import Loading from '../../../components/Loading';
 import CalendarDay from '../../../models/calendar/CalendarDay';
 import Collapse from '../../../components/Collapse';
 import AddEmailToContact from '../../../components/contact/AddEmailToContact';
+import AddPhoneNumberToContact from '../../../components/contact/AddPhoneNumberToContact';
+import AddOtherContactToContact from '../../../components/contact/AddOtherContactToContact';
+import AddPostalAddressToContact from '../../../components/contact/AddPostalAddressToContact';
+import AddBankAccountToContact from '../../../components/contact/AddBankAccountToContact';
 
 export default class EditContact extends React.Component<any, any> {
 
@@ -13,7 +17,7 @@ export default class EditContact extends React.Component<any, any> {
 
     constructor( props: any ) {
         super( props );
-        this.id = Number(this.props.params.id);
+        this.id = Number( this.props.params.id );
         this.state = { contact: null };
         this.close = this.close.bind( this );
     }
@@ -61,18 +65,16 @@ export default class EditContact extends React.Component<any, any> {
                 <AddEmailToContact contactId={this.id} />
                 <hr />
                 <h3>Postal Addresses</h3>
-                <Collapse id="add-postal-address" name="Add Postal Address..." >
-                </Collapse>
+                <AddPostalAddressToContact contactId={this.id} />
                 <hr />
                 <h3>Phones</h3>
-                <Collapse id="add-phone-number" name="Add Phone Number..." >
-                </Collapse>
+                <AddPhoneNumberToContact contactId={this.id} />
                 <hr />
                 <h3>Other Channels</h3>
+                <AddOtherContactToContact contactId={this.id} />
                 <hr />
                 <h3>Bank Accounts</h3>
-                <Collapse id="add-bank-account" name="Add Bank Account..." >
-                </Collapse>
+                <AddBankAccountToContact contactId={this.id} />
                 <button type="button" className="btn btn-primary" onClick={this.close}>Close</button>
             </Dialog>
         );

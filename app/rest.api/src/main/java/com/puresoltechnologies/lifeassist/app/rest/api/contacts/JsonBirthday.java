@@ -11,10 +11,10 @@ import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
  * 
  * @author Rick-Rainer Ludwig
  */
-public class Birthday implements Comparable<Birthday> {
+public class JsonBirthday implements Comparable<JsonBirthday> {
 
-    public static Birthday of(Contact person) {
-	return new Birthday(person.getId(), person.getName(), person.getBirthday());
+    public static JsonBirthday of(JsonContact person) {
+	return new JsonBirthday(person.getId(), person.getName(), person.getBirthday());
     }
 
     private final long id;
@@ -25,7 +25,7 @@ public class Birthday implements Comparable<Birthday> {
     private final int nextAge;
 
     @JsonCreator
-    public Birthday(@JsonProperty("id") long id, @JsonProperty("name") String name,
+    public JsonBirthday(@JsonProperty("id") long id, @JsonProperty("name") String name,
 	    @JsonProperty("birthday") CalendarDay birthday) {
 	super();
 	this.id = id;
@@ -73,7 +73,7 @@ public class Birthday implements Comparable<Birthday> {
     }
 
     @Override
-    public int compareTo(Birthday other) {
+    public int compareTo(JsonBirthday other) {
 	return getNextAnniversary().compareTo(other.getNextAnniversary());
     }
 
@@ -93,7 +93,7 @@ public class Birthday implements Comparable<Birthday> {
 	    return false;
 	if (getClass() != obj.getClass())
 	    return false;
-	Birthday other = (Birthday) obj;
+	JsonBirthday other = (JsonBirthday) obj;
 	if (id != other.id)
 	    return false;
 	return true;

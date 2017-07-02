@@ -15,11 +15,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.puresoltechnologies.commons.types.EmailAddress;
+import com.puresoltechnologies.lifeassist.app.api.contacts.Contact;
+import com.puresoltechnologies.lifeassist.app.api.contacts.ContactEmailAddress;
 import com.puresoltechnologies.lifeassist.app.api.contacts.TypeDefinition;
 import com.puresoltechnologies.lifeassist.app.impl.contacts.ContactManager;
-import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Birthday;
-import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
 import com.puresoltechnologies.lifeassist.app.rest.api.contacts.ContactsService;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.JsonBirthday;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.JsonContact;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.JsonContactEmailAddress;
 
 @Path("/contacts")
 public class ContactsServiceImpl implements ContactsService {
@@ -29,15 +33,15 @@ public class ContactsServiceImpl implements ContactsService {
     @Override
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Contact> getContacts() throws SQLException {
+    public Collection<JsonContact> getContacts() throws SQLException {
 	return RestConverter.convertContactsToRest(contactManager.getContacts());
     }
 
     @Override
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createContact(Contact contact) throws SQLException, URISyntaxException {
-	com.puresoltechnologies.lifeassist.app.api.contacts.Contact converted = RestConverter.convert(contact);
+    public Response createContact(JsonContact contact) throws SQLException, URISyntaxException {
+	Contact converted = RestConverter.convert(contact);
 	contactManager.addContact(converted);
 	String idString = String.valueOf(converted.getId());
 	return Response.created(new URI("/contacts/" + idString)).entity(idString).build();
@@ -47,7 +51,7 @@ public class ContactsServiceImpl implements ContactsService {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Contact getContact(@PathParam("id") long id) throws SQLException {
+    public JsonContact getContact(@PathParam("id") long id) throws SQLException {
 	return RestConverter.convert(contactManager.getContact(id));
     }
 
@@ -58,11 +62,31 @@ public class ContactsServiceImpl implements ContactsService {
 	contactManager.deleteContact(Long.parseLong(id));
     }
 
+    @PUT
+    @Path("/{id}/emails")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addEmailAddress(@PathParam("id") long id, JsonContactEmailAddress email)
+	    throws SQLException, URISyntaxException {
+	EmailAddress emailAddress = email.getEmailAddress();
+	contactManager.addEMailAddress(id, emailAddress, email.getTypeId());
+	return Response.created(new URI("/contacts/" + id + "/email/" + emailAddress.getAddress()))
+		.entity(emailAddress.getAddress()).build();
+
+    }
+
+    @GET
+    @Path("/{id}/emails")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<JsonContactEmailAddress> addEmailAddress(@PathParam("id") long id) throws SQLException {
+	Collection<ContactEmailAddress> eMailAddresses = contactManager.getEMailAddresses(id);
+	return RestConverter.convertContactEmailAddressesToJson(eMailAddresses);
+    }
+
     @Override
     @GET
     @Path("/birthdays")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Birthday> getBirthdays() throws SQLException {
+    public Collection<JsonBirthday> getBirthdays() throws SQLException {
 	return RestConverter.convertBirthdays(contactManager.getBirthdays());
     }
 

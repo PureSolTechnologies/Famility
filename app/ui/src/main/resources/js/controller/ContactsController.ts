@@ -109,4 +109,12 @@ export default class ContactsController {
         );
     }
 
+    static addEmailAddress( contactId: number, typeId: number, address: string, successCallback: ( response: XMLHttpRequest ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
+        restController.PUT( '/contacts/' + contactId + '/emails', { "Content-Type": "application/json; charset=utf-8" },
+            { emailAddress: { address: address }, typeId: typeId },
+            successCallback,
+            errorCallback
+        );
+    }
+
 }

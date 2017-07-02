@@ -7,7 +7,7 @@ import java.util.Collection;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.JsonContact;
 
 /**
  * This class is used to transfer the data for a single appointment.
@@ -20,7 +20,7 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
     private final String type;
     private final String title;
     private final String description;
-    private final Collection<Contact> participants;
+    private final Collection<JsonContact> participants;
     private final boolean reminding;
     private final Reminder reminder;
     private final CalendarDay beginDate;
@@ -39,7 +39,7 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
 	    @JsonProperty("type") String type, //
 	    @JsonProperty("title") String title, //
 	    @JsonProperty("description") String description, //
-	    @JsonProperty("participants") Collection<Contact> participants, //
+	    @JsonProperty("participants") Collection<JsonContact> participants, //
 	    @JsonProperty("reminding") boolean reminding, //
 	    @JsonProperty("reminder") Reminder reminder, //
 	    @JsonProperty("beginDate") CalendarDay beginDate, //
@@ -74,7 +74,7 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
 	    String type, //
 	    String title, //
 	    String description, //
-	    Collection<Contact> participans, //
+	    Collection<JsonContact> participans, //
 	    boolean reminding, //
 	    Reminder reminder, //
 	    CalendarDay beginDate, //
@@ -104,7 +104,7 @@ public class CalendarEvent implements Comparable<CalendarEvent> {
 	return description;
     }
 
-    public Collection<Contact> getParticipants() {
+    public Collection<JsonContact> getParticipants() {
 	return participants;
     }
 

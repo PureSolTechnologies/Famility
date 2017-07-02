@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.puresoltechnologies.lifeassist.app.rest.api.calendar.CalendarDay;
-import com.puresoltechnologies.lifeassist.app.rest.api.contacts.Contact;
+import com.puresoltechnologies.lifeassist.app.rest.api.contacts.JsonContact;
 import com.puresoltechnologies.lifeassist.app.test.contacts.AbstractContactsServiceTest;
 
 public class ContactsServiceIT extends AbstractContactsServiceTest {
@@ -29,7 +29,7 @@ public class ContactsServiceIT extends AbstractContactsServiceTest {
 	JerseyWebTarget client = getRestClient("");
 	Response response = client.request().get();
 	assertEquals(200, response.getStatus());
-	MappingIterator<Contact> collection = convertCollectionEntity(response, Contact.class);
+	MappingIterator<JsonContact> collection = convertCollectionEntity(response, JsonContact.class);
 	while (collection.hasNext()) {
 	    JerseyWebTarget client2 = getRestClient(String.valueOf(collection.next().getId()));
 	    client2.request().delete();
@@ -41,20 +41,20 @@ public class ContactsServiceIT extends AbstractContactsServiceTest {
 	JerseyWebTarget client = getRestClient("");
 	Response response = client.request().get();
 	assertEquals(200, response.getStatus());
-	MappingIterator<Contact> collection = convertCollectionEntity(response, Contact.class);
+	MappingIterator<JsonContact> collection = convertCollectionEntity(response, JsonContact.class);
 	assertFalse(collection.hasNext());
     }
 
     @Test
     public void testAddContact() throws URISyntaxException, IOException {
 	JerseyWebTarget client = getRestClient("");
-	Entity<Contact> entity = Entity.entity(new Contact(-1, "Rick", new CalendarDay(2014, 9, 18)),
+	Entity<JsonContact> entity = Entity.entity(new JsonContact(-1, "Rick", new CalendarDay(2014, 9, 18)),
 		MediaType.APPLICATION_JSON_TYPE);
 	Response response = client.request().put(entity);
 	assertEquals(201, response.getStatus());
 	response = client.request().get();
 	assertEquals(200, response.getStatus());
-	MappingIterator<Contact> collection = convertCollectionEntity(response, Contact.class);
+	MappingIterator<JsonContact> collection = convertCollectionEntity(response, JsonContact.class);
 	assertTrue(collection.hasNext());
     }
 

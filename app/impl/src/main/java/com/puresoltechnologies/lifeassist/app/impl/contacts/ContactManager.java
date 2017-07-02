@@ -20,6 +20,7 @@ import com.puresoltechnologies.lifeassist.app.api.calendar.OccupancyStatus;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Reminder;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Series;
 import com.puresoltechnologies.lifeassist.app.api.calendar.Turnus;
+import com.puresoltechnologies.lifeassist.app.api.contacts.ContactEmailAddress;
 import com.puresoltechnologies.lifeassist.app.api.contacts.Birthday;
 import com.puresoltechnologies.lifeassist.app.api.contacts.Contact;
 import com.puresoltechnologies.lifeassist.app.api.contacts.TypeDefinition;
@@ -339,6 +340,22 @@ public class ContactManager {
 		    .set(QEmailAddresses.emailAddresses.typeId, emailTypeId) //
 		    .execute();
 	    queryFactory.commit();
+	}
+    }
+
+    public Collection<ContactEmailAddress> getEMailAddresses(long id) throws SQLException {
+	List<ContactEmailAddress> addresses = new ArrayList<>();
+	try (ExtendedSQLQueryFactory queryFactory = DatabaseConnector.createQueryFactory()) {
+	    List<Tuple> result = queryFactory.select(QEmailAddresses.emailAddresses.all()) //
+		    .from(QEmailAddresses.emailAddresses).where(QEmailAddresses.emailAddresses.contactId.eq(id)) //
+		    .fetch();
+	    for (Tuple tuple : result) {
+		long contactId = tuple.get(QEmailAddresses.emailAddresses.contactId);
+		EmailAddress emailAddress = new EmailAddress(tuple.get(QEmailAddresses.emailAddresses.address));
+		Long typeId = tuple.get(QEmailAddresses.emailAddresses.typeId);
+		addresses.add(new ContactEmailAddress(contactId, emailAddress, typeId));
+	    }
+	    return addresses;
 	}
     }
 

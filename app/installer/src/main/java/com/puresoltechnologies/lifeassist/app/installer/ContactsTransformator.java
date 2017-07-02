@@ -267,6 +267,11 @@ public class ContactsTransformator implements ComponentTransformator {
 			+ SettingsStoreTransformator.ACCOUNTS_TABLE + "_" + CONTACTS_TABLE
 			+ "_FK FOREIGN KEY (person_id) REFERENCES " + CONTACTS_SCHEMA + "." + CONTACTS_TABLE + " (id)" //
 		, "Add anniversary type."));
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", "ALTER TABLE "
+		+ SettingsStoreTransformator.SETTINGS_SCHEMA + "." + SettingsStoreTransformator.PASSWORD_TABLE_NAME
+		+ " ADD CONSTRAINT " + SettingsStoreTransformator.PASSWORD_TABLE_NAME + "_" + EMAIL_ADDRESSES_TABLE
+		+ "_FK FOREIGN KEY (email) REFERENCES " + CONTACTS_SCHEMA + "." + EMAIL_ADDRESSES_TABLE + " (address)" //
+		, "Add anniversary type."));
 	return sequence;
     }
 
@@ -274,6 +279,9 @@ public class ContactsTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
+		statement.execute("ALTER TABLE IF EXISTS " + SettingsStoreTransformator.SETTINGS_SCHEMA + "."
+			+ SettingsStoreTransformator.PASSWORD_TABLE_NAME + " DROP CONSTRAINT IF EXISTS "
+			+ SettingsStoreTransformator.PASSWORD_TABLE_NAME + "_" + EMAIL_ADDRESSES_TABLE + "_FK");
 		statement.execute("ALTER TABLE IF EXISTS " + SettingsStoreTransformator.SETTINGS_SCHEMA + "."
 			+ SettingsStoreTransformator.ACCOUNTS_TABLE + " DROP CONSTRAINT IF EXISTS "
 			+ SettingsStoreTransformator.ACCOUNTS_TABLE + "_" + CONTACTS_TABLE + "_FK");

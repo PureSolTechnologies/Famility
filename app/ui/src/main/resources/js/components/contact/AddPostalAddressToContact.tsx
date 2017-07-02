@@ -2,9 +2,9 @@ import * as  React from 'react';
 
 import ContactsController from '../../controller/ContactsController';
 import Collapse from '../Collapse';
-import EmailAddressSelector from './EmailAddressTypeSelector';
+import PostalAddressTypeSelector from './PostalAddressTypeSelector';
 
-export default class AddEmailToContact extends React.Component<any, any> {
+export default class AddPostalAddressToContact extends React.Component<any, any> {
 
     static propTypes = {
         contactId: React.PropTypes.number.isRequired
@@ -28,24 +28,12 @@ export default class AddEmailToContact extends React.Component<any, any> {
     }
 
     add() {
-        let component = this;
-        ContactsController.addEmailAddress(
-            this.props.contactId,
-            this.state.typeId,
-            this.state.address,
-            function( response: XMLHttpRequest ): void {
-                component.setState( {
-                    address: '', typeId: 0
-                });
-            },
-            function( response: XMLHttpRequest ): void { }
-        );
-    }
 
+    }
 
     render() {
         return (
-            <Collapse id="add-email-address-type" name="Add..." >
+            <Collapse id="add-postal-address-type" name="Add..." >
                 <div className="row">
                     <div className="form-group col-md-2">
                         <label htmlFor="address">Email Address</label>
@@ -57,7 +45,7 @@ export default class AddEmailToContact extends React.Component<any, any> {
                         <label htmlFor="addressType">Email Type</label>
                     </div>
                     <div className="form-group col-md-3">
-                        <EmailAddressSelector id="addressType" typeId={this.state.typeId} onChange={this.changeType} />
+                        <PostalAddressTypeSelector id="addressType" typeId={this.state.typeId} onChange={this.changeType} />
                     </div>
                     <div className="form-group col-md-2">
                         <button className="btn btn-primary" onClick={this.add}>Add...</button>
