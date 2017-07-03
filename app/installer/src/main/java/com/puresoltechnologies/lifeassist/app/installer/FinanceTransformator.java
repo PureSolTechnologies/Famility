@@ -25,8 +25,11 @@ public class FinanceTransformator implements ComponentTransformator {
     static final String FOREIGN_EXCHANGE_TIME_DATA_TABLE_NAME = "foreign_exchange_time_data";
     static final String FOREIGN_EXCHANGE_CHART_DATA_TABLE_NAME = "foreign_exchange_chart_data";
     static final String BANK_ACCOUNTS_TABLE_NAME = "bank_accounts";
+    static final String TRANSACTIONS_TABLE_NAME = "transactions";
     static final String ACCOUNTS_TABLE_NAME = "accounts";
     static final String ACCOUNT_STATEMENTS_TABLE_NAME = "account_statements";
+    static final String COST_CENTERS_TABLE_NAME = "cost_centers";
+    static final String COST_TYPES_TABLE_NAME = "cost_types";
 
     @Override
     public String getComponentName() {
@@ -210,9 +213,22 @@ public class FinanceTransformator implements ComponentTransformator {
 		, "Create index on iban for accounts table."));
 
 	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE " + FINANCE_SCHEMA + "." + TRANSACTIONS_TABLE_NAME //
+			+ " (id bigint not null, " //
+			+ "CONSTRAINT " + TRANSACTIONS_TABLE_NAME + "_PK PRIMARY KEY (id)" //
+			+ ")",
+		"Create internal accounts table."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE SEQUENCE " + FINANCE_SCHEMA + ".transaction_id_seq OWNED BY " + FINANCE_SCHEMA + "."
+			+ TRANSACTIONS_TABLE_NAME + ".id"//
+		, "Create transaction id sequence."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
 		"CREATE TABLE " + FINANCE_SCHEMA + "." + ACCOUNT_STATEMENTS_TABLE_NAME //
 			+ " (id bigserial not null, " //
 			+ "account_id bigint not null, " //
+			+ "transaction_id bigint not null, " //
 			+ "date_of_bookkeeping date, " //
 			+ "value_date date, " //
 			+ "foreign_account varchar, " //
@@ -231,9 +247,43 @@ public class FinanceTransformator implements ComponentTransformator {
 			+ ACCOUNTS_TABLE_NAME + " (id), " //
 			+ "CONSTRAINT " + ACCOUNT_STATEMENTS_TABLE_NAME + "_" + CURRENCY_TABLE_NAME
 			+ "_FK FOREIGN KEY (currency) REFERENCES " + FINANCE_SCHEMA + "." + CURRENCY_TABLE_NAME
-			+ " (code)" //
+			+ " (code), " //
+			+ "CONSTRAINT " + ACCOUNT_STATEMENTS_TABLE_NAME + "_" + TRANSACTIONS_TABLE_NAME
+			+ "_FK FOREIGN KEY (transaction_id) REFERENCES " + FINANCE_SCHEMA + "." //
+			+ TRANSACTIONS_TABLE_NAME + " (id)" //
 			+ ")",
 		"Create bank account statements table."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE " + FINANCE_SCHEMA + "." + COST_CENTERS_TABLE_NAME //
+			+ " (id bigserial not null, " //
+			+ "name varchar(64) not null, " //
+			+ "description varchar, " //
+			+ "is_primary boolean, " //
+			+ "CONSTRAINT " //
+			+ COST_CENTERS_TABLE_NAME + "_PK PRIMARY KEY (id)" //
+			+ ")",
+		"Create cost centers table."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE SEQUENCE " + FINANCE_SCHEMA + ".cost_center_id_seq OWNED BY " + FINANCE_SCHEMA + "."
+			+ COST_CENTERS_TABLE_NAME + ".id"//
+		, "Create cost center id sequence."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE TABLE " + FINANCE_SCHEMA + "." + COST_TYPES_TABLE_NAME //
+			+ " (id bigserial not null, " //
+			+ "name varchar(64) not null, " //
+			+ "description varchar, " //
+			+ "CONSTRAINT " //
+			+ COST_TYPES_TABLE_NAME + "_PK PRIMARY KEY (id)" //
+			+ ")",
+		"Create cost types table."));
+
+	sequence.appendTransformation(new JDBCTransformationStep(sequence, "Rick-Rainer Ludwig", //
+		"CREATE SEQUENCE " + FINANCE_SCHEMA + ".cost_type_id_seq OWNED BY " + FINANCE_SCHEMA + "."
+			+ COST_TYPES_TABLE_NAME + ".id"//
+		, "Create cost type id sequence."));
 
 	return sequence;
     }
@@ -243,6 +293,7 @@ public class FinanceTransformator implements ComponentTransformator {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + ACCOUNT_STATEMENTS_TABLE_NAME);
+		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + TRANSACTIONS_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + BANK_ACCOUNTS_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + ACCOUNTS_TABLE_NAME);
 		statement.execute(
