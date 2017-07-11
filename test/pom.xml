@@ -3,30 +3,30 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.puresoltechnologies.lifeassist</groupId>
-		<artifactId>lifeassist-parent</artifactId>
+		<groupId>com.puresoltechnologies.famility</groupId>
+		<artifactId>famility-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>test</artifactId>
-	<name>LifeAssistant: ${project.artifactId}</name>
+	<name>Famility: ${project.artifactId}</name>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.puresoltechnologies.lifeassist</groupId>
-			<artifactId>app.rest.server</artifactId>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.rest.impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.puresoltechnologies.lifeassist</groupId>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>plugin.appointments.impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.puresoltechnologies.lifeassist</groupId>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>plugin.birthdays.impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.puresoltechnologies.lifeassist</groupId>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>plugin.tasks.impl</artifactId>
 		</dependency>
 		<dependency>

@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.puresoltechnologies.lifeassist</groupId>
-		<artifactId>lifeassist-parent</artifactId>
+		<groupId>com.puresoltechnologies.famility</groupId>
+		<artifactId>famility-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>website</artifactId>
-	<name>LifeAssistant: ${project.artifactId}</name>
+	<name>Famility: ${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 </project>

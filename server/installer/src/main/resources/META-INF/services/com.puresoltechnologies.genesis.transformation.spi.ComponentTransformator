@@ -1,0 +1,5 @@
+com.puresoltechnologies.famility.server.installer.EventLoggerTransformator
+com.puresoltechnologies.famility.server.installer.ContactsTransformator
+com.puresoltechnologies.famility.server.installer.CalendarTransformator
+com.puresoltechnologies.famility.server.installer.SettingsStoreTransformator
+com.puresoltechnologies.famility.server.installer.FinanceTransformator

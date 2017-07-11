@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.puresoltechnologies.lifeassist</groupId>
+		<groupId>com.puresoltechnologies.famility</groupId>
 		<artifactId>plugin</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>plugin.birthdays</artifactId>
-	<name>LifeAssistant: ${project.artifactId}</name>
+	<name>Famility: ${project.artifactId}</name>
 	<packaging>pom</packaging>
 
 	<modules>

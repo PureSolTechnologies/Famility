@@ -31,16 +31,16 @@
 		<jdbcPassword>TrustNo1</jdbcPassword>
 	</properties>
 
-	<groupId>com.puresoltechnologies.lifeassist</groupId>
-	<artifactId>lifeassist-parent</artifactId>
+	<groupId>com.puresoltechnologies.famility</groupId>
+	<artifactId>famility-parent</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>LifeAssistent: ${project.artifactId}</name>
+	<name>Famility: ${project.artifactId}</name>
 	<description>A personal assistant for daily tasks and appointments.</description>
 
 	<inceptionYear>2017</inceptionYear>
-	<url>http://puresol-technologies.com/lifeassistant</url>
+	<url>http://puresol-technologies.com/famility</url>
 
 	<organization>
 		<name>PureSol Technologies</name>
@@ -56,9 +56,9 @@
 	</licenses>
 
 	<scm>
-		<developerConnection>scm:git:https://github.com/PureSolTechnologies/LifeAssistant</developerConnection>
-		<connection>scm:git:https://github.com/PureSolTechnologies/LifeAssistant</connection>
-		<url>https://github.com/PureSolTechnologies/LifeAssistant.git</url>
+		<developerConnection>scm:git:https://github.com/PureSolTechnologies/FamilityServer</developerConnection>
+		<connection>scm:git:https://github.com/PureSolTechnologies/FamilityServer</connection>
+		<url>https://github.com/PureSolTechnologies/FamilityServer.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -74,7 +74,7 @@
 
 	<issueManagement>
 		<system>Redmine</system>
-		<url>https://bugs.puresol-technologies.net/projects/lifeassistant</url>
+		<url>https://bugs.puresol-technologies.net/projects/famility</url>
 	</issueManagement>
 
 	<ciManagement>
@@ -90,7 +90,7 @@
 		<site>
 			<id>FTPPureSolTechnologiesCom</id>
 			<name>FTPPureSolTechnologiesCom</name>
-			<url>ftp://puresol-technologies.com/opensource.puresol-technologies.com/projects/lifeassistant/${project.version}</url>
+			<url>ftp://puresol-technologies.com/opensource.puresol-technologies.com/projects/famility/${project.version}</url>
 		</site>
 	</distributionManagement>
 
@@ -400,67 +400,67 @@
 		<dependencies>
 			<!-- Self -->
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
-				<artifactId>app.api</artifactId>
+				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>server.api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
-				<artifactId>app.impl</artifactId>
+				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>server.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
-				<artifactId>app.installer</artifactId>
+				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>server.installer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
-				<artifactId>app.model</artifactId>
+				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>server.model</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
-				<artifactId>app.rest.api</artifactId>
+				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>server.rest.api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
-				<artifactId>app.rest.server</artifactId>
+				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>server.rest.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>common.db</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>common.plugins</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>common.rest</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>common.utils</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>plugin.appointments.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>plugin.birthdays.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.lifeassist</groupId>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>plugin.tasks.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -764,7 +764,7 @@
 
 	<modules>
 		<module>common</module>
-		<module>app</module>
+		<module>server</module>
 		<module>plugin</module>
 		<module>website</module>
 		<module>test</module>
