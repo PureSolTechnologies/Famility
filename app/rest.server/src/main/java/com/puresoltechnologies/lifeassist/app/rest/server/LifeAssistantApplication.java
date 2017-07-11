@@ -21,9 +21,10 @@ import com.puresoltechnologies.lifeassist.app.rest.server.services.AccountServic
 import com.puresoltechnologies.lifeassist.app.rest.server.services.AuthServiceImpl;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.CalendarServiceImpl;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.ContactsServiceImpl;
+import com.puresoltechnologies.lifeassist.app.rest.server.services.DataService;
+import com.puresoltechnologies.lifeassist.app.rest.server.services.FinanceService;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.PluginServiceImpl;
 import com.puresoltechnologies.lifeassist.app.rest.server.services.SettingsServiceImpl;
-import com.puresoltechnologies.lifeassist.app.rest.server.services.FinanceService;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -72,6 +73,7 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 	jersey.register(ContactsServiceImpl.class);
 	jersey.register(SettingsServiceImpl.class);
 	jersey.register(FinanceService.class);
+	jersey.register(DataService.class);
 
 	ServletEnvironment servlets = environment.servlets();
 	servlets.setBaseResource(

@@ -22,6 +22,10 @@
 			<artifactId>app.rest.api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.puresoltechnologies.lifeassist</groupId>
+			<artifactId>common.rest</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-core</artifactId>
 		</dependency>

@@ -15,6 +15,7 @@ import AccountsAdministrator from './pages/AccountsAdministrator';
 import Contacts from './pages/Contacts';
 import Copyright from './pages/Copyright';
 import Currencies from './pages/Currencies';
+import Finance from './pages/Finance';
 import LoginPage from './pages/LoginPage';
 import MainDashboard from './pages/MainDashboard';
 import MetricsDashboard from './pages/MetricsDashboard';
@@ -75,8 +76,8 @@ ReactDOM.render(
                     <Route path="week/:year/:week" component={WeekCalendar} />
                     <Route path="day/:year/:month/:day" component={DayCalendar} />
                 </Route>
-                <Route path="/finance" component={Currencies}>
-                </Route>
+                <Route path="/finance" component={Finance} />
+                <Route path="/finance/currencies" component={Currencies} />
             </Route>
             <Redirect from="/dialog" to="/" />
             <Route path="/dialog" component={DialogLayout}>

@@ -292,6 +292,8 @@ public class FinanceTransformator implements ComponentTransformator {
     public void dropAll(Properties configuration) {
 	try (Connection connection = PostgreSQLUtils.connect(configuration)) {
 	    try (Statement statement = connection.createStatement()) {
+		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + COST_TYPES_TABLE_NAME);
+		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + COST_CENTERS_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + ACCOUNT_STATEMENTS_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + TRANSACTIONS_TABLE_NAME);
 		statement.execute("DROP TABLE IF EXISTS " + FINANCE_SCHEMA + "." + BANK_ACCOUNTS_TABLE_NAME);

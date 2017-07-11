@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import FinanceController from '../controller/FinanceController';
 
-export default class Plugins extends React.Component<any, any> { 
+export default class Currencies extends React.Component<any, any> { 
 
     constructor( props: any ) {
         super( props );
