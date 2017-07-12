@@ -1,9 +1,9 @@
 package com.puresoltechnologies.famility.server.test.calendar;
 
 import com.puresoltechnologies.famility.server.impl.calendar.CalendarManager;
-import com.puresoltechnologies.famility.server.test.AbstractLifeAssistantTest;
+import com.puresoltechnologies.famility.server.test.AbstractFamilityTest;
 
-public abstract class AbstractCalendarManagerTest extends AbstractLifeAssistantTest {
+public abstract class AbstractCalendarManagerTest extends AbstractFamilityTest {
 
     private CalendarManager calendarManager = new CalendarManager();
 

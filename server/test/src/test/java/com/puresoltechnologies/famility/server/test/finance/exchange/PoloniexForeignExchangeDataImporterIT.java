@@ -8,9 +8,9 @@ import java.time.Instant;
 import org.junit.Test;
 
 import com.puresoltechnologies.famility.server.impl.finance.exchange.PoloniexForeignExchangeDataImporter;
-import com.puresoltechnologies.famility.server.test.AbstractLifeAssistantTest;
+import com.puresoltechnologies.famility.server.test.AbstractFamilityTest;
 
-public class PoloniexForeignExchangeDataImporterIT extends AbstractLifeAssistantTest {
+public class PoloniexForeignExchangeDataImporterIT extends AbstractFamilityTest {
 
     @Test
     public void testImportCurrencies() throws IOException, SQLException {

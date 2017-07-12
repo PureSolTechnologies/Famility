@@ -9,9 +9,9 @@ import org.junit.Test;
 
 import com.puresoltechnologies.famility.server.impl.finance.CurrencyDefinition;
 import com.puresoltechnologies.famility.server.impl.finance.TradingManager;
-import com.puresoltechnologies.famility.server.test.AbstractLifeAssistantTest;
+import com.puresoltechnologies.famility.server.test.AbstractFamilityTest;
 
-public class TradingManagerIT extends AbstractLifeAssistantTest {
+public class TradingManagerIT extends AbstractFamilityTest {
 
     private final TradingManager tradingManager = new TradingManager();
 

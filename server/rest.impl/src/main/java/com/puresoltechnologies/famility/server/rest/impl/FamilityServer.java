@@ -10,7 +10,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.puresoltechnologies.famility.server.impl.db.DatabaseConnector;
-import com.puresoltechnologies.famility.server.rest.impl.config.LifeAssistantConfiguration;
+import com.puresoltechnologies.famility.server.rest.impl.config.FamilityConfiguration;
 import com.puresoltechnologies.famility.server.rest.impl.filters.AuthenticationAndAuthorizationFilter;
 import com.puresoltechnologies.famility.server.rest.impl.filters.CORSFilter;
 import com.puresoltechnologies.famility.server.rest.impl.filters.IllegalEmailAddressExceptionMapper;
@@ -33,22 +33,22 @@ import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
-public class LifeAssistantApplication extends Application<LifeAssistantConfiguration> {
+public class FamilityServer extends Application<FamilityConfiguration> {
 
-    private static final Logger logger = LoggerFactory.getLogger(LifeAssistantApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(FamilityServer.class);
 
     @Override
     public String getName() {
-	return LifeAssistantApplication.class.getSimpleName();
+	return FamilityServer.class.getSimpleName();
     }
 
     @Override
-    public void initialize(Bootstrap<LifeAssistantConfiguration> bootstrap) {
-	bootstrap.addBundle(new AssetsBundle("/LifeAssistantUI", "/", "/index.html"));
+    public void initialize(Bootstrap<FamilityConfiguration> bootstrap) {
+	bootstrap.addBundle(new AssetsBundle("/FamilityUI", "/", "/index.html"));
     }
 
     @Override
-    public void run(LifeAssistantConfiguration configuration, Environment environment) throws Exception {
+    public void run(FamilityConfiguration configuration, Environment environment) throws Exception {
 	DatabaseConnector.initialize(configuration.getDatabase());
 
 	HealthCheckRegistry healthChecks = environment.healthChecks();
@@ -77,7 +77,7 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 
 	ServletEnvironment servlets = environment.servlets();
 	servlets.setBaseResource(
-		URLResource.newResource(LifeAssistantApplication.class.getResource("/LifeAssistantUI")));
+		URLResource.newResource(FamilityServer.class.getResource("/FamilityUI")));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class LifeAssistantApplication extends Application<LifeAssistantConfigura
 
     public static void main(String[] args) {
 	try {
-	    LifeAssistantApplication application = new LifeAssistantApplication();
+	    FamilityServer application = new FamilityServer();
 	    application.run(args);
 	} catch (Throwable e) {
 	    logger.error("SEVERE ISSUE OCCURED. APPLICATION IS SHUTTING DOWN.", e);

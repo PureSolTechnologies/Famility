@@ -20,13 +20,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.puresoltechnologies.famility.common.rest.JsonSerializer;
-import com.puresoltechnologies.famility.server.rest.impl.LifeAssistantApplication;
-import com.puresoltechnologies.famility.server.rest.impl.config.LifeAssistantConfiguration;
+import com.puresoltechnologies.famility.server.rest.impl.FamilityServer;
+import com.puresoltechnologies.famility.server.rest.impl.config.FamilityConfiguration;
 
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 
-public abstract class AbstractRestTest extends AbstractLifeAssistantTest {
+public abstract class AbstractRestTest extends AbstractFamilityTest {
 
     private static String configurationFile = ResourceHelpers.resourceFilePath("configuration.yml");
 
@@ -34,8 +34,8 @@ public abstract class AbstractRestTest extends AbstractLifeAssistantTest {
      * @see http://www.dropwizard.io/1.0.0/docs/manual/testing.html#integration-testing
      */
     @ClassRule
-    public static final DropwizardAppRule<LifeAssistantConfiguration> RULE = new DropwizardAppRule<LifeAssistantConfiguration>(
-	    LifeAssistantApplication.class, configurationFile);
+    public static final DropwizardAppRule<FamilityConfiguration> RULE = new DropwizardAppRule<FamilityConfiguration>(
+	    FamilityServer.class, configurationFile);
 
     private static JerseyClient restClient = null;
 

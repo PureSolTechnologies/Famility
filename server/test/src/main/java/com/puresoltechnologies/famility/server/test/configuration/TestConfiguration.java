@@ -4,14 +4,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.puresoltechnologies.famility.server.impl.db.DatabaseConfiguration;
-import com.puresoltechnologies.famility.server.rest.impl.config.LifeAssistantConfiguration;
+import com.puresoltechnologies.famility.server.rest.impl.config.FamilityConfiguration;
 
 /**
- * This is a class to read the {@link LifeAssistantConfiguration} into an own
+ * This is a class to read the {@link FamilityConfiguration} into an own
  * object for testing. It is needed to create classes for the needed Dropwizard
  * configuration.
  * <p>
- * <b>The LifeAssistant configuration objects are to be reduced for testing!</b>
+ * <b>The Famility configuration objects are to be reduced for testing!</b>
  * 
  * @author Rick-Rainer Ludwig
  *

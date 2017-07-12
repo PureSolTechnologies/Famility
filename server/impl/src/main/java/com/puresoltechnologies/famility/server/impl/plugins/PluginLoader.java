@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import com.puresoltechnologies.famility.common.plugins.LifeAssistantPlugin;
+import com.puresoltechnologies.famility.common.plugins.FamilityPlugin;
 import com.puresoltechnologies.famility.common.plugins.PluginDescription;
 
 public class PluginLoader {
@@ -15,10 +15,10 @@ public class PluginLoader {
 	return instance;
     }
 
-    private Set<LifeAssistantPlugin> plugins = new HashSet<>();
+    private Set<FamilityPlugin> plugins = new HashSet<>();
 
     private PluginLoader() {
-	ServiceLoader<LifeAssistantPlugin> serviceLoader = ServiceLoader.load(LifeAssistantPlugin.class);
+	ServiceLoader<FamilityPlugin> serviceLoader = ServiceLoader.load(FamilityPlugin.class);
 	serviceLoader.forEach(plugin -> plugins.add(plugin));
     }
 

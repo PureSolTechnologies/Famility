@@ -8,16 +8,16 @@ import java.util.ServiceLoader;
 
 import org.junit.Test;
 
-import com.puresoltechnologies.famility.common.plugins.LifeAssistantPlugin;
+import com.puresoltechnologies.famility.common.plugins.FamilityPlugin;
 
 public class ServiceTest {
 
     @Test
     public void test() {
-	ServiceLoader<LifeAssistantPlugin> loader = ServiceLoader.load(LifeAssistantPlugin.class);
+	ServiceLoader<FamilityPlugin> loader = ServiceLoader.load(FamilityPlugin.class);
 	assertNotNull(loader);
 	int count = 0;
-	Iterator<LifeAssistantPlugin> iterator = loader.iterator();
+	Iterator<FamilityPlugin> iterator = loader.iterator();
 	while (iterator.hasNext()) {
 	    System.out.println(iterator.next().getClass().getName());
 	    count++;

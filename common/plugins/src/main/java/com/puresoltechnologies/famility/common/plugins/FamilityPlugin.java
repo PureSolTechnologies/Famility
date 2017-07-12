@@ -1,11 +1,11 @@
 package com.puresoltechnologies.famility.common.plugins;
 
 /**
- * This is the LifeAssistent's plugin interface used by SPI to load plugins.
+ * This is the Famility plugin interface used by SPI to load plugins.
  * 
  * @author Rick-Rainer Ludwig
  */
-public interface LifeAssistantPlugin {
+public interface FamilityPlugin {
 
     public PluginDescription getDescription();
 

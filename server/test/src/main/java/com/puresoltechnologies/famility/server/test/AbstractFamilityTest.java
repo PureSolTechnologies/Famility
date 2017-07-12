@@ -17,15 +17,15 @@ import com.puresoltechnologies.famility.server.test.configuration.TestConfigurat
 import io.dropwizard.testing.ResourceHelpers;
 
 /**
- * This is the base class for all LifeAssistant tests. This class ensures an
- * empty database and constant start conditiions for call test classes (not for
- * test methods!). So, for {@link BeforeClass} the conditions are prepared, if
- * it is needed for {@link Before}, it is to be assured by the test class.
+ * This is the base class for all Famility tests. This class ensures an empty
+ * database and constant start conditions for call test classes (not for test
+ * methods!). So, for {@link BeforeClass} the conditions are prepared, if it is
+ * needed for {@link Before}, it is to be assured by the test class.
  * 
  * @author Rick-Rainer Ludwig
  *
  */
-public abstract class AbstractLifeAssistantTest {
+public abstract class AbstractFamilityTest {
 
     static String configurationFile = ResourceHelpers.resourceFilePath("configuration.yml");
     static TestConfiguration configuration = null;

@@ -7,7 +7,7 @@ import com.puresoltechnologies.famility.server.impl.db.DatabaseConfiguration;
 
 import io.dropwizard.Configuration;
 
-public class LifeAssistantConfiguration extends Configuration {
+public class FamilityConfiguration extends Configuration {
 
     @Valid
     @NotNull
