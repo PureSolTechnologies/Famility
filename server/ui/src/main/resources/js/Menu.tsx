@@ -16,7 +16,7 @@ export default function Menu() {
                 aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <Link className="navbar-brand" to="/">LifeAssistant</Link>
+            <Link className="navbar-brand" to="/">Famility</Link>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item">

@@ -4,7 +4,7 @@ const { BellIcon, GiftIcon, TasklistIcon, SyncIcon, ClockIcon, QuestionIcon  } =
 import ApplicationComponent from '../ApplicationComponent';
 
 /**
- * This is a small component to show a calendar entry in a short form.
+ * This is a small component to show a calendar event in a short form.
  */
 export default class EventIcon extends ApplicationComponent<any, undefined> {
 

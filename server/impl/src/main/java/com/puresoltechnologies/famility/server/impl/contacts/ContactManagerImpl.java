@@ -16,6 +16,7 @@ import java.util.List;
 
 import com.mysema.commons.lang.CloseableIterator;
 import com.puresoltechnologies.commons.types.EmailAddress;
+import com.puresoltechnologies.famility.common.api.contacts.ContactManager;
 import com.puresoltechnologies.famility.server.api.calendar.OccupancyStatus;
 import com.puresoltechnologies.famility.server.api.calendar.Reminder;
 import com.puresoltechnologies.famility.server.api.calendar.Series;
@@ -41,7 +42,7 @@ import com.querydsl.sql.dml.SQLDeleteClause;
 import com.querydsl.sql.dml.SQLInsertClause;
 import com.querydsl.sql.dml.SQLUpdateClause;
 
-public class ContactManager {
+public class ContactManagerImpl implements ContactManager {
 
     CalendarManager calendarManager = new CalendarManager();
     private static Field personIdField;

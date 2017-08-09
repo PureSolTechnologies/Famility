@@ -9,6 +9,7 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.puresoltechnologies.famility.common.utils.Metrics;
 import com.querydsl.sql.Configuration;
 import com.querydsl.sql.SQLTemplates;
 
@@ -52,6 +53,8 @@ public class DatabaseConnector {
 	pool.setMaxIdle(poolConfiguration.getSetMaxIdle());
 	pool.setMaxTotal(poolConfiguration.getMaxTotal());
 	pool.setMaxWaitMillis(poolConfiguration.getMaxWaitMillis());
+
+	Metrics.getMetrics().register("db.pool", new DatabaseConnectionPoolMetricsSet());
 
 	initialized = true;
 	logger.info("DatabaseConnector initialized.");

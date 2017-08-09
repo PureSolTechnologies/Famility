@@ -1,14 +1,13 @@
 package com.puresoltechnologies.famility.server.rest.impl;
 
-import org.eclipse.jetty.util.resource.URLResource;
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.JvmAttributeGaugeSet;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
-import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
+import com.puresoltechnologies.famility.common.utils.Metrics;
 import com.puresoltechnologies.famility.server.impl.db.DatabaseConnector;
 import com.puresoltechnologies.famility.server.rest.impl.config.FamilityConfiguration;
 import com.puresoltechnologies.famility.server.rest.impl.filters.AuthenticationAndAuthorizationFilter;
@@ -16,7 +15,6 @@ import com.puresoltechnologies.famility.server.rest.impl.filters.CORSFilter;
 import com.puresoltechnologies.famility.server.rest.impl.filters.IllegalEmailAddressExceptionMapper;
 import com.puresoltechnologies.famility.server.rest.impl.filters.SQLExceptionMapper;
 import com.puresoltechnologies.famility.server.rest.impl.health.DatabaseHealthCheck;
-import com.puresoltechnologies.famility.server.rest.impl.metrics.DatabaseConnectionPoolMetricsSet;
 import com.puresoltechnologies.famility.server.rest.impl.services.AccountServiceImpl;
 import com.puresoltechnologies.famility.server.rest.impl.services.AuthServiceImpl;
 import com.puresoltechnologies.famility.server.rest.impl.services.CalendarServiceImpl;
@@ -44,21 +42,18 @@ public class FamilityServer extends Application<FamilityConfiguration> {
 
     @Override
     public void initialize(Bootstrap<FamilityConfiguration> bootstrap) {
-	bootstrap.addBundle(new AssetsBundle("/FamilityUI", "/", "/index.html"));
+	bootstrap.addBundle(new AssetsBundle("/ui", "", "index.html"));
     }
 
     @Override
     public void run(FamilityConfiguration configuration, Environment environment) throws Exception {
+	MetricRegistry metrics = environment.metrics();
+	Metrics.initialize(metrics);
+
 	DatabaseConnector.initialize(configuration.getDatabase());
 
 	HealthCheckRegistry healthChecks = environment.healthChecks();
 	healthChecks.register("database", new DatabaseHealthCheck());
-
-	MetricRegistry metrics = environment.metrics();
-	metrics.register("memory_usage", new MemoryUsageGaugeSet());
-	metrics.register("garbage_collector", new GarbageCollectorMetricSet());
-	metrics.register("jvm_attributes", new JvmAttributeGaugeSet());
-	metrics.register("db.pool", new DatabaseConnectionPoolMetricsSet());
 
 	JerseyEnvironment jersey = environment.jersey();
 	jersey.setUrlPattern("/rest");
@@ -76,8 +71,10 @@ public class FamilityServer extends Application<FamilityConfiguration> {
 	jersey.register(DataService.class);
 
 	ServletEnvironment servlets = environment.servlets();
-	servlets.setBaseResource(
-		URLResource.newResource(FamilityServer.class.getResource("/FamilityUI")));
+	File resourceDirectory = new File("/home/ludwig/git/FamilityServer/server/ui/src/main/resources");
+	if ((!resourceDirectory.exists()) || (!resourceDirectory.isDirectory())) {
+	    throw new IllegalStateException("Resource path '" + resourceDirectory + "' was not found.");
+	}
     }
 
     @Override

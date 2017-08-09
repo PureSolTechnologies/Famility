@@ -28,6 +28,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.puresoltechnologies.famility.server.api.calendar.Event;
 import com.puresoltechnologies.famility.server.impl.calendar.CalendarManager;
 import com.puresoltechnologies.famility.server.rest.api.calendar.CalendarEvent;
@@ -40,6 +42,8 @@ import com.puresoltechnologies.famility.server.rest.api.calendar.EventType;
 import com.puresoltechnologies.famility.server.rest.api.calendar.TimeZoneInformation;
 import com.puresoltechnologies.famility.server.rest.impl.auth.PermitAll;
 
+@Timed
+@ExceptionMetered
 @Path("/calendar")
 public class CalendarServiceImpl implements CalendarService {
 

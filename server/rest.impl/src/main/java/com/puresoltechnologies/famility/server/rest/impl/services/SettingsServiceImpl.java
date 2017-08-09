@@ -8,10 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.puresoltechnologies.famility.server.impl.settings.SettingsManager;
 import com.puresoltechnologies.famility.server.rest.api.services.ParameterDescription;
 import com.puresoltechnologies.famility.server.rest.api.services.SettingsService;
 
+@Timed
+@ExceptionMetered
 @Path("/settings")
 public class SettingsServiceImpl implements SettingsService {
 

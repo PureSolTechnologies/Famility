@@ -9,6 +9,9 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.puresoltechnologies.famility.common.utils.Metrics;
 import com.puresoltechnologies.genesis.commons.postgresql.PostgreSQLUtils;
 
 /**
@@ -23,9 +26,14 @@ public class PooledConnectionFactory implements PooledObjectFactory<Connection> 
 
     private final DatabaseConfiguration configuration;
 
+    private final Meter connectMeter;
+    private final Meter disconnectMeter;
+
     public PooledConnectionFactory(DatabaseConfiguration configuration) {
 	super();
 	this.configuration = configuration;
+	this.connectMeter = Metrics.getMetrics().meter(MetricRegistry.name(getClass(), "connect"));
+	this.disconnectMeter = Metrics.getMetrics().meter(MetricRegistry.name(getClass(), "disconnect"));
     }
 
     @Override
@@ -34,12 +42,14 @@ public class PooledConnectionFactory implements PooledObjectFactory<Connection> 
 		configuration.getDatabase(), configuration.getUser(), configuration.getPassword(),
 		configuration.isSsl());
 	connection.setAutoCommit(false);
+	connectMeter.mark();
 	return new DefaultPooledObject<Connection>(connection);
     }
 
     @Override
     public void destroyObject(PooledObject<Connection> p) throws SQLException {
 	p.getObject().close();
+	disconnectMeter.mark();
     }
 
     @Override

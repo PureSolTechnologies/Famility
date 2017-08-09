@@ -1,13 +1,13 @@
 package com.puresoltechnologies.famility.server.test.contacts;
 
-import com.puresoltechnologies.famility.server.impl.contacts.ContactManager;
+import com.puresoltechnologies.famility.server.impl.contacts.ContactManagerImpl;
 import com.puresoltechnologies.famility.server.test.AbstractFamilityTest;
 
 public abstract class AbstractContactsManagerTest extends AbstractFamilityTest {
 
-    private ContactManager peopleManager = new ContactManager();
+    private ContactManagerImpl peopleManager = new ContactManagerImpl();
 
-    protected ContactManager getPeopleManager() {
+    protected ContactManagerImpl getPeopleManager() {
 	return peopleManager;
     }
 

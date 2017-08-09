@@ -41,6 +41,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
+import com.querydsl.sql.dml.SQLInsertClause;
 import com.querydsl.sql.dml.SQLUpdateClause;
 
 public class CalendarManager {
@@ -122,7 +123,7 @@ public class CalendarManager {
 	    long id = query.fetchOne();
 	    ZonedDateTime begin = event.getBegin();
 	    ZonedDateTime end = event.getEnd();
-	    queryFactory//
+	    SQLInsertClause insert = queryFactory//
 		    .insert(QEvents.events) //
 		    .set(QEvents.events.id, id) //
 		    .set(QEvents.events.type, event.getType()) //
@@ -132,10 +133,14 @@ public class CalendarManager {
 		    .set(QEvents.events.beginTimezone, begin.getZone().getId()) //
 		    .set(QEvents.events.endTime, Timestamp.from(end.toInstant())) //
 		    .set(QEvents.events.endTimezone, end.getZone().getId()) //
-		    .set(QEvents.events.reminderAmount, event.getReminder().getAmount()) //
-		    .set(QEvents.events.reminderUnit, event.getReminder().getUnit().name()) //
-		    .set(QEvents.events.occupancy, event.getOccupancy().name())//
-		    .execute();
+		    .set(QEvents.events.occupancy, event.getOccupancy().name());
+	    Reminder reminder = event.getReminder();
+	    if (reminder != null) {
+		insert.set(QEvents.events.reminderAmount, reminder.getAmount()) //
+			.set(QEvents.events.reminderUnit, reminder.getUnit().name()) //
+		;
+	    }
+	    insert.execute();
 	    queryFactory.commit();
 	    eventIdField.set(event, id);
 	    return id;
@@ -201,12 +206,14 @@ public class CalendarManager {
 	String endTimezone = tuple.get(QEvents.events.endTimezone);
 	ZonedDateTime end = ZonedDateTime.of(endTime, ZoneId.of(endTimezone));
 
-	int reminderAmount = tuple.get(QEvents.events.reminderAmount);
-	ChronoUnit reminderUnit = ChronoUnit.valueOf(tuple.get(QEvents.events.reminderUnit));
+	Integer reminderAmount = tuple.get(QEvents.events.reminderAmount);
+	String reminderUnitString = tuple.get(QEvents.events.reminderUnit);
+	ChronoUnit reminderUnit = reminderUnitString != null ? ChronoUnit.valueOf(reminderUnitString) : null;
 
 	OccupancyStatus occupancy = OccupancyStatus.valueOf(tuple.get(QEvents.events.occupancy));
 	return new Event(id, type, title, description, new ArrayList<>(),
-		reminderAmount >= 0 ? new Reminder(reminderAmount, reminderUnit) : null, begin, end, occupancy);
+		reminderAmount != null && reminderAmount >= 0 ? new Reminder(reminderAmount, reminderUnit) : null,
+		begin, end, occupancy);
     }
 
     public boolean removeEvent(long id) throws SQLException {

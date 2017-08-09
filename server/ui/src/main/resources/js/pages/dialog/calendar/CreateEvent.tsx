@@ -29,7 +29,6 @@ export default class CreateEvent extends React.Component<any, any> {
             reminderDurationAmount: 15,
             reminderDurationUnit: 'MINUTES',
             occupancy: 'OCCUPIED',
-            durationUnits: [],
             reminderDurationUnits: [],
             recurring: false,
             turnus: "WEEK",
@@ -50,7 +49,6 @@ export default class CreateEvent extends React.Component<any, any> {
         this.changeEndTimezone = this.changeEndTimezone.bind( this );
         this.changeWholeDay = this.changeWholeDay.bind( this );
         this.changeDurationAmount = this.changeDurationAmount.bind( this );
-        this.changeDurationUnit = this.changeDurationUnit.bind( this );
         this.changeType = this.changeType.bind( this );
         this.changeTitle = this.changeTitle.bind( this );
         this.changeDescription = this.changeDescription.bind( this );
@@ -65,15 +63,6 @@ export default class CreateEvent extends React.Component<any, any> {
 
     componentDidMount() {
         var component = this;
-        CalendarController.getDurationUnits(
-            function( units ) {
-                component.setState( {
-                    durationUnits: units,
-                    durationAmount: 1,
-                    durationUnit: 'HOURS'
-                });
-            },
-            function( response ) { });
         CalendarController.getReminderDurationUnits(
             function( units ) {
                 component.setState( {
@@ -146,13 +135,6 @@ export default class CreateEvent extends React.Component<any, any> {
         var durationAmount = event.target.value;
         this.setState( {
             durationAmount: durationAmount
-        });
-    }
-
-    changeDurationUnit( event: any ): void {
-        var durationUnit = event.target.value;
-        this.setState( {
-            durationUnit: durationUnit
         });
     }
 
@@ -252,10 +234,6 @@ export default class CreateEvent extends React.Component<any, any> {
         for ( var eventType of this.state.eventTypes ) {
             eventTypes.push( <option key={eventType.type} value={eventType.type}>{eventType.name}</option> );
         }
-        var durationUnits: any[] = [];
-        for ( var durationUnit of this.state.durationUnits ) {
-            durationUnits.push( <option key={durationUnit.unit} value={durationUnit.unit}>{durationUnit.name}</option> );
-        }
         var reminderDurationUnits: any[] = [];
         for ( var reminderDurationUnit of this.state.reminderDurationUnits ) {
             reminderDurationUnits.push( <option key={reminderDurationUnit.unit} value={reminderDurationUnit.unit}>{reminderDurationUnit.name}</option> );
@@ -302,13 +280,6 @@ export default class CreateEvent extends React.Component<any, any> {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <label htmlFor="duration">Duration</label>
-                        <div className="input-group">
-                            <input type="number" className="form-control" id="period" placeholder="" disabled={this.state.wholeDay} value={this.state.durationAmount} onChange={this.changeDurationAmount} />
-                            <select className="form-control" disabled={this.state.wholeDay} value={this.state.durationUnit} onChange={this.changeDurationUnit}>
-                                {durationUnits}
-                            </select>
-                        </div>
                     </div>
                 </div>
                 <hr />

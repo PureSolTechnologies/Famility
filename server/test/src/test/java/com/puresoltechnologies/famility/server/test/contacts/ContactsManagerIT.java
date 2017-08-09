@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import org.junit.Test;
 
 import com.puresoltechnologies.famility.server.api.contacts.Contact;
-import com.puresoltechnologies.famility.server.impl.contacts.ContactManager;
+import com.puresoltechnologies.famility.server.impl.contacts.ContactManagerImpl;
 import com.puresoltechnologies.famility.server.impl.db.DatabaseConnector;
 import com.puresoltechnologies.famility.server.impl.db.ExtendedSQLQueryFactory;
 import com.puresoltechnologies.famility.server.model.calendar.QSeries;
@@ -28,7 +28,7 @@ public class ContactsManagerIT extends AbstractContactsManagerTest {
 	    SQLQuery<Tuple> entrySeries = queryFactory.select(QSeries.series.all()).from(QSeries.series);
 	    assertEquals(0, entrySeries.fetch().size());
 
-	    ContactManager peopleManager = getPeopleManager();
+	    ContactManagerImpl peopleManager = getPeopleManager();
 	    Contact original = new Contact(1, "Rick-Rainer Ludwig", LocalDate.of(1978, 5, 16));
 	    long id = peopleManager.addContact(original);
 	    assertEquals(id, original.getId());
@@ -60,7 +60,7 @@ public class ContactsManagerIT extends AbstractContactsManagerTest {
 	    SQLQuery<Tuple> entrySeries = queryFactory.select(QSeries.series.all()).from(QSeries.series);
 	    assertEquals(0, entrySeries.fetch().size());
 
-	    ContactManager peopleManager = getPeopleManager();
+	    ContactManagerImpl peopleManager = getPeopleManager();
 	    Contact original = new Contact(1, "Rick-Rainer Ludwig", null);
 	    long id = peopleManager.addContact(original);
 	    assertEquals(id, original.getId());
@@ -92,7 +92,7 @@ public class ContactsManagerIT extends AbstractContactsManagerTest {
 	    SQLQuery<Tuple> entrySeries = queryFactory.select(QSeries.series.all()).from(QSeries.series);
 	    assertEquals(0, entrySeries.fetch().size());
 
-	    ContactManager peopleManager = getPeopleManager();
+	    ContactManagerImpl peopleManager = getPeopleManager();
 	    Contact original = new Contact(1, "Rick-Rainer Ludwig", null);
 	    long id = peopleManager.addContact(original);
 	    assertEquals(id, original.getId());
@@ -116,7 +116,7 @@ public class ContactsManagerIT extends AbstractContactsManagerTest {
 	    SQLQuery<Tuple> entrySeries = queryFactory.select(QSeries.series.all()).from(QSeries.series);
 	    assertEquals(0, entrySeries.fetch().size());
 
-	    ContactManager peopleManager = getPeopleManager();
+	    ContactManagerImpl peopleManager = getPeopleManager();
 	    Contact original = new Contact(1, "Rick-Rainer Ludwig", LocalDate.of(1978, 5, 16));
 	    long id = peopleManager.addContact(original);
 	    assertEquals(id, original.getId());

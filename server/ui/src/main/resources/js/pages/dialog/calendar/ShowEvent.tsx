@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { browserHistory } from 'react-router';
 
-const { TrashcanIcon, GearIcon  } = require( 'react-octicons' );
+const { TrashcanIcon, GearIcon } = require( 'react-octicons' );
 
 import CalendarController from '../../../controller/CalendarController';
 import Dialog from '../../../components/dialog/Dialog';
@@ -13,7 +13,7 @@ export default class ShowEvent extends React.Component<any, any> {
     constructor( props: any ) {
         super( props );
         this.state = {
-            entry: {}
+            event: {}
         };
         this.close = this.close.bind( this );
     }
@@ -22,12 +22,12 @@ export default class ShowEvent extends React.Component<any, any> {
         var component = this;
         CalendarController.getEvent(
             this.props.params.id,
-            function( entry ) {
+            function( event ) {
                 component.setState( {
-                    entry: entry
-                });
+                    event: event
+                } );
             },
-            function( response ) { });
+            function( response ) { } );
     }
 
     edit(): void {
@@ -39,18 +39,18 @@ export default class ShowEvent extends React.Component<any, any> {
     }
 
     close() {
-        var entry = this.state.entry;
+        var event = this.state.event;
         var referTo = this.props.location.query.origin;
         if ( referTo ) {
             this.props.router.push( referTo );
         } else {
-            this.props.router.push( '/calendar/day/' + entry.date.year + '/' + entry.date.month + '/' + entry.date.dayOfMonth );
+            this.props.router.push( '/calendar/day/' + event.date.year + '/' + event.date.month + '/' + event.date.dayOfMonth );
         }
     }
 
     render() {
-        var entry = this.state.entry;
-        if ( !entry.title ) {
+        var event = this.state.event;
+        if ( !event.title ) {
             return (
                 <Dialog title="Show Calendar Event">
                     <Loading />
@@ -58,7 +58,7 @@ export default class ShowEvent extends React.Component<any, any> {
             );
         }
         return <Dialog title="Show Calendar Event">
-            <EventView entry={entry} />
+            <EventView event={event} />
             <hr />
             <button type="button" className="btn btn-default"><GearIcon /> Edit...</button>
             <button type="button" className="btn btn-default"><TrashcanIcon /> Remove...</button>

@@ -29,8 +29,8 @@ import MonthCalendar from './pages/calendar/MonthCalendar';
 import YearCalendar from './pages/calendar/YearCalendar';
 
 import CreateAccount from './pages/dialog/accounts/CreateAccount';
-import CreateEntry from './pages/dialog/calendar/CreateEntry';
-import ShowEntry from './pages/dialog/calendar/ShowEntry';
+import CreateEvent from './pages/dialog/calendar/CreateEvent';
+import ShowEvent from './pages/dialog/calendar/ShowEvent';
 import CreateContact from './pages/dialog/contacts/CreateContact';
 import EditContact from './pages/dialog/contacts/EditContact';
 
@@ -82,8 +82,8 @@ ReactDOM.render(
             <Redirect from="/dialog" to="/" />
             <Route path="/dialog" component={DialogLayout}>
                 <Route path="accounts/create" component={CreateAccount} />
-                <Route path="calendar/create-entry(/:date)(/:beginTime)(/:endTime)" component={CreateEntry} />
-                <Route path="calendar/show-entry/:id" component={ShowEntry} />
+                <Route path="calendar/create-event(/:date)(/:beginTime)(/:endTime)" component={CreateEvent} />
+                <Route path="calendar/show-event/:id" component={ShowEvent} />
                 <Route path="contacts/create" component={CreateContact} />
                 <Route path="contacts/edit/:id" component={EditContact} />
             </Route>

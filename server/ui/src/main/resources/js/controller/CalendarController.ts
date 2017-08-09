@@ -14,7 +14,7 @@ export default class CalendarController {
     }
 
     static getEventTypes( successfulCallback: ( types: EventType[] ) => void, errorCallback: ( response: XMLHttpRequest ) => void ): void {
-        restController.GET( '/calendar/events/types',
+        restController.GET( '/calendar/event/types',
             null,
             function( response: XMLHttpRequest ) {
                 var types: EventType[] = JSON.parse( response.response );
@@ -136,8 +136,8 @@ export default class CalendarController {
             events.months[i] = [];
         }
         for ( var event of events ) {
-            var month = event.date.month;
-            var dayOfMonth = event.date.dayOfMonth;
+            var month = event.beginDate.month;
+            var dayOfMonth = event.beginDate.dayOfMonth;
             if ( !events.months[month][dayOfMonth] ) {
                 events.months[month][dayOfMonth] = [];
             }

@@ -15,6 +15,8 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.commons.types.Password;
 import com.puresoltechnologies.famility.server.impl.passwords.PasswordStoreImpl;
@@ -26,6 +28,8 @@ import com.puresoltechnologies.passwordstore.domain.PasswordActivationException;
 import com.puresoltechnologies.passwordstore.domain.PasswordChangeException;
 import com.puresoltechnologies.passwordstore.domain.PasswordCreationException;
 
+@Timed
+@ExceptionMetered
 @Path("/accounts")
 public class AccountServiceImpl implements AccountsService {
 

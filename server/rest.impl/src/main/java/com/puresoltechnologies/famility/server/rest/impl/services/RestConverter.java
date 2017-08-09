@@ -38,7 +38,11 @@ import com.puresoltechnologies.famility.server.rest.api.services.ParameterDescri
 public class RestConverter {
 
     public static Reminder convert(com.puresoltechnologies.famility.server.api.calendar.Reminder reminder) {
-	return new Reminder(reminder.getAmount(), reminder.getUnit());
+	if (reminder != null) {
+	    return new Reminder(reminder.getAmount(), reminder.getUnit());
+	} else {
+	    return null;
+	}
     }
 
     public static com.puresoltechnologies.famility.server.api.calendar.Reminder convert(Reminder reminder) {

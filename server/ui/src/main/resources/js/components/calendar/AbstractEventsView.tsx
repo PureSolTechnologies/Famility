@@ -18,7 +18,7 @@ export default class AbstractEventsView<P, S> extends ApplicationComponent<P, S>
             let candidates: any[] = events.months[month][day];
             if ( candidates ) {
                 for ( let candidate of candidates ) {
-                    if ( candidate.time.hour === hour ) {
+                    if ( candidate.beginTime.hour === hour ) {
                         foundEvents.push( candidate );
                     }
                 }

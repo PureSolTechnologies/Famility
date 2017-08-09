@@ -7,7 +7,7 @@ import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.commons.types.Password;
 import com.puresoltechnologies.famility.server.api.contacts.Contact;
 import com.puresoltechnologies.famility.server.impl.accounts.AccountManager;
-import com.puresoltechnologies.famility.server.impl.contacts.ContactManager;
+import com.puresoltechnologies.famility.server.impl.contacts.ContactManagerImpl;
 import com.puresoltechnologies.famility.server.impl.db.DatabaseConfiguration;
 import com.puresoltechnologies.famility.server.impl.db.DatabaseConnector;
 import com.puresoltechnologies.famility.server.impl.db.ExtendedSQLQueryFactory;
@@ -36,7 +36,7 @@ public class CreateDefaultConfiguration {
 
     private static void createDefaultAdminAccount()
 	    throws SQLException, PasswordCreationException, PasswordActivationException {
-	ContactManager contactManager = new ContactManager();
+	ContactManagerImpl contactManager = new ContactManagerImpl();
 	long id = contactManager.addContact(new Contact("admin", null));
 	long emailTypeId = contactManager.addEMailType("preferred");
 	EmailAddress email = new EmailAddress("admin@famility.com");

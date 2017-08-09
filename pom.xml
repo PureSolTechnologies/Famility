@@ -12,12 +12,15 @@
 
 		<!-- Versions -->
 		<slf4j.version>1.7.22</slf4j.version>
+		<streaming.version>0.2.0-SNAPSHOT</streaming.version>
 		<commons.version>0.7.0-SNAPSHOT</commons.version>
 		<versioning.version>1.1.0</versioning.version>
 		<dropwizard.version>1.1.1</dropwizard.version>
 		<swagger.version>1.0.6</swagger.version>
 		<!-- snakeyaml.version is to be synchronized with Dropwizard! -->
 		<snakeyaml.version>1.15</snakeyaml.version>
+		<!-- metrics.version is to be synchronized with Dropwizard! -->
+		<metrics.version>3.2.2</metrics.version>
 		<genesis.version>0.5.0-SNAPSHOT</genesis.version>
 		<passwordstore.version>0.1.0-SNAPSHOT</passwordstore.version>
 		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
@@ -431,6 +434,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>common.api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>common.db</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -496,6 +504,11 @@
 				<artifactId>core</artifactId>
 				<version>${passwordstore.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.streaming</groupId>
+				<artifactId>streaming</artifactId>
+				<version>${streaming.version}</version>
+			</dependency>
 			<!-- 3rd party non-testing -->
 			<dependency>
 				<groupId>postgresql</groupId>
@@ -538,6 +551,16 @@
 				<artifactId>dropwizard-testing</artifactId>
 				<version>${dropwizard.version}</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.dropwizard.metrics</groupId>
+				<artifactId>metrics-core</artifactId>
+				<version>${metrics.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.dropwizard.metrics</groupId>
+				<artifactId>metrics-jvm</artifactId>
+				<version>${metrics.version}</version>
 			</dependency>
 			<dependency>
 				<!-- sync this version with dropwizard!!! -->

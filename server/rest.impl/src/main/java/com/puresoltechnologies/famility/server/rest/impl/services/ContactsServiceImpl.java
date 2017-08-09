@@ -15,20 +15,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.famility.server.api.contacts.Contact;
 import com.puresoltechnologies.famility.server.api.contacts.ContactEmailAddress;
 import com.puresoltechnologies.famility.server.api.contacts.TypeDefinition;
-import com.puresoltechnologies.famility.server.impl.contacts.ContactManager;
+import com.puresoltechnologies.famility.server.impl.contacts.ContactManagerImpl;
 import com.puresoltechnologies.famility.server.rest.api.contacts.ContactsService;
 import com.puresoltechnologies.famility.server.rest.api.contacts.JsonBirthday;
 import com.puresoltechnologies.famility.server.rest.api.contacts.JsonContact;
 import com.puresoltechnologies.famility.server.rest.api.contacts.JsonContactEmailAddress;
 
+@Timed
+@ExceptionMetered
 @Path("/contacts")
 public class ContactsServiceImpl implements ContactsService {
 
-    private static final ContactManager contactManager = new ContactManager();
+    private static final ContactManagerImpl contactManager = new ContactManagerImpl();
 
     @Override
     @GET

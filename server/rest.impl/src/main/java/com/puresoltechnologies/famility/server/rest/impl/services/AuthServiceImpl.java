@@ -22,6 +22,8 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Timed;
 import com.puresoltechnologies.commons.types.EmailAddress;
 import com.puresoltechnologies.commons.types.Password;
 import com.puresoltechnologies.famility.server.impl.accounts.AccountManager;
@@ -37,6 +39,8 @@ import com.puresoltechnologies.passwordstore.api.PasswordStore;
  * This is a service and singleton to login and logout users and to keep track
  * of auth-tokens.
  */
+@Timed
+@ExceptionMetered
 @Path("/auth")
 public class AuthServiceImpl implements AuthService {
 
@@ -91,10 +95,9 @@ public class AuthServiceImpl implements AuthService {
 	PasswordStore passwordStore = new PasswordStoreImpl();
 	if (passwordStore.authenticate(email, password)) {
 	    /*
-	     * Once all parameters are matched, the authToken will be generated
-	     * and will be stored in the authorizationTokensStorage. The
-	     * authToken will be needed for every REST API invocation and is
-	     * only valid within the login session
+	     * Once all parameters are matched, the authToken will be generated and will be
+	     * stored in the authorizationTokensStorage. The authToken will be needed for
+	     * every REST API invocation and is only valid within the login session
 	     */
 	    UUID authToken = UUID.randomUUID();
 	    authorizationTokensStorage.put(authToken, email);

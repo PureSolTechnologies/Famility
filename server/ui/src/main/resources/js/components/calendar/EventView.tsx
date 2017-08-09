@@ -13,19 +13,19 @@ export default class EventView extends ApplicationComponent<any, undefined> {
     }
 
     public render() {
-        let entry: any = this.props.entry;
+        let event: any = this.props.event;
         return (
             <div>
-                <h2> <EventIcon type={entry.type} /> {entry.title}</h2>
+                <h2> <EventIcon type={event.type} /> {event.title}</h2>
                 <p>
-                    <i>{CalendarDay.fromEvent( entry ).toString()} {CalendarTime.fromEvent( entry ).toString()} ({entry.timezone} )</i><br />
-                    <i>for {entry.durationAmount} {entry.durationUnit}</i>
+                    <i>{CalendarDay.fromEvent( event ).toString()} {CalendarTime.fromEvent( event ).toString()} ({event.timezone} )</i><br />
+                    <i>for {event.durationAmount} {event.durationUnit}</i>
                 </p>
                 <p>
-                    {entry.description}
+                    {event.description}
                 </p>
                 <p>
-                    {JSON.stringify( entry.participants )}
+                    {JSON.stringify( event.participants )}
                 </p>
             </div>
         );

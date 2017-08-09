@@ -2,11 +2,11 @@ import CalendarEvent from './CalendarEvent';
 
 export default class CalendarTime {
 
-    static fromEvent( entry: CalendarEvent ): CalendarTime {
+    static fromEvent( event: CalendarEvent ): CalendarTime {
         var time = new CalendarTime;
-        time.hour = entry.beginTime.hour;
-        time.minute = entry.beginTime.minute;
-        time.second = entry.beginTime.second;
+        time.hour = event.beginTime.hour;
+        time.minute = event.beginTime.minute;
+        time.second = event.beginTime.second;
         return time;
     }
 
