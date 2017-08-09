@@ -9,6 +9,9 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.Timer.Context;
 import com.puresoltechnologies.famility.common.utils.Metrics;
 import com.querydsl.sql.Configuration;
 import com.querydsl.sql.SQLTemplates;
@@ -27,6 +30,7 @@ public class DatabaseConnector {
 
     private static GenericObjectPool<Connection> pool = null;
     private static boolean initialized = false;
+    private static Timer getConnectionTimer;
 
     private static void checkIfInitialized() {
 	if (!initialized) {
@@ -54,7 +58,9 @@ public class DatabaseConnector {
 	pool.setMaxTotal(poolConfiguration.getMaxTotal());
 	pool.setMaxWaitMillis(poolConfiguration.getMaxWaitMillis());
 
-	Metrics.getMetrics().register("db.pool", new DatabaseConnectionPoolMetricsSet());
+	MetricRegistry metrics = Metrics.getMetrics();
+	metrics.register(DatabaseConnector.class.getName(), new DatabaseConnectorPoolMetricsSet());
+	getConnectionTimer = metrics.timer(MetricRegistry.name(DatabaseConnector.class, "getConnection"));
 
 	initialized = true;
 	logger.info("DatabaseConnector initialized.");
@@ -72,10 +78,12 @@ public class DatabaseConnector {
     public static Connection getConnection() throws SQLException {
 	checkIfInitialized();
 	try {
+	    Context timeContext = getConnectionTimer.time();
 	    Connection connection = pool.borrowObject();
 	    if (connection == null) {
 		throw new IllegalStateException("Could not get a valid connection from pool.");
 	    }
+	    timeContext.stop();
 	    return new PooledConnection(pool, connection);
 	} catch (Exception e) {
 	    throw new SQLException("Could not get connection.", e);

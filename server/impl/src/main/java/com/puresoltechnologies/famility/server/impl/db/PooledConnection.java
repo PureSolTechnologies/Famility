@@ -24,8 +24,8 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 /**
  * This is a delegate class for {@link Connection}. All functionality is
  * delegated one to one to the given {@link Connection}. The specialty is only,
- * that the {@link #close()} method also returns the object to the providing
- * pool.
+ * that the {@link #close()} method returns the object to the providing pool and
+ * calls a rollback before.
  * 
  * @author Rick-Rainer Ludwig
  *

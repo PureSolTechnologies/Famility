@@ -19,12 +19,12 @@ import com.codahale.metrics.MetricSet;
  * @author Rick-Rainer Ludwig
  *
  */
-public class DatabaseConnectionPoolMetricsSet implements MetricSet {
+public class DatabaseConnectorPoolMetricsSet implements MetricSet {
 
     private final GenericObjectPool<Connection> pool;
 
     @SuppressWarnings("unchecked")
-    public DatabaseConnectionPoolMetricsSet() {
+    public DatabaseConnectorPoolMetricsSet() {
 	try {
 	    Field poolField = DatabaseConnector.class.getDeclaredField("pool");
 	    poolField.setAccessible(true);
@@ -37,19 +37,19 @@ public class DatabaseConnectionPoolMetricsSet implements MetricSet {
     @Override
     public Map<String, Metric> getMetrics() {
 	Map<String, Metric> gauges = new HashMap<>();
-	gauges.put("num.idle", new Gauge<Integer>() {
+	gauges.put("pool.idle", new Gauge<Integer>() {
 	    @Override
 	    public Integer getValue() {
 		return pool.getNumIdle();
 	    }
 	});
-	gauges.put("num.active", new Gauge<Integer>() {
+	gauges.put("pool.active", new Gauge<Integer>() {
 	    @Override
 	    public Integer getValue() {
 		return pool.getNumActive();
 	    }
 	});
-	gauges.put("num.waiters", new Gauge<Integer>() {
+	gauges.put("pool.waiters", new Gauge<Integer>() {
 	    @Override
 	    public Integer getValue() {
 		return pool.getNumWaiters();
