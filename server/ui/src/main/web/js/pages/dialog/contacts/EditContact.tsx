@@ -26,13 +26,18 @@ export default class EditContact extends React.Component<any, any> {
         const component = this;
         ContactsController.getContact( this.id,
             function( contact: any ) {
-                component.setState( { contact: contact });
+                component.setState( { contact: contact } );
             },
             function( response: XMLHttpRequest ) { }
         );
     }
     close() {
         this.props.router.push( '/contacts' );
+    }
+
+    // Component method
+    handleFileUpload( e: any ) {
+        alert( e );
     }
 
     render() {
@@ -59,6 +64,10 @@ export default class EditContact extends React.Component<any, any> {
                 <div className="form-group">
                     <label htmlFor="Birthday">Birthday</label>
                     <input type="date" className="form-control" id="Birthday" placeholder="Enter birthday" value={birthday} />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="Avatar">Avatar</label>
+                    <input type="file" className="form-control" id="Avatar" placeholder="Enter avatar" onChange={this.handleFileUpload} />
                 </div>
                 <hr />
                 <h3>Emails</h3>

@@ -3,6 +3,8 @@ const webpack = require('webpack');
 const validate = require('webpack-validator');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 
+var BUILD_DIR = resolve(__dirname, './build')
+
 module.exports = env => {
   const {ifProd, ifNotProd} = getIfUtils(env)
 
@@ -10,7 +12,7 @@ module.exports = env => {
     entry: ['./js/main.jsx'],
     context: __dirname,
     output: {
-      path: resolve(__dirname, './build'),
+      path: BUILD_DIR,
       filename: 'bundle.js',
       publicPath: '/build/',
       pathinfo: ifNotProd(),
@@ -36,9 +38,9 @@ module.exports = env => {
     },
     plugins: removeEmpty([
       ifProd(new webpack.LoaderOptionsPlugin({
-        minimize: true,
+        minimize: false,
         debug: false,
-        quiet: true,
+        quiet: false,
       })),
       ifProd(new webpack.DefinePlugin({
         'process.env': {
