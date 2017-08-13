@@ -9,7 +9,7 @@ module.exports = env => {
   const {ifProd, ifNotProd} = getIfUtils(env)
 
   return validate({
-    entry: ['./js/main.jsx'],
+    entry: ['./js/main.jsx', ],
     context: __dirname,
     output: {
       path: BUILD_DIR,
@@ -33,7 +33,8 @@ module.exports = env => {
         {test: /\.css$/, loader: 'style-loader!css-loader'},
         {test: /(\.eot|\.woff2|\.woff|\.ttf|\.svg)$/, loader: 'file-loader'},
         {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader'},
-        {test: /\.jsx?$/, exclude: /node_modules/, loader: "source-map-loader" }
+        {test: /\.jsx?$/, exclude: /node_modules/, loader: "source-map-loader" },
+        {test: /\.html$/, exclude: /node_modules/, loader: "html-loader" }
       ],
     },
     plugins: removeEmpty([
