@@ -14,7 +14,7 @@ module.exports = env => {
     output: {
       path: BUILD_DIR,
       filename: 'bundle.js',
-      publicPath: '/build/',
+      publicPath: '/',
       pathinfo: ifNotProd(),
     },
     resolve: {

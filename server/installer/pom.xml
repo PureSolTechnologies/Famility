@@ -34,9 +34,8 @@
 			<artifactId>core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<scope>compile</scope>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
@@ -47,6 +46,10 @@
 				<executions>
 					<execution>
 						<id>genesis</id>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

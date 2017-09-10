@@ -11,20 +11,21 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Versions -->
-		<slf4j.version>1.7.22</slf4j.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<logback.version>1.2.3</logback.version>
 		<streaming.version>0.2.0-SNAPSHOT</streaming.version>
 		<commons.version>0.7.0-SNAPSHOT</commons.version>
 		<versioning.version>1.1.0</versioning.version>
-		<dropwizard.version>1.1.1</dropwizard.version>
-		<swagger.version>1.0.6</swagger.version>
+		<dropwizard.version>1.1.3</dropwizard.version>
 		<!-- snakeyaml.version is to be synchronized with Dropwizard! -->
-		<snakeyaml.version>1.15</snakeyaml.version>
+		<snakeyaml.version>1.17</snakeyaml.version>
 		<!-- metrics.version is to be synchronized with Dropwizard! -->
 		<metrics.version>3.2.2</metrics.version>
+		<!-- jackson.version is to be synchronized with Dropwizard! -->
+		<jackson.version>2.8.9</jackson.version>
 		<genesis.version>0.5.0-SNAPSHOT</genesis.version>
 		<passwordstore.version>0.1.0-SNAPSHOT</passwordstore.version>
 		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
-		<jackson.version>2.7.8</jackson.version>
 		<querydsl.version>4.1.4</querydsl.version>
 
 		<!-- Database properties -->
@@ -401,7 +402,9 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- -->
 			<!-- Self -->
+			<!-- -->
 			<dependency>
 				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>server.api</artifactId>
@@ -459,6 +462,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>framework</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>plugin.appointments.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -472,7 +480,14 @@
 				<artifactId>plugin.tasks.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<!-- -->
 			<!-- PureSol Technologies dependencies -->
+			<!-- -->
+			<dependency>
+				<groupId>com.puresoltechnologies.commons</groupId>
+				<artifactId>osgi</artifactId>
+				<version>${commons.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.commons</groupId>
 				<artifactId>types</artifactId>
@@ -509,7 +524,9 @@
 				<artifactId>streaming</artifactId>
 				<version>${streaming.version}</version>
 			</dependency>
+			<!-- -->
 			<!-- 3rd party non-testing -->
+			<!-- -->
 			<dependency>
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
@@ -579,6 +596,11 @@
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>commons-cli</groupId>
+				<artifactId>commons-cli</artifactId>
+				<version>1.4</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-pool2</artifactId>
 				<version>2.4.2</version>
@@ -589,27 +611,41 @@
 				<version>4.5.3</version>
 			</dependency>
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.12</version>
-				<scope>test</scope>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>6.0.0</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<!-- -->
 			<!-- 3rd party testing -->
+			<!-- -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+				<scope>test</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
 				<version>1.10.19</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>${slf4j.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
@@ -717,6 +753,48 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>3.3.0</version>
+					<extensions>true</extensions>
+					<executions>
+						<execution>
+							<id>bundle</id>
+							<goals>
+								<goal>bundle</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<manifestLocation>target/META-INF</manifestLocation>
+						<classifier>bundle</classifier>
+						<niceManifest>true</niceManifest>
+						<instructions>
+							<Specification-Title>${project.name}</Specification-Title>
+							<Specification-Version>${project.version}</Specification-Version>
+							<Specification-Vendor>${project.organization.name}</Specification-Vendor>
+							<Implementation-Title>${project.groupId}:${project.artifactId}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+							<Vendor-URL>${project.organization.url}</Vendor-URL>
+							<Project-URL>${project.url}</Project-URL>
+							<!-- The Bundle-SymbolicName is fixed in this way. Otherwise Tycho 
+								will not find the bundle. -->
+							<Bundle-SymbolicName>${project.groupId}.${project.artifactId}.bundle</Bundle-SymbolicName>
+							<Bundle-Name>${project.groupId}.${project.artifactId}.bundle</Bundle-Name>
+							<Bundle-Version>${project.version}</Bundle-Version>
+							<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+							<Bundle-Activator>${project.groupId}.${project.artifactId}.Activator</Bundle-Activator>
+							<Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+							<!-- embed compile/runtime dependencies using path that matches the 
+								copied dependency folder -->
+							<Embed-Dependency>*;scope=compile|runtime;inline=false</Embed-Dependency>
+							<Embed-Directory>dependencies</Embed-Directory>
+							<Embed-StripGroup>true</Embed-StripGroup>
+						</instructions>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -742,10 +820,6 @@
 				<executions>
 					<execution>
 						<id>genesis</id>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
 						<configuration>
 							<transformers>
 								<transformer
@@ -792,10 +866,12 @@
 
 	<modules>
 		<module>common</module>
+		<module>framework</module>
 		<module>server</module>
 		<module>plugin</module>
 		<module>website</module>
 		<module>test</module>
+		<module>distribution</module>
 	</modules>
 
 </project>

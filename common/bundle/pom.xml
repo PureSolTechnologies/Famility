@@ -8,7 +8,7 @@
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>common.api</artifactId>
+	<artifactId>common.bundle</artifactId>
 	<name>Famility: ${project.artifactId}</name>
 	<packaging>jar</packaging>
 
@@ -24,14 +24,6 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>

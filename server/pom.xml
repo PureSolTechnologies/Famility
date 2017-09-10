@@ -20,8 +20,8 @@
 		<module>ui</module>
 		<module>rest.api</module>
 		<module>rest.impl</module>
-		<module>pkg</module>
 		<module>test</module>
+		<module>bundle</module>
 	</modules>
 
 </project>

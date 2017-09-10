@@ -27,7 +27,6 @@ import com.puresoltechnologies.famility.server.rest.impl.services.SettingsServic
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
-import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -42,7 +41,11 @@ public class FamilityServer extends Application<FamilityConfiguration> {
 
     @Override
     public void initialize(Bootstrap<FamilityConfiguration> bootstrap) {
-	bootstrap.addBundle(new AssetsBundle("/ui", "", "index.html"));
+	File resourceDirectory = new File("/home/ludwig/git/FamilityServer/server/ui/src/main/web");
+	if ((!resourceDirectory.exists()) || (!resourceDirectory.isDirectory())) {
+	    throw new IllegalStateException("Resource path '" + resourceDirectory + "' was not found.");
+	}
+	bootstrap.addBundle(new AssetsBundle(resourceDirectory.getPath(), "", "index.html"));
     }
 
     @Override
@@ -69,12 +72,6 @@ public class FamilityServer extends Application<FamilityConfiguration> {
 	jersey.register(SettingsServiceImpl.class);
 	jersey.register(FinanceService.class);
 	jersey.register(DataService.class);
-
-	ServletEnvironment servlets = environment.servlets();
-	File resourceDirectory = new File("/home/ludwig/git/FamilityServer/server/ui/src/main/resources");
-	if ((!resourceDirectory.exists()) || (!resourceDirectory.isDirectory())) {
-	    throw new IllegalStateException("Resource path '" + resourceDirectory + "' was not found.");
-	}
     }
 
     @Override
