@@ -8,7 +8,7 @@
 
 	<dependencySets>
 		<dependencySet>
-			<outputDirectory>fwk</outputDirectory>
+			<outputDirectory>lib</outputDirectory>
 			<unpack>false</unpack>
 			<includes>
 				<include>com.puresoltechnologies.famility:framework:jar:*</include>
@@ -20,11 +20,19 @@
 			<includes>
 				<include>org.slf4j:*:jar:*</include>
 				<include>ch.qos.logback:*:jar:*</include>
-				<include>com.puresoltechnologies.famility:*:jar:bundle:*</include>
+				<include>com.puresoltechnologies.famility:common.api:*</include>
+				<include>com.puresoltechnologies.famility:common.plugins:*</include>
+				<include>com.puresoltechnologies.famility:server.bundle:*</include>
 			</includes>
 		</dependencySet>
 	</dependencySets>
 	<fileSets>
+		<fileSet>
+			<directory>src/main/resources/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<filtered>true</filtered>
+			<fileMode>755</fileMode>
+		</fileSet>
 		<fileSet>
 			<directory>src/main/resources/etc</directory>
 			<outputDirectory>etc</outputDirectory>

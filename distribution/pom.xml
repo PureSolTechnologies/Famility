@@ -15,8 +15,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.api</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.plugins</artifactId>
-			<classifier>bundle</classifier>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -25,7 +29,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
-			<artifactId>server.rest.impl</artifactId>
+			<artifactId>server.bundle</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -36,10 +41,6 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.framework</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -15,11 +15,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
-			<artifactId>server.api</artifactId>
+			<artifactId>common.api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.plugins</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.genesis</groupId>

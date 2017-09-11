@@ -415,6 +415,12 @@
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.famility</groupId>
+				<artifactId>server.bundle</artifactId>
+				<version>${project.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>server.impl</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -442,6 +448,7 @@
 				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>common.api</artifactId>
 				<version>${project.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.famility</groupId>
@@ -452,13 +459,6 @@
 				<groupId>com.puresoltechnologies.famility</groupId>
 				<artifactId>common.plugins</artifactId>
 				<version>${project.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>common.plugins</artifactId>
-				<version>${project.version}</version>
-				<classifier>bundle</classifier>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -784,7 +784,7 @@
 					</executions>
 					<configuration>
 						<manifestLocation>target/META-INF</manifestLocation>
-						<classifier>bundle</classifier>
+						<!-- classifier>bundle</classifier -->
 						<niceManifest>true</niceManifest>
 						<instructions>
 							<Specification-Title>${project.name}</Specification-Title>
