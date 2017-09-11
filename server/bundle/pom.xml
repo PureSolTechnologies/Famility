@@ -14,8 +14,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.puresoltechnologies.commons</groupId>
-			<artifactId>osgi</artifactId>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.plugins</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>

@@ -1,7 +1,7 @@
 package com.puresoltechnologies.famility.common.api;
 
-import com.puresoltechnologies.commons.osgi.AbstractActivator;
+import com.puresoltechnologies.famility.common.plugins.AbstractFamilityPluginActivator;
 
-public class Activator extends AbstractActivator {
+public class Activator extends AbstractFamilityPluginActivator {
 
 }

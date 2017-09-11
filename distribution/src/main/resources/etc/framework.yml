@@ -1,3 +1,4 @@
 osgi:
-  pluginsDirectory: ../osgi/plugins
-  dataDirectory: ../osgi/data
+  pluginsDirectory: ../plugins
+  dataDirectory: ../data
+  

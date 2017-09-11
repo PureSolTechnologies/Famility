@@ -1,4 +1,4 @@
 # OSGi settings
 osgi:
-  pluginsDirectory: ../osgi/plugins
-  dataDirectory: ../osgi/data
+  pluginsDirectory: ../../../target/osgi/plugins
+  dataDirectory: ../../../target/osgi/data

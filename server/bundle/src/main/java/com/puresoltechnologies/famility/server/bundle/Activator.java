@@ -1,6 +1,6 @@
 package com.puresoltechnologies.famility.server.bundle;
 
-import com.puresoltechnologies.commons.osgi.AbstractActivator;
+import com.puresoltechnologies.famility.common.plugins.AbstractFamilityPluginActivator;
 
 /**
  * This is the default activator for this bundle. The main purpose is to log the
@@ -8,5 +8,5 @@ import com.puresoltechnologies.commons.osgi.AbstractActivator;
  * 
  * @author Rick-Rainer Ludwig
  */
-public class Activator extends AbstractActivator {
+public class Activator extends AbstractFamilityPluginActivator {
 }

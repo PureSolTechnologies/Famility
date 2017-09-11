@@ -13,7 +13,6 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>bundle</module>
 		<module>api</module>
 		<module>utils</module>
 		<module>db</module>

@@ -38,24 +38,23 @@ public class FamilityFramework {
     private Thread autoDeployerThread = null;
 
     public FamilityFramework(FamilityFrameworkConfiguration frameworkConfiguration) {
-
-	File targetDirectory = new File("target");
-	File osgiDirectory = new File(targetDirectory, "osgi");
-	File storageDirectory = new File(osgiDirectory, "data");
-	File deployDirectory = new File(osgiDirectory, "plugins");
-	storageDirectory.mkdirs();
-	deployDirectory.mkdirs();
-	Map<String, String> configuration = new HashMap<>();
-	configuration.put(Constants.FRAMEWORK_STORAGE, storageDirectory.getPath());
+	// base directory
+	File baseDirectory = frameworkConfiguration.getConfigurationFile().getParentFile();
+	// data directory
+	File dataDirectory = new File(baseDirectory, frameworkConfiguration.getOsgi().getDataDirectory());
+	logger.info("Configured OSGi data directory: " + dataDirectory);
+	dataDirectory.mkdirs();
+	configuration.put(Constants.FRAMEWORK_STORAGE, dataDirectory.getPath());
 	configuration.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
-
-	configuration.put(AutoProcessor.AUTO_DEPLOY_DIR_PROPERTY, deployDirectory.getPath());
+	// plugins directory
+	File pluginsDirectory = new File(baseDirectory, frameworkConfiguration.getOsgi().getPluginsDirectory());
+	logger.info("Configured OSGi plugins directory: " + pluginsDirectory);
+	pluginsDirectory.mkdirs();
+	configuration.put(AutoProcessor.AUTO_DEPLOY_DIR_PROPERTY, pluginsDirectory.getPath());
 	configuration.put(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERTY, //
 		AutoProcessor.AUTO_DEPLOY_INSTALL_VALUE + "," //
 		// + AutoProcessor.AUTO_DEPLOY_UPDATE_VALUE + "," //
 			+ AutoProcessor.AUTO_DEPLOY_START_VALUE);
-
-	this.configuration.putAll(configuration);
     }
 
     public void startup() throws BundleException {
@@ -96,7 +95,7 @@ public class FamilityFramework {
     }
 
     public void shutdown() throws BundleException {
-	logger.info("Starting OSGi framework...");
+	logger.info("Stopping OSGi framework...");
 	framework.stop();
 	logger.info("OSGi framework stopped.");
     }
@@ -126,7 +125,7 @@ public class FamilityFramework {
 			TimeUnit.SECONDS.sleep(DEFAULT_AUTO_DEPLOYMENT_PERIOD);
 		    }
 		} catch (InterruptedException e) {
-		    logger.info("AutoDeployer thread was interrupted.", e);
+		    logger.info("AutoDeployer thread was interrupted.");
 		}
 	    }
 	});
@@ -139,6 +138,7 @@ public class FamilityFramework {
 	    @Override
 	    public void run() {
 		try {
+		    stopAutoDeployer();
 		    shutdown();
 		} catch (Exception ex) {
 		    logger.error("Error stopping OSGi.", ex);
@@ -224,9 +224,6 @@ public class FamilityFramework {
 	    bootstrap.startup();
 	    bootstrap.startAutoDeployer();
 	    bootstrap.addShutdownHook();
-	    bootstrap.waitForFinish();
-	    bootstrap.stopAutoDeployer();
-	    System.exit(0);
 	} catch (Throwable throwable) {
 	    logger.error("A fatal error ocurred. Aborting...", throwable);
 	    System.exit(1);
