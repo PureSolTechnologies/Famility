@@ -23,6 +23,22 @@
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.rest.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>server.rest.impl</artifactId>
 		</dependency>
 		<dependency>

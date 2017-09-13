@@ -15,8 +15,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.plugins</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>server.installer</artifactId>
-			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.querydsl</groupId>
@@ -56,6 +63,15 @@
 						<version>${postgresql.version}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Import-Package>!net.sf.*,!org.jvnet.*,!sun.misc,*</Import-Package>
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
