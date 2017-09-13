@@ -18,10 +18,6 @@
 			<artifactId>common.plugins</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.puresoltechnologies.famility</groupId>
-			<artifactId>server.installer</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
@@ -69,7 +65,21 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Import-Package>!net.sf.*,!org.jvnet.*,!sun.misc,*</Import-Package>
+						<Import-Package>
+							!net.sf.*,
+							!org.jvnet.*,
+							!sun.misc.*,
+							!com.google.gson.*,
+							!com.sun.jdi.*,
+							!javax.servlet.*,
+							!oracle.*,
+							!org.apache.commons.vfs2.*,
+							!org.apache.tools.*,
+							!org.dom4j.*,
+							!org.eclipse.*,
+							!org.postgis.*,
+							*</Import-Package>
+						<Export-Package>*,com.querydsl.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

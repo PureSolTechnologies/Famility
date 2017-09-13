@@ -27,7 +27,7 @@
 				<include>com.puresoltechnologies.famility:common.utils:*</include>
 				<include>com.puresoltechnologies.famility:server.api:*</include>
 				<!-- include>com.puresoltechnologies.famility:server.bundle:*</include -->
-				<!-- include>com.puresoltechnologies.famility:server.impl:*</include -->
+				<include>com.puresoltechnologies.famility:server.impl:*</include>
 				<include>com.puresoltechnologies.famility:server.model:*</include>
 				<!-- include>com.puresoltechnologies.famility:server.rest.api:*</include -->
 				<!-- include>com.puresoltechnologies.famility:server.rest.impl:*</include -->

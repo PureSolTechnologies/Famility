@@ -649,6 +649,7 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
@@ -789,8 +790,9 @@
 							<Embed-Transitive>true</Embed-Transitive>
 						</instructions>
 					</configuration>
-				</plugin>				<!--This plugin's configuration is used to store Eclipse m2e settings only. 
-					It has no influence on the Maven build itself. -->
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
