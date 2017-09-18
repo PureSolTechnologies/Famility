@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
+			<artifactId>osgi.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.streaming</groupId>
@@ -40,6 +40,11 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Export-Package>*,com.codahale.*</Export-Package>
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

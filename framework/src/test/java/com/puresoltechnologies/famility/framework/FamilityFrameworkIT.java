@@ -1,5 +1,7 @@
 package com.puresoltechnologies.famility.framework;
 
+import java.io.IOException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,7 +13,7 @@ public class FamilityFrameworkIT extends AbstractFamiltyFrameworkTest {
     private static FamilityFramework familityFramework;
 
     @BeforeClass
-    public static void initialize() throws BundleException {
+    public static void initialize() throws BundleException, IOException {
 	familityFramework = new FamilityFramework(getConfiguration());
 	familityFramework.startup();
     }

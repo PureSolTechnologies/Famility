@@ -14,8 +14,16 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.puresoltechnologies.commons</groupId>
+			<artifactId>types</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.configuration</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
@@ -24,6 +32,10 @@
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.plugins</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.rest</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
@@ -47,7 +59,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
+			<artifactId>osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi.cmpn</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard</groupId>
@@ -66,39 +82,32 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>package</id>
-						<phase>package</phase>
-						<configuration>
-							<createDependencyReducedPom>true</createDependencyReducedPom>
-							<filters>
-								<filter>
-									<artifact>*:*</artifact>
-									<excludes>
-										<exclude>META-INF/*.SF</exclude>
-										<exclude>META-INF/*.DSA</exclude>
-										<exclude>META-INF/*.RSA</exclude>
-									</excludes>
-								</filter>
-							</filters>
-							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>com.puresoltechnologies.lifeassist.app.impl.FamilityApplication</mainClass>
-								</transformer>
-							</transformers>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Import-Package>
+							!com.google.errorprone.*,
+							!com.sun.jdi.*,
+							!com.thoughtworks.*,
+							!javafx.*,
+							!javax.persistence.*,
+							!javax.ws.*,
+							!jersey.repackaged.*,
+							!org.apache.catalina.*,
+							!org.apache.coyote.*,
+							!org.apache.logging.*,
+							!org.eclipse.jetty.jmx.*,
+							!org.jboss.*,
+							!org.joda.*,
+							!org.jsoup.*,
+							!sun.misc.*,
+							!javax.microedition.*,
+							*
+						</Import-Package>
+						<Export-Package>${project.groupId}.${project.artifactId}.*</Export-Package>
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

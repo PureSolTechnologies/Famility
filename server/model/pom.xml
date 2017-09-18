@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
+			<artifactId>osgi.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.querydsl</groupId>
@@ -78,7 +78,8 @@
 							!org.dom4j.*,
 							!org.eclipse.*,
 							!org.postgis.*,
-							*</Import-Package>
+							*
+						</Import-Package>
 						<Export-Package>*,com.querydsl.*</Export-Package>
 					</instructions>
 				</configuration>

@@ -18,10 +18,10 @@
 			<outputDirectory>plugins</outputDirectory>
 			<unpack>false</unpack>
 			<includes>
-				<include>org.slf4j:*:jar:*</include>
-				<include>ch.qos.logback:*:jar:*</include>
 				<include>com.puresoltechnologies.famility:common.api:*</include>
+				<include>com.puresoltechnologies.famility:common.configuration:*</include>
 				<include>com.puresoltechnologies.famility:common.db:*</include>
+				<include>com.puresoltechnologies.famility:common.logging:*</include>
 				<include>com.puresoltechnologies.famility:common.plugins:*</include>
 				<include>com.puresoltechnologies.famility:common.rest:*</include>
 				<include>com.puresoltechnologies.famility:common.utils:*</include>
@@ -29,8 +29,8 @@
 				<!-- include>com.puresoltechnologies.famility:server.bundle:*</include -->
 				<include>com.puresoltechnologies.famility:server.impl:*</include>
 				<include>com.puresoltechnologies.famility:server.model:*</include>
-				<!-- include>com.puresoltechnologies.famility:server.rest.api:*</include -->
-				<!-- include>com.puresoltechnologies.famility:server.rest.impl:*</include -->
+				<include>com.puresoltechnologies.famility:server.rest.api:*</include>
+				<include>com.puresoltechnologies.famility:server.rest.impl:*</include>
 			</includes>
 		</dependencySet>
 	</dependencySets>

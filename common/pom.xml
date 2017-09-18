@@ -13,6 +13,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>configuration</module>
+		<module>logging</module>
 		<module>api</module>
 		<module>utils</module>
 		<module>db</module>

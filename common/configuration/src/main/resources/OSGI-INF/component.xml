@@ -1,0 +1,11 @@
+<component name="com.puresoltechnologies.famility.common.configuration.FamilityConfigurationService">
+	<implementation
+		class="com.puresoltechnologies.famility.common.configuration.FamilityConfigurationService" />
+	<service>
+		<provide
+			interface="com.puresoltechnologies.famility.common.configuration.FamilityConfigurationService" />
+	</service>
+	<reference name="familityConfigurationService"
+		interface="com.puresoltechnologies.famility.common.configuration.FamilityConfigurationService"
+		cardinality="1..1" />
+</component>

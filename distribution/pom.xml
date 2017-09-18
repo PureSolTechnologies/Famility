@@ -20,7 +20,17 @@
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.configuration</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.db</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.logging</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -70,16 +80,6 @@
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>server.rest.impl</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>

@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -19,10 +21,13 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.felix.main.AutoProcessor;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -33,21 +38,31 @@ public class FamilityFramework {
 
     private static final long DEFAULT_AUTO_DEPLOYMENT_PERIOD = 10; // [s]
 
+    private final File configurationDirectory;
+    private final File familityHome;
+    private final File dataDirectory;
+    private final File pluginsDirectory;
     private final Map<String, String> configuration = new HashMap<>();
     private Framework framework = null;
     private Thread autoDeployerThread = null;
 
+    private ServiceRegistration<?> serverConfigurator = null;
+
     public FamilityFramework(FamilityFrameworkConfiguration frameworkConfiguration) {
 	// base directory
-	File baseDirectory = frameworkConfiguration.getConfigurationFile().getParentFile();
+	configurationDirectory = frameworkConfiguration.getConfigurationFile().getParentFile();
+	logger.info("Configuration directory: " + configurationDirectory);
+	// Famility home
+	familityHome = frameworkConfiguration.getConfigurationFile().getParentFile();
+	logger.info("familityHome directory: " + familityHome);
 	// data directory
-	File dataDirectory = new File(baseDirectory, frameworkConfiguration.getOsgi().getDataDirectory());
+	dataDirectory = new File(configurationDirectory, frameworkConfiguration.getOsgi().getDataDirectory());
 	logger.info("Configured OSGi data directory: " + dataDirectory);
 	dataDirectory.mkdirs();
 	configuration.put(Constants.FRAMEWORK_STORAGE, dataDirectory.getPath());
 	configuration.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 	// plugins directory
-	File pluginsDirectory = new File(baseDirectory, frameworkConfiguration.getOsgi().getPluginsDirectory());
+	pluginsDirectory = new File(configurationDirectory, frameworkConfiguration.getOsgi().getPluginsDirectory());
 	logger.info("Configured OSGi plugins directory: " + pluginsDirectory);
 	pluginsDirectory.mkdirs();
 	configuration.put(AutoProcessor.AUTO_DEPLOY_DIR_PROPERTY, pluginsDirectory.getPath());
@@ -59,6 +74,7 @@ public class FamilityFramework {
 
     public void startup() throws BundleException {
 	startOSGi();
+	readServerConfiguration();
     }
 
     private void startOSGi() throws BundleException {
@@ -76,11 +92,26 @@ public class FamilityFramework {
 	framework = frameworkFactory.newFramework(configuration);
 	framework.init();
 	framework.start();
-	// File file = new
-	// File("/home/ludwig/git/FamilityServer/server/bundle/target/server.bundle-0.1.0-SNAPSHOT.jar");
-	// installBundle(file);
-
 	logger.info("OSGi framework started.");
+    }
+
+    private void readServerConfiguration() {
+	logger.info("Prepare server configuration...");
+	Dictionary<String, Object> props = new Hashtable<>();
+	props.put("service.pid", "server.configurator");
+	File configurationFile = new File(configurationDirectory, "server.yml");
+	props.put("server.configuration.file", configurationFile);
+	BundleContext context = framework.getBundleContext();
+	serverConfigurator = context.registerService(ManagedService.class.getName(), new ServerConfigurator(), props);
+	//
+	// ServiceReference<ConfigurationAdmin> configurationAdminReference = context
+	// .getServiceReference(ConfigurationAdmin.class);
+	// ConfigurationAdmin confAdmin =
+	// context.getService(configurationAdminReference);
+	// Configuration serverConfiguration =
+	// confAdmin.getConfiguration(ServerConfigurator.class.getName());
+	// serverConfiguration.update(props);
+	logger.info("Server configuration prepared.");
     }
 
     private void installBundle(File file) throws BundleException {
@@ -96,8 +127,16 @@ public class FamilityFramework {
 
     public void shutdown() throws BundleException {
 	logger.info("Stopping OSGi framework...");
+	stopServerConfiguration();
 	framework.stop();
 	logger.info("OSGi framework stopped.");
+    }
+
+    private void stopServerConfiguration() {
+	if (serverConfigurator != null) {
+	    serverConfigurator.unregister();
+	    serverConfigurator = null;
+	}
     }
 
     private void stopAutoDeployer() {
@@ -219,7 +258,6 @@ public class FamilityFramework {
 	try {
 	    CommandLine cmd = parseCommandLine(args);
 	    FamilityFrameworkConfiguration configuration = readConfigurationFile(cmd);
-
 	    FamilityFramework bootstrap = new FamilityFramework(configuration);
 	    bootstrap.startup();
 	    bootstrap.startAutoDeployer();

@@ -14,6 +14,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.puresoltechnologies.commons</groupId>
+			<artifactId>types</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.api</artifactId>
 		</dependency>
@@ -34,12 +38,13 @@
 			<artifactId>common.plugins</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.puresoltechnologies.commons</groupId>
-			<artifactId>types</artifactId>
+			<groupId>com.puresoltechnologies.passwordstore</groupId>
+			<artifactId>api</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
+			<artifactId>osgi.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -51,6 +56,14 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							${project.groupId}.${project.artifactId}.*,
+							com.puresoltechnologies.passwordstore.*
+						</Export-Package>
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
