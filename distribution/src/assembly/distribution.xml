@@ -18,6 +18,7 @@
 			<outputDirectory>plugins</outputDirectory>
 			<unpack>false</unpack>
 			<includes>
+				<include>com.puresoltechnologies.commons:osgi:*</include>
 				<include>com.puresoltechnologies.famility:common.api:*</include>
 				<include>com.puresoltechnologies.famility:common.configuration:*</include>
 				<include>com.puresoltechnologies.famility:common.db:*</include>
@@ -26,7 +27,7 @@
 				<include>com.puresoltechnologies.famility:common.rest:*</include>
 				<include>com.puresoltechnologies.famility:common.utils:*</include>
 				<include>com.puresoltechnologies.famility:server.api:*</include>
-				<!-- include>com.puresoltechnologies.famility:server.bundle:*</include -->
+				<include>com.puresoltechnologies.famility:server.bundle:*</include>
 				<include>com.puresoltechnologies.famility:server.impl:*</include>
 				<include>com.puresoltechnologies.famility:server.model:*</include>
 				<include>com.puresoltechnologies.famility:server.rest.api:*</include>

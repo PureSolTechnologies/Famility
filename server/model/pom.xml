@@ -14,6 +14,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.puresoltechnologies.commons</groupId>
+			<artifactId>osgi</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.plugins</artifactId>
 		</dependency>
@@ -70,6 +74,7 @@
 							!org.jvnet.*,
 							!sun.misc.*,
 							!com.google.gson.*,
+							!com.google.errorprone.*,
 							!com.sun.jdi.*,
 							!javax.servlet.*,
 							!oracle.*,
@@ -78,6 +83,7 @@
 							!org.dom4j.*,
 							!org.eclipse.*,
 							!org.postgis.*,
+							!org.joda.convert.*,
 							*
 						</Import-Package>
 						<Export-Package>*,com.querydsl.*</Export-Package>

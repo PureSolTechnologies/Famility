@@ -16,7 +16,6 @@
 		<dependency>
 			<groupId>com.puresoltechnologies.commons</groupId>
 			<artifactId>osgi</artifactId>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>

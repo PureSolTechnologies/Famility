@@ -15,7 +15,47 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.configuration</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.db</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
 			<artifactId>common.plugins</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>common.utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility</groupId>
+			<artifactId>server.rest.api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility</groupId>

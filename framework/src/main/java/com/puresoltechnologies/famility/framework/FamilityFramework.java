@@ -53,7 +53,7 @@ public class FamilityFramework {
 	configurationDirectory = frameworkConfiguration.getConfigurationFile().getParentFile();
 	logger.info("Configuration directory: " + configurationDirectory);
 	// Famility home
-	familityHome = frameworkConfiguration.getConfigurationFile().getParentFile();
+	familityHome = configurationDirectory.getParentFile();
 	logger.info("familityHome directory: " + familityHome);
 	// data directory
 	dataDirectory = new File(configurationDirectory, frameworkConfiguration.getOsgi().getDataDirectory());
