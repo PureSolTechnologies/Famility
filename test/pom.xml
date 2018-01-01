@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>com.puresoltechnologies.famility.server</groupId>
-		<artifactId>server</artifactId>
+		<artifactId>parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
