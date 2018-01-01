@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.puresoltechnologies.famility.server</groupId>
+		<artifactId>server</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>model</artifactId>
+	<name>Famility: ${project.artifactId}</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.puresoltechnologies.commons</groupId>
+			<artifactId>osgi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.plugins</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-sql-codegen</artifactId>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>export</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<jdbcDriver>${jdbcDriver}</jdbcDriver>
+					<jdbcUrl>${jdbcUrl}</jdbcUrl>
+					<jdbcUser>${jdbcUser}</jdbcUser>
+					<jdbcPassword>${jdbcPassword}</jdbcPassword>
+					<packageName>${project.groupId}.${project.artifactId}</packageName>
+					<targetFolder>${project.basedir}/target/generated-sources/java</targetFolder>
+					<schemaToPackage>true</schemaToPackage>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>${postgresql.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Import-Package>
+							!com.google.errorprone.*,
+							!com.google.gson.*,
+							!com.sun.jdi.*,
+							!javax.servlet.*,
+							!net.sf.*,
+							!oracle.*,
+							!org.apache.commons.vfs2.*,
+							!org.apache.tools.*,
+							!org.dom4j.*,
+							!org.eclipse.*,
+							!org.joda.convert.*,
+							!org.jvnet.*,
+							!org.postgis.*,
+							!sun.misc.*,
+							*
+						</Import-Package>
+						<Export-Package>
+							*
+						</Export-Package>
+						<Embed-Dependency>*;groupId=!io.dropwizard.metrics;scope=compile|runtime;type=!pom;inline=false</Embed-Dependency>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -2,10 +2,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<prerequisites>
-		<maven>3.2</maven>
-	</prerequisites>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -16,7 +12,7 @@
 		<felix.version>5.6.8</felix.version>
 		<slf4j.version>1.7.25</slf4j.version>
 		<logback.version>1.2.3</logback.version>
-		<streaming.version>0.2.0-SNAPSHOT</streaming.version>
+		<streaming.version>0.4.0-SNAPSHOT</streaming.version>
 		<commons.version>0.7.0-SNAPSHOT</commons.version>
 		<versioning.version>1.1.0</versioning.version>
 		<dropwizard.version>1.1.3</dropwizard.version>
@@ -42,8 +38,8 @@
 		<jdbcPassword>TrustNo1</jdbcPassword>
 	</properties>
 
-	<groupId>com.puresoltechnologies.famility</groupId>
-	<artifactId>famility-parent</artifactId>
+	<groupId>com.puresoltechnologies.famility.server</groupId>
+	<artifactId>parent</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -413,90 +409,90 @@
 			<!-- Self -->
 			<!-- -->
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>server.api</artifactId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
+				<artifactId>api</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>server.bundle</artifactId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
+				<artifactId>bundle</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>server.impl</artifactId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
+				<artifactId>impl</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>server.installer</artifactId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
+				<artifactId>installer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>server.model</artifactId>
-				<version>${project.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>server.rest.api</artifactId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
+				<artifactId>model</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
-				<artifactId>server.rest.impl</artifactId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
+				<artifactId>rest.api</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
+				<artifactId>rest.impl</artifactId>
+				<version>${project.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>common.api</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>common.configuration</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>common.db</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>common.logging</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>common.plugins</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>common.rest</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>common.utils</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.puresoltechnologies.famility</groupId>
+				<groupId>com.puresoltechnologies.famility.server</groupId>
 				<artifactId>framework</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -549,7 +545,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.puresoltechnologies.streaming</groupId>
-				<artifactId>streaming</artifactId>
+				<artifactId>streams</artifactId>
 				<version>${streaming.version}</version>
 			</dependency>
 			<!-- -->
@@ -562,8 +558,27 @@
 			</dependency>
 			<dependency>
 				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-core</artifactId>
+				<version>${querydsl.version}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.code.findbugs</groupId>
+						<artifactId>jsr305</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.querydsl</groupId>
 				<artifactId>querydsl-sql</artifactId>
 				<version>${querydsl.version}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.servicemix.bundles</groupId>
+						<artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.querydsl</groupId>
@@ -618,11 +633,55 @@
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
 				<version>${jackson.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
 				<version>${jackson.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-guava</artifactId>
+				<version>${jackson.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>${jackson.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jdk8</artifactId>
+				<version>${jackson.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-joda</artifactId>
+				<version>${jackson.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-parameter-names</artifactId>
+				<version>${jackson.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-afterburner</artifactId>
+				<version>${jackson.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>joda-time</groupId>
@@ -675,6 +734,12 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j.version}</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
@@ -741,11 +806,6 @@
 							</manifestEntries>
 						</archive>
 					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-shade-plugin</artifactId>
-					<version>2.4.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -857,6 +917,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-shade-plugin</artifactId>
+					<version>2.4.3</version>
 					<executions>
 						<execution>
 							<id>genesis</id>
@@ -929,10 +990,17 @@
 	<modules>
 		<module>common</module>
 		<module>framework</module>
-		<module>server</module>
-		<module>website</module>
+		<module>installer</module>
+		<module>model</module>
+		<module>api</module>
+		<module>impl</module>
+		<module>ui</module>
+		<module>rest.api</module>
+		<module>rest.impl</module>
 		<module>test</module>
+		<module>bundle</module>
+		<module>website</module>
+		<module>integrationtest</module>
 		<module>distribution</module>
 	</modules>
-
 </project>

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.puresoltechnologies.famility</groupId>
+		<groupId>com.puresoltechnologies.famility.server</groupId>
 		<artifactId>common</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
@@ -18,7 +18,7 @@
 			<artifactId>osgi</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.puresoltechnologies.famility</groupId>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
 			<artifactId>common.plugins</artifactId>
 		</dependency>
 		<dependency>
@@ -49,7 +49,9 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
-						<Export-Package>*,org.slf4j.*,ch.qos.logback.*</Export-Package>
+						<Export-Package>
+							*
+						</Export-Package>
 						<Import-Package>
 							!groovy.lang.*,
 							!javax.mail.*,
@@ -58,7 +60,7 @@
 							!sun.reflect.*,
 							*
 						</Import-Package>
-						<Embed-Dependency>*;groupId=(org.slf4j.*|ch.qos.logback.*);scope=compile|runtime;type=!pom;inline=false</Embed-Dependency>
+						<Embed-Dependency>none</Embed-Dependency>
 					</instructions>
 				</configuration>
 			</plugin>

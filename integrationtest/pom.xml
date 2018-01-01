@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.puresoltechnologies.famility.server</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>integrationtest</artifactId>
+	<name>Famility: ${project.artifactId}</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.configuration</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.db</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.plugins</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>rest.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>rest.impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

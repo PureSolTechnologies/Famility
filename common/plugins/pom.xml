@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.puresoltechnologies.famility</groupId>
+		<groupId>com.puresoltechnologies.famility.server</groupId>
 		<artifactId>common</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
