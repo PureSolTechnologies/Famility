@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.yaml.snakeyaml.Yaml;
 
+import com.codahale.metrics.MetricRegistry;
+import com.puresoltechnologies.famility.common.utils.Metrics;
 import com.puresoltechnologies.famility.server.impl.db.DatabaseConnector;
 import com.puresoltechnologies.famility.server.test.configuration.TestConfiguration;
 
@@ -52,6 +54,9 @@ public abstract class AbstractFamilityTest {
     @BeforeClass
     public static void initializeDB() throws IOException, SQLException {
 	readConfiguration();
+	if (!Metrics.isInitialized()) {
+	    Metrics.initialize(new MetricRegistry());
+	}
 	if (DatabaseConnector.isInitialized()) {
 	    handleDatabase = false;
 	} else {

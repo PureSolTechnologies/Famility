@@ -41,7 +41,7 @@ public class FamilityServer extends Application<FamilityConfiguration> {
 
     @Override
     public void initialize(Bootstrap<FamilityConfiguration> bootstrap) {
-	File resourceDirectory = new File("/home/ludwig/git/FamilityServer/server/ui/src/main/web");
+	File resourceDirectory = new File("/home/ludwig/git/FamilityServer/ui/src/main/web");
 	if ((!resourceDirectory.exists()) || (!resourceDirectory.isDirectory())) {
 	    throw new IllegalStateException("Resource path '" + resourceDirectory + "' was not found.");
 	}

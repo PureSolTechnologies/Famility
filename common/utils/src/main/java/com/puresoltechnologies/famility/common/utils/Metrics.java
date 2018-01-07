@@ -46,6 +46,10 @@ public class Metrics {
 	return registry;
     }
 
+    public static boolean isInitialized() {
+	return registry != null;
+    }
+
     /**
      * Private constructor to avoid instantiation.
      */

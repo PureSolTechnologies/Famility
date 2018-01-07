@@ -29,7 +29,6 @@ import com.puresoltechnologies.famility.server.rest.api.calendar.CalendarSeries;
 import com.puresoltechnologies.famility.server.rest.api.calendar.CalendarTime;
 import com.puresoltechnologies.famility.server.rest.api.calendar.EventType;
 import com.puresoltechnologies.famility.server.rest.api.calendar.Reminder;
-import com.puresoltechnologies.famility.server.test.calendar.AbstractCalendarServiceTest;
 
 public class CalendarServiceIT extends AbstractCalendarServiceTest {
 

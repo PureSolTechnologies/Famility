@@ -23,6 +23,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.puresoltechnologies.famility.server</groupId>
+			<artifactId>common.utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.puresoltechnologies.famility.server</groupId>
 			<artifactId>api</artifactId>
 		</dependency>
 		<dependency>

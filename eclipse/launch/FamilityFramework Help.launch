@@ -9,9 +9,7 @@
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.puresoltechnologies.famility.framework.FamilityFramework"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-h"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="com.puresoltechnologies.famility.framework"/>
-<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
